@@ -1,0 +1,1948 @@
+/*
+Theme Name: Peptide Starter
+Theme URI: https://github.com/peptiderepo/peptide-starter
+Description: Premium, accessible WordPress theme for scientific peptide reference database
+Author: Peptide Repo
+Author URI: https://peptiderepo.com
+Version: 1.3.1
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: peptide-starter
+Domain Path: /languages
+Requires at least: 6.0
+Requires PHP: 7.4
+*/
+
+/* ============================================================================
+   CSS ARCHITECTURE
+   ============================================================================
+
+   This stylesheet organizes theme styles in the following order:
+   1. CSS Reset
+   2. CSS Custom Properties (design tokens)
+   3. Typography & Font Loading
+   4. Global Styles & Layout
+   5. Components (buttons, cards, forms, badges)
+   6. Regions (header, footer, main)
+   7. Pages (home, archive, single)
+   8. Animations & Transitions
+   9. Accessibility (focus, reduced motion)
+   10. Dark Mode (color overrides)
+   11. Responsive (mobile-first breakpoints)
+
+   Philosophy:
+   - Use CSS custom properties for all design tokens
+   - Avoid !important on global elements (breaks plugins)
+   - Scope styles with specificity, not cascade tricks
+   - Respect plugin namespaces (.pn-*, .ps-*)
+   - Mobile-first responsive approach
+
+   ============================================================================ */
+
+/* ============================================================================
+   1. CSS RESET
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+img, svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* ============================================================================
+   2. CSS CUSTOM PROPERTIES (Design Tokens)
+   ============================================================================ */
+
+:root {
+  /* ---- FONT FAMILIES ---- */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "Monaco", "Menlo", "Ubuntu Mono", "Courier New", monospace;
+
+  /* ---- TYPOGRAPHY SCALE (tightened for better content density) ---- */
+  /* H1 */
+  --text-h1: 36px;
+  --text-h1-weight: 700;
+  --text-h1-lh: 1.2;
+  --text-h1-ls: -0.02em;
+
+  /* H2 */
+  --text-h2: 30px;
+  --text-h2-weight: 700;
+  --text-h2-lh: 1.25;
+  --text-h2-ls: -0.015em;
+
+  /* H3 */
+  --text-h3: 24px;
+  --text-h3-weight: 600;
+  --text-h3-lh: 1.3;
+  --text-h3-ls: -0.01em;
+
+  /* H4 */
+  --text-h4: 20px;
+  --text-h4-weight: 600;
+  --text-h4-lh: 1.35;
+  --text-h4-ls: 0;
+
+  /* H5 */
+  --text-h5: 17px;
+  --text-h5-weight: 700;
+  --text-h5-lh: 1.4;
+  --text-h5-ls: 0;
+
+  /* H6 */
+  --text-h6: 15px;
+  --text-h6-weight: 500;
+  --text-h6-lh: 1.4;
+  --text-h6-ls: 0;
+
+  /* Body (slightly smaller for density — still readable) */
+  --text-body-lg: 15px;
+  --text-body-md: 13px;
+  --text-body-sm: 12px;
+
+  /* Labels & Captions */
+  --text-label: 11px;
+  --text-label-weight: 500;
+  --text-caption: 11px;
+  --text-overline: 10px;
+  --text-overline-weight: 600;
+
+  /* Code */
+  --text-code-inline: 14px;
+  --text-code-block: 13px;
+  --text-code-lh: 1.6;
+
+  /* ---- SPACING SCALE (8px base grid) ---- */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-4xl: 80px;
+  --spacing-5xl: 96px;
+
+  /* ---- BUTTON PADDING (unified per Design Director) ---- */
+  --btn-padding-y: var(--spacing-md);
+  --btn-padding-x: var(--spacing-xl);
+
+  /* ---- LIGHT MODE COLOR PALETTE ---- */
+  /* Brand Colors */
+  --color-brand-primary: #0066CC;
+  --color-status-success: #059669;
+  --color-status-warning: #F59E0B;
+  --color-status-error: #DC2626;
+
+  /* Note: Secondary accent (#7C3AED) removed per Design Director */
+  /* (Option A: Simplify to primary + status colors) */
+
+  /* Text Colors */
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+
+  /* Border Colors */
+  --color-border-default: #E5E7EB;
+  --color-border-subtle: #F3F4F6;
+
+  /* Background Colors */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-bg-tertiary: #F3F4F6;
+
+  /* Component-Specific Colors */
+  --color-input-focus: #0066CC;
+  --color-link-hover: #0052A3;
+  --color-badge-bg: #DBEAFE;
+  --color-badge-text: #0066CC;
+  --color-code-bg: #F3F4F6;
+  --color-code-text: #111827;
+
+  /* ---- SHADOWS & ELEVATION ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  /* ---- BORDERS & RADIUS ---- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* ---- TRANSITIONS ---- */
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 200ms ease-out;
+  --transition-slow: 300ms ease-in-out;
+
+  /* ---- FOCUS RING (per Design Director fix: 15% opacity) ---- */
+  --focus-color: #0066CC;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --focus-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
+
+  /* ---- CONTAINER WIDTHS ---- */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 900px;
+  --container-xl: 1024px;
+  --container-2xl: 1280px;
+
+  /* ---- Z-INDEX SCALE ---- */
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+}
+
+/* ============================================================================
+   3. TYPOGRAPHY & FONT LOADING
+   ============================================================================ */
+
+/* Load Inter from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base typography */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+}
+
+/* Headings */
+h1 {
+  font-size: var(--text-h1);
+  font-weight: var(--text-h1-weight);
+  line-height: var(--text-h1-lh);
+  letter-spacing: var(--text-h1-ls);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+h2 {
+  font-size: var(--text-h2);
+  font-weight: var(--text-h2-weight);
+  line-height: var(--text-h2-lh);
+  letter-spacing: var(--text-h2-ls);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+h3 {
+  font-size: var(--text-h3);
+  font-weight: var(--text-h3-weight);
+  line-height: var(--text-h3-lh);
+  letter-spacing: var(--text-h3-ls);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+h4 {
+  font-size: var(--text-h4);
+  font-weight: var(--text-h4-weight);
+  line-height: var(--text-h4-lh);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+h5 {
+  font-size: var(--text-h5);
+  font-weight: var(--text-h5-weight);
+  line-height: var(--text-h5-lh);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+h6 {
+  font-size: var(--text-h6);
+  font-weight: var(--text-h6-weight);
+  line-height: var(--text-h6-lh);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Paragraph */
+p {
+  font-size: var(--text-body-md);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Small text */
+small, .text-small {
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Code */
+code {
+  font-family: var(--font-mono);
+  font-size: var(--text-code-inline);
+  background-color: var(--color-code-bg);
+  color: var(--color-code-text);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-code-block);
+  line-height: var(--text-code-lh);
+  background-color: var(--color-code-bg);
+  color: var(--color-code-text);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--spacing-md);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* ============================================================================
+   4. GLOBAL STYLES & LAYOUT
+   ============================================================================ */
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Skip Link (accessibility) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: var(--z-modal);
+  padding: var(--spacing-md);
+  background: var(--color-brand-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.skip-link:focus {
+  left: var(--spacing-md);
+  top: var(--spacing-md);
+}
+
+/* Main content area */
+#main {
+  flex: 1;
+  width: 100%;
+}
+
+/* Container for page content */
+.ps-container {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  width: 100%;
+}
+
+.ps-container-wide {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  width: 100%;
+}
+
+/* ============================================================================
+   5. LINK STYLING (Scope: body content vs navigation)
+   ============================================================================ */
+
+/* Body content links: underlined */
+.site-content a,
+.post-content a,
+article a,
+.page-content a {
+  color: var(--color-brand-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--transition-normal);
+}
+
+.site-content a:hover,
+.post-content a:hover,
+article a:hover,
+.page-content a:hover {
+  color: var(--color-link-hover);
+}
+
+.site-content a:focus,
+.post-content a:focus,
+article a:focus,
+.page-content a:focus {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-offset);
+}
+
+/* Footer links: underlined */
+.site-footer a {
+  color: var(--color-brand-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--transition-normal);
+}
+
+.site-footer a:hover {
+  color: var(--color-link-hover);
+}
+
+/* Navigation links: NO underline (context is clear) */
+nav a {
+  text-decoration: none;
+}
+
+/* ============================================================================
+   6. COMPONENTS
+   ============================================================================ */
+
+/* ---- BUTTONS ---- */
+
+.ps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.ps-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ps-btn:focus {
+  outline: none;
+  box-shadow: var(--focus-shadow);
+}
+
+/* Primary Button */
+.ps-btn-primary {
+  background-color: var(--color-brand-primary);
+  color: white;
+}
+
+.ps-btn-primary:hover {
+  background-color: var(--color-link-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2);
+}
+
+.ps-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary Button */
+.ps-btn-secondary {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+}
+
+.ps-btn-secondary:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-brand-primary);
+}
+
+/* Tertiary Button */
+.ps-btn-tertiary {
+  background-color: transparent;
+  color: var(--color-brand-primary);
+  border: 1px solid var(--color-brand-primary);
+}
+
+.ps-btn-tertiary:hover {
+  background-color: var(--color-brand-primary);
+  color: white;
+}
+
+/* Button Sizes */
+.ps-btn-sm {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--text-body-sm);
+}
+
+.ps-btn-lg {
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  font-size: var(--text-body-lg);
+}
+
+.ps-btn-full {
+  width: 100%;
+}
+
+/* ---- CARDS ---- */
+
+.ps-card {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: all var(--transition-normal);
+}
+
+.ps-card:hover {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+}
+
+.ps-card-header {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-card-title {
+  font-size: var(--text-h5);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.ps-card-meta {
+  font-size: var(--text-caption);
+  color: var(--color-text-secondary);
+}
+
+.ps-card-content {
+  font-size: var(--text-body-md);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+/* ---- BADGES & TAGS ---- */
+
+.ps-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-label);
+  font-weight: var(--text-label-weight);
+  background-color: var(--color-badge-bg);
+  color: var(--color-badge-text);
+  white-space: nowrap;
+}
+
+.ps-badge-success {
+  background-color: #D1FAE5;
+  color: var(--color-status-success);
+}
+
+.ps-badge-warning {
+  background-color: #FEF3C7;
+  color: var(--color-status-warning);
+}
+
+.ps-badge-error {
+  background-color: #FEE2E2;
+  color: var(--color-status-error);
+}
+
+.ps-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-label);
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.ps-tag:hover {
+  background-color: var(--color-border-default);
+}
+
+.ps-tag-close {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ---- FORMS ---- */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="url"],
+textarea,
+select {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: all var(--transition-normal);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--focus-shadow);
+  background-color: var(--color-bg-secondary);
+}
+
+/* Form labels */
+label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--text-label);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text-primary);
+}
+
+/* Form groups */
+.ps-form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Form error state (per Design Director) */
+input.ps-error,
+textarea.ps-error,
+select.ps-error {
+  border-color: var(--color-status-error);
+  background-color: rgba(220, 38, 38, 0.02);
+}
+
+.ps-form-error {
+  color: var(--color-status-error);
+  font-size: var(--text-caption);
+  margin-top: 4px;
+  font-weight: var(--text-label-weight);
+}
+
+/* Checkboxes & Radios */
+input[type="checkbox"],
+input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  margin-right: var(--spacing-sm);
+  cursor: pointer;
+  accent-color: var(--color-brand-primary);
+}
+
+/* ---- ALERTS & CALLOUTS ---- */
+
+.ps-alert {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid;
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-alert-info {
+  background-color: #DBEAFE;
+  border-color: var(--color-brand-primary);
+  color: #0652CD;
+}
+
+.ps-alert-success {
+  background-color: #D1FAE5;
+  border-color: var(--color-status-success);
+  color: #065F46;
+}
+
+.ps-alert-warning {
+  background-color: #FEF3C7;
+  border-color: var(--color-status-warning);
+  color: #78350F;
+}
+
+.ps-alert-error {
+  background-color: #FEE2E2;
+  border-color: var(--color-status-error);
+  color: #7F1D1D;
+}
+
+/* ---- SEARCH FORM ---- */
+
+.ps-search-form {
+  position: relative;
+  width: 100%;
+}
+
+.ps-search-input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body-md);
+}
+
+.ps-search-input:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--focus-shadow);
+}
+
+.ps-search-icon {
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+/* ---- PAGINATION ---- */
+
+.ps-pagination {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+  justify-content: center;
+  margin: var(--spacing-2xl) 0;
+  flex-wrap: wrap;
+}
+
+.ps-pagination a,
+.ps-pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 var(--spacing-sm);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: all var(--transition-normal);
+}
+
+.ps-pagination a:hover {
+  border-color: var(--color-brand-primary);
+  background-color: var(--color-brand-primary);
+  color: white;
+}
+
+.ps-pagination .current {
+  background-color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+  color: white;
+}
+
+/* ============================================================================
+   7. REGIONS (Header, Footer, Main)
+   ============================================================================ */
+
+/* ---- HEADER ---- */
+
+.site-header {
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Account for WP admin bar when logged in */
+.admin-bar .site-header {
+  top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+  .admin-bar .site-header {
+    top: 46px;
+  }
+}
+
+.site-header-wrapper {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+/* Logo */
+.site-logo {
+  flex: 0 0 auto;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  text-decoration: none;
+  line-height: 1;
+  transition: color var(--transition-normal);
+}
+
+.site-logo:hover {
+  color: var(--color-link-hover);
+}
+
+.site-logo img {
+  height: 32px;
+  width: auto;
+}
+
+/* Primary Navigation */
+.primary-navigation {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-left: var(--spacing-lg);
+  margin-right: auto;
+}
+
+.primary-navigation ul {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.primary-navigation li {
+  display: flex;
+  align-items: center;
+}
+
+.primary-navigation a {
+  font-size: var(--text-body-md);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  position: relative;
+  transition: color var(--transition-normal);
+}
+
+.primary-navigation a:hover {
+  color: var(--color-brand-primary);
+}
+
+.primary-navigation a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-brand-primary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition-normal);
+}
+
+.primary-navigation a:hover::after,
+.primary-navigation a.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Header Icons */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.header-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: color var(--transition-normal);
+  padding: 0;
+}
+
+.header-icon-btn:hover {
+  color: var(--color-brand-primary);
+}
+
+.header-icon-btn:focus {
+  outline: none;
+  box-shadow: var(--focus-shadow);
+  border-radius: var(--radius-md);
+}
+
+/* Hamburger Menu */
+.menu-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-text-primary);
+}
+
+/* Mobile Navigation */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  z-index: var(--z-modal-backdrop);
+  transition: opacity var(--transition-slow);
+}
+
+.nav-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---- FOOTER ---- */
+
+.site-footer {
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-subtle);
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  margin-top: auto;
+}
+
+.footer-wrapper {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-2xl);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.footer-section h3 {
+  font-size: var(--text-h5);
+  margin-bottom: var(--spacing-lg);
+}
+
+.footer-section ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.footer-section a {
+  color: var(--color-brand-primary);
+  text-decoration: underline;
+  transition: color var(--transition-normal);
+}
+
+.footer-section a:hover {
+  color: var(--color-link-hover);
+}
+
+.footer-newsletter {
+  background-color: var(--color-bg-tertiary);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.footer-newsletter h3 {
+  margin-top: 0;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.newsletter-form input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.newsletter-form button {
+  flex: 0 0 auto;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--color-border-default);
+  padding-top: var(--spacing-2xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+}
+
+/* ============================================================================
+   8. PAGES
+   ============================================================================ */
+
+/* ---- HOME PAGE / HERO ---- */
+
+.hero-section {
+  background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+  padding: var(--spacing-4xl) var(--spacing-xl);
+  text-align: center;
+}
+
+.hero-content {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: var(--text-h1);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.hero-subtitle {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-search {
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* Legacy theme search form (fallback when PSA plugin is not active) */
+.hero-search .ps-search-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.hero-search .ps-search-input {
+  width: 100%;
+  padding-right: 48px;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+/* ---- PEPTIDE SEARCH AI PLUGIN INTEGRATION ---- */
+
+/* Hero search — constrain the PSA form to match hero layout */
+.hero-search .psa-search-wrap {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.hero-search .psa-search-input {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.hero-search .psa-search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.hero-search .psa-search-input:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--focus-shadow);
+}
+
+.hero-search .psa-search-btn {
+  background-color: var(--color-brand-primary);
+  color: white;
+  border: none;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  cursor: pointer;
+  transition: background-color var(--transition-normal);
+}
+
+.hero-search .psa-search-btn:hover {
+  background-color: var(--color-brand-hover);
+}
+
+.hero-search .psa-search-results {
+  text-align: left;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+}
+
+/* Search overlay — full-screen overlay triggered from header search icon */
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-modal, 1000);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.search-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-overlay-inner {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-20px);
+  transition: transform var(--transition-normal);
+}
+
+.search-overlay.active .search-overlay-inner {
+  transform: translateY(0);
+}
+
+.search-overlay-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  transition: color var(--transition-normal), background-color var(--transition-normal);
+  z-index: 1;
+}
+
+.search-overlay-close:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-secondary);
+}
+
+.search-overlay-content {
+  padding-top: var(--spacing-sm);
+}
+
+/* PSA plugin styling inside the overlay */
+.search-overlay .psa-search-input {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.search-overlay .psa-search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.search-overlay .psa-search-input:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--focus-shadow);
+}
+
+.search-overlay .psa-search-btn {
+  background-color: var(--color-brand-primary);
+  color: white;
+  border: none;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  cursor: pointer;
+  transition: background-color var(--transition-normal);
+}
+
+.search-overlay .psa-search-btn:hover {
+  background-color: var(--color-brand-hover);
+}
+
+.search-overlay .psa-search-results {
+  max-height: 350px;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  margin-top: var(--spacing-md);
+}
+
+.search-overlay .psa-checking,
+.search-overlay .psa-pending,
+.search-overlay .psa-invalid,
+.search-overlay .psa-error {
+  margin-top: var(--spacing-md);
+  border-radius: var(--radius-lg);
+}
+
+/* ---- PEPTIDE NEWS PLUGIN OVERRIDES ---- */
+/* Remove line-clamp so full article summaries are visible.
+   Uses body prefix for specificity to beat the plugin's own stylesheet
+   which loads after the theme. */
+body .pn-article-excerpt,
+body p.pn-article-excerpt {
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  display: block;
+  overflow: visible;
+  font-size: var(--text-body-md);
+  line-height: 1.6;
+}
+
+/* Tighten article card title for density */
+body .pn-article-title {
+  font-size: var(--text-h4);
+  line-height: 1.3;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-ctas .ps-btn {
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+}
+
+/* News Feed Area */
+.news-feed-section {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background-color: var(--color-bg-primary);
+}
+
+.news-feed-header {
+  max-width: var(--container-lg);
+  margin: 0 auto var(--spacing-2xl);
+  text-align: center;
+}
+
+.news-feed-title {
+  font-size: var(--text-h2);
+  margin-bottom: var(--spacing-md);
+}
+
+.news-feed-description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-md);
+}
+
+/* ---- ARCHIVE PAGE ---- */
+
+.archive-header {
+  padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.archive-title {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  font-size: var(--text-h2);
+  color: var(--color-text-primary);
+}
+
+.archive-content {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+}
+
+.archive-filters {
+  max-width: var(--container-lg);
+  margin: 0 auto var(--spacing-2xl);
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.archive-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.archive-grid {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-2xl);
+}
+
+.peptides-grid {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-2xl);
+  padding: var(--spacing-3xl) var(--spacing-lg);
+}
+
+/* Peptide Card */
+.peptide-card {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.peptide-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.peptide-card__header {
+  margin-bottom: var(--spacing-md);
+}
+
+.peptide-card__title {
+  font-size: var(--text-h4);
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.peptide-card__title a {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.peptide-card__title a:hover {
+  color: var(--color-link-hover);
+}
+
+.peptide-card__meta {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.peptide-card__badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-brand-primary);
+  color: #ffffff;
+}
+
+.peptide-card__excerpt {
+  font-size: var(--text-body-md);
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+  flex: 1;
+  overflow: hidden;
+}
+
+.peptide-card__footer {
+  margin-top: auto;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.peptide-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-brand-primary);
+  text-decoration: none;
+  transition: gap var(--transition-fast), color var(--transition-fast);
+}
+
+.peptide-card__link:hover {
+  color: var(--color-link-hover);
+  gap: var(--spacing-sm);
+}
+
+.peptide-card__link svg {
+  transition: transform var(--transition-fast);
+}
+
+.peptide-card__link:hover svg {
+  transform: translateX(2px);
+}
+
+.archive-empty {
+  text-align: center;
+  padding: var(--spacing-4xl) var(--spacing-lg);
+}
+
+.archive-empty h2 {
+  margin-top: 0;
+}
+
+.archive-empty p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* ---- SINGLE PAGE / PEPTIDE ---- */
+
+.page-header {
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.page-title {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  font-size: var(--text-h2);
+}
+
+.page-content {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  padding: var(--spacing-3xl) var(--spacing-lg);
+}
+
+.page-content h2 {
+  font-size: var(--text-h3);
+  margin-top: var(--spacing-2xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.page-content h3 {
+  font-size: var(--text-h4);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.page-content ul,
+.page-content ol {
+  margin-left: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.page-content li {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Collapse empty Elementor/page-builder containers that add phantom space */
+.page-content .elementor-section:empty,
+.page-content .elementor-widget-wrap:empty,
+.page-content .elementor-element:empty,
+.page-content div:empty:not([data-peptide-news-feed]) {
+  display: none;
+}
+
+/* ---- 404 PAGE ---- */
+
+.error-404 {
+  text-align: center;
+  padding: var(--spacing-4xl) var(--spacing-lg);
+}
+
+.error-404 h1 {
+  font-size: var(--text-h1);
+  margin-bottom: var(--spacing-lg);
+}
+
+.error-404 p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  font-size: var(--text-body-md);
+}
+
+/* ============================================================================
+   9. ANIMATIONS & TRANSITIONS
+   ============================================================================ */
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft var(--transition-slow) ease-out;
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.ps-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-tertiary) 25%,
+    var(--color-border-default) 50%,
+    var(--color-bg-tertiary) 75%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ============================================================================
+   10. ACCESSIBILITY
+   ============================================================================ */
+
+/* Focus visible style (keyboard focus) */
+*:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-offset);
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-brand-primary);
+  color: white;
+  padding: var(--spacing-md);
+  text-decoration: none;
+  z-index: var(--z-modal);
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   11. DARK MODE
+   ============================================================================
+
+   Precedence (highest to lowest):
+   1. html[data-theme="light"] or html[data-theme="dark"] (explicit user choice)
+   2. @media (prefers-color-scheme: dark) (system preference)
+   3. Default light mode (above)
+
+   Plugin dark mode coordination:
+   - Theme broadcasts dark mode changes via data-theme attribute on <html>
+   - Plugin must watch this attribute and update colors accordingly
+   - Plugin can also use CSS custom properties which theme controls
+
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Brand Colors */
+    --color-brand-primary: #3B82F6;
+    --color-status-success: #10B981;
+    --color-status-warning: #F59E0B;
+    --color-status-error: #EF4444;
+
+    /* Text Colors */
+    --color-text-primary: #F9FAFB;
+    --color-text-secondary: #D1D5DB;
+    --color-text-tertiary: #9CA3AF;
+
+    /* Border Colors */
+    --color-border-default: #374151;
+    --color-border-subtle: #1F2937;
+
+    /* Background Colors */
+    --color-bg-primary: #111827;
+    --color-bg-secondary: #1F2937;
+    --color-bg-tertiary: #374151;
+
+    /* Component-Specific Colors */
+    --color-input-focus: #3B82F6;
+    --color-link-hover: #60A5FA;
+    --color-badge-bg: #0F172A;
+    --color-badge-text: #60A5FA;
+    --color-code-bg: #1F2937;
+    --color-code-text: #F9FAFB;
+
+    /* Focus shadow adjusted for dark mode */
+    --focus-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  }
+}
+
+/* Allow manual dark mode toggle (explicit override) */
+html[data-theme="dark"] {
+  --color-brand-primary: #3B82F6;
+  --color-status-success: #10B981;
+  --color-status-warning: #F59E0B;
+  --color-status-error: #EF4444;
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-tertiary: #9CA3AF;
+  --color-border-default: #374151;
+  --color-border-subtle: #1F2937;
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1F2937;
+  --color-bg-tertiary: #374151;
+  --color-input-focus: #3B82F6;
+  --color-link-hover: #60A5FA;
+  --color-badge-bg: #0F172A;
+  --color-badge-text: #60A5FA;
+  --color-code-bg: #1F2937;
+  --color-code-text: #F9FAFB;
+  --focus-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+html[data-theme="light"] {
+  --color-brand-primary: #0066CC;
+  --color-status-success: #059669;
+  --color-status-warning: #F59E0B;
+  --color-status-error: #DC2626;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-border-default: #E5E7EB;
+  --color-border-subtle: #F3F4F6;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-bg-tertiary: #F3F4F6;
+  --color-input-focus: #0066CC;
+  --color-link-hover: #0052A3;
+  --color-badge-bg: #DBEAFE;
+  --color-badge-text: #0066CC;
+  --color-code-bg: #F3F4F6;
+  --color-code-text: #111827;
+  --focus-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
+}
+
+/* Dark mode alert colors */
+@media (prefers-color-scheme: dark) {
+  .ps-alert-info {
+    background-color: #0C2340;
+    border-color: #3B82F6;
+    color: #BFDBFE;
+  }
+
+  .ps-alert-success {
+    background-color: #064E3B;
+    border-color: #10B981;
+    color: #DCFCE7;
+  }
+
+  .ps-alert-warning {
+    background-color: #78350F;
+    border-color: #F59E0B;
+    color: #FEF3C7;
+  }
+
+  .ps-alert-error {
+    background-color: #7F1D1D;
+    border-color: #EF4444;
+    color: #FEE2E2;
+  }
+
+  .footer-newsletter {
+    background-color: var(--color-bg-secondary);
+  }
+}
+
+/* ============================================================================
+   12. RESPONSIVE DESIGN (Mobile-first)
+   ============================================================================ */
+
+/* Extra Small (320px - 479px) */
+@media (max-width: 479px) {
+  .hero-section {
+    padding: var(--spacing-2xl) var(--spacing-md);
+  }
+
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-ctas {
+    gap: var(--spacing-sm);
+  }
+
+  .hero-ctas .ps-btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--text-body-sm);
+  }
+
+  .page-content {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .peptides-grid {
+    padding: var(--spacing-2xl) var(--spacing-md);
+  }
+
+  .news-feed-section {
+    padding: var(--spacing-2xl) var(--spacing-md);
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .site-header-wrapper {
+    gap: var(--spacing-sm);
+  }
+
+  .primary-navigation {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .header-icons {
+    gap: var(--spacing-sm);
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+  }
+
+  .newsletter-form button {
+    width: 100%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* Small (480px - 767px) */
+@media (min-width: 480px) {
+  .site-header {
+    padding: var(--spacing-lg) var(--spacing-lg);
+  }
+}
+
+/* Medium (768px - 1023px) */
+@media (min-width: 768px) {
+  .menu-toggle {
+    display: none;
+  }
+
+  .primary-navigation {
+    display: flex !important;
+    position: static;
+    width: auto;
+    height: auto;
+    flex-direction: row;
+    background: none;
+    padding: 0;
+    transition: none;
+  }
+
+  .nav-overlay {
+    display: none;
+  }
+
+  .peptides-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .archive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-title {
+    font-size: 40px;
+  }
+
+  .newsletter-form {
+    flex-direction: row;
+  }
+
+  .newsletter-form button {
+    width: auto;
+  }
+}
+
+/* Large (1024px - 1439px) */
+@media (min-width: 1024px) {
+  .peptides-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .archive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .site-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Extra Large (1440px+) */
+@media (min-width: 1440px) {
+  .peptides-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .site-header {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+  }
+}
+
+/* ============================================================================
+   13. UTILITY CLASSES
+   ============================================================================ */
+
+/* 404 Page Utilities */
+.ps-404-search-form {
+  margin: var(--spacing-2xl) 0;
+}
+
+.ps-404-cta-group {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================================================
+   END OF STYLESHEET
+   ============================================================================ */

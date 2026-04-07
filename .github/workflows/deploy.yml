@@ -1,0 +1,58 @@
+name: Deploy Theme to Hostinger
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            THEME_DIR="/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter"
+            REPO_URL="https://github.com/peptiderepo/peptide-starter-theme.git"
+
+            # If this is the first deploy, clone the repo
+            if [ ! -d "$THEME_DIR/.git" ]; then
+              echo "First deploy — cloning repo..."
+              rm -rf "$THEME_DIR"
+              git clone "$REPO_URL" "$THEME_DIR"
+            else
+              echo "Pulling latest changes..."
+              cd "$THEME_DIR"
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+
+            echo "Theme deployed successfully."
+
+      - name: Purge LiteSpeed Cache
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # Purge LiteSpeed cache so visitors see the update immediately
+            CACHE_DIR="/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/litespeed/cssjs"
+            if [ -d "$CACHE_DIR" ]; then
+              rm -rf "$CACHE_DIR"/*
+              echo "LiteSpeed CSS/JS cache purged."
+            fi
+
+            # Touch a file to signal LiteSpeed to rebuild
+            touch "/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/.lscache_purge" 2>/dev/null || true
+            echo "Cache purge signal sent."
