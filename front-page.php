@@ -48,6 +48,13 @@ get_header();
 		</div>
 	</section>
 
+	<!-- PRAutoBlogger Posts Widget -->
+	<?php
+	if ( shortcode_exists( 'prautoblogger_posts' ) ) {
+		echo do_shortcode( '[prautoblogger_posts count="6" title="' . esc_attr__( 'Latest Research & Insights', 'peptide-starter' ) . '" subtitle="' . esc_attr__( 'Evidence-based articles on peptides, protocols, and emerging research', 'peptide-starter' ) . '"]' );
+	}
+	?>
+
 	<!-- News Feed Section -->
 	<?php
 	// Display the Peptide News plugin shortcode if available
