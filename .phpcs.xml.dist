@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<ruleset name="Peptide Starter Theme">
+	<description>WordPress coding standards for Peptide Starter Theme.</description>
+
+	<!-- Scan these files -->
+	<file>.</file>
+
+	<!-- Exclude third-party and dev-only directories -->
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
+
+	<!-- Use WordPress-Core as the base standard -->
+	<rule ref="WordPress-Core"/>
+
+	<!-- Set text domain for i18n checks -->
+	<config name="text_domain" value="peptide-starter"/>
+
+	<!-- Set minimum supported PHP version -->
+	<config name="minimum_php_version" value="7.4"/>
+
+	<!-- Set minimum supported WP version -->
+	<config name="minimum_wp_version" value="6.0"/>
+
+	<!-- Allow short array syntax (modern PHP) -->
+	<rule ref="Generic.Arrays.DisallowShortArraySyntax">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+</ruleset>

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'PEPTIDE_STARTER_VERSION', '1.3.1' );
+define( 'PEPTIDE_STARTER_VERSION', '1.3.2' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
@@ -155,8 +155,9 @@ function peptide_starter_customize_register( $wp_customize ) {
 
 	// Hero Title
 	$wp_customize->add_setting( 'hero_title', array(
-		'default'   => get_bloginfo( 'name' ),
-		'transport' => 'postMessage',
+		'default'           => get_bloginfo( 'name' ),
+		'transport'         => 'postMessage',
+		'sanitize_callback' => 'sanitize_text_field',
 	) );
 
 	$wp_customize->add_control( 'hero_title', array(
@@ -167,8 +168,9 @@ function peptide_starter_customize_register( $wp_customize ) {
 
 	// Hero Subtitle
 	$wp_customize->add_setting( 'hero_subtitle', array(
-		'default'   => esc_html__( 'A scientific peptide reference database', 'peptide-starter' ),
-		'transport' => 'postMessage',
+		'default'           => esc_html__( 'A scientific peptide reference database', 'peptide-starter' ),
+		'transport'         => 'postMessage',
+		'sanitize_callback' => 'sanitize_text_field',
 	) );
 
 	$wp_customize->add_control( 'hero_subtitle', array(
@@ -179,8 +181,9 @@ function peptide_starter_customize_register( $wp_customize ) {
 
 	// Hero Search Placeholder
 	$wp_customize->add_setting( 'hero_search_placeholder', array(
-		'default'   => esc_html__( 'Search peptides, sequences, or research...', 'peptide-starter' ),
-		'transport' => 'postMessage',
+		'default'           => esc_html__( 'Search peptides, sequences, or research...', 'peptide-starter' ),
+		'transport'         => 'postMessage',
+		'sanitize_callback' => 'sanitize_text_field',
 	) );
 
 	$wp_customize->add_control( 'hero_search_placeholder', array(
@@ -195,10 +198,11 @@ function peptide_starter_customize_register( $wp_customize ) {
 		'priority' => 50,
 	) );
 
-	// Footer Copyright Text
+	// Footer Copyright Text — allows safe HTML (links, bold, em) via wp_kses_post
 	$wp_customize->add_setting( 'footer_copyright', array(
-		'default'   => esc_html__( 'Copyright © 2026 Peptide Repo. All rights reserved.', 'peptide-starter' ),
-		'transport' => 'postMessage',
+		'default'           => esc_html__( 'Copyright © 2026 Peptide Repo. All rights reserved.', 'peptide-starter' ),
+		'transport'         => 'postMessage',
+		'sanitize_callback' => 'wp_kses_post',
 	) );
 
 	$wp_customize->add_control( 'footer_copyright', array(
@@ -215,8 +219,9 @@ function peptide_starter_customize_register( $wp_customize ) {
 
 	// Dark mode default
 	$wp_customize->add_setting( 'dark_mode_default', array(
-		'default'   => false,
-		'transport' => 'refresh',
+		'default'           => false,
+		'transport'         => 'refresh',
+		'sanitize_callback' => 'peptide_starter_sanitize_checkbox',
 	) );
 
 	$wp_customize->add_control( 'dark_mode_default', array(
@@ -226,6 +231,19 @@ function peptide_starter_customize_register( $wp_customize ) {
 	) );
 }
 add_action( 'customize_register', 'peptide_starter_customize_register' );
+
+/**
+ * Sanitize checkbox values for the Customizer.
+ *
+ * Returns true only for truthy values; everything else becomes false.
+ * Used as sanitize_callback for the dark_mode_default setting.
+ *
+ * @param mixed $checked The raw value from the Customizer.
+ * @return bool True if checked, false otherwise.
+ */
+function peptide_starter_sanitize_checkbox( $checked ) {
+	return ( ( isset( $checked ) && true === $checked ) ? true : false );
+}
 
 /**
  * Add custom logo support
@@ -399,6 +417,48 @@ function peptide_starter_get_excerpt( $post_id = 0, $length = 20 ) {
 function peptide_starter_show_newsletter_form() {
 	return apply_filters( 'peptide_starter_show_newsletter', true );
 }
+
+/**
+ * Handle newsletter signup form submission.
+ *
+ * Validates the nonce and email, then fires an action hook so plugins
+ * can handle the actual subscription logic (e.g. Mailchimp, SendGrid).
+ * If no plugin handles it, redirects back with a generic success message.
+ *
+ * @see footer.php — renders the newsletter form
+ */
+function peptide_starter_handle_newsletter_signup() {
+	// Verify nonce — prevents CSRF attacks.
+	if ( ! isset( $_POST['ps_newsletter_nonce'] ) ||
+		! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ps_newsletter_nonce'] ) ), 'peptide_starter_newsletter' ) ) {
+		wp_die(
+			esc_html__( 'Security check failed. Please try again.', 'peptide-starter' ),
+			esc_html__( 'Error', 'peptide-starter' ),
+			array( 'response' => 403 )
+		);
+	}
+
+	$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+
+	if ( ! is_email( $email ) ) {
+		wp_safe_redirect( add_query_arg( 'ps_newsletter', 'invalid', wp_get_referer() ) );
+		exit;
+	}
+
+	/**
+	 * Fires when a valid newsletter signup is submitted.
+	 *
+	 * Plugins should hook here to send the email to their mailing list provider.
+	 *
+	 * @param string $email The validated subscriber email address.
+	 */
+	do_action( 'peptide_starter_newsletter_subscribe', $email );
+
+	wp_safe_redirect( add_query_arg( 'ps_newsletter', 'success', wp_get_referer() ) );
+	exit;
+}
+add_action( 'admin_post_peptide_starter_newsletter_signup', 'peptide_starter_handle_newsletter_signup' );
+add_action( 'admin_post_nopriv_peptide_starter_newsletter_signup', 'peptide_starter_handle_newsletter_signup' );
 
 /**
  * Enqueue inline script for dark mode toggle (output in footer)

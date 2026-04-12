@@ -15,7 +15,9 @@
 				<div class="footer-newsletter">
 					<h3><?php esc_html_e( 'Stay Updated', 'peptide-starter' ); ?></h3>
 					<p><?php esc_html_e( 'Subscribe to our newsletter for the latest peptide research and updates.', 'peptide-starter' ); ?></p>
-					<form class="newsletter-form" action="#" method="post">
+					<form class="newsletter-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+						<?php wp_nonce_field( 'peptide_starter_newsletter', 'ps_newsletter_nonce' ); ?>
+						<input type="hidden" name="action" value="peptide_starter_newsletter_signup">
 						<input
 							type="email"
 							name="email"

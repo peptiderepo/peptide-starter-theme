@@ -13,5 +13,12 @@ Thumbs.db
 node_modules/
 package-lock.json
 
+# Composer (dev dependencies only, not deployed)
+vendor/
+composer.lock
+
 # Zip artifacts (built by CI)
 *.zip
+
+# AI agent context (local only, not deployed)
+.claude/
