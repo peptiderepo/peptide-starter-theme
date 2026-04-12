@@ -15,7 +15,7 @@
 			name="s"
 			class="ps-search-input"
 			placeholder="<?php esc_attr_e( 'Search...', 'peptide-starter' ); ?>"
-			value="<?php echo get_search_query(); ?>"
+			value="<?php echo esc_attr( get_search_query() ); ?>"
 		>
 		<button type="submit" class="ps-btn ps-btn-primary" style="position: absolute; right: 0; top: 0; border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
 			<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

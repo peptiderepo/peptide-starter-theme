@@ -28,7 +28,7 @@ get_header();
 							name="s"
 							class="ps-search-input"
 							placeholder="<?php echo esc_attr( peptide_starter_get_search_placeholder() ); ?>"
-							value="<?php echo get_search_query(); ?>"
+							value="<?php echo esc_attr( get_search_query() ); ?>"
 						>
 					</form>
 					<?php

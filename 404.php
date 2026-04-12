@@ -17,7 +17,7 @@ get_header();
 			<form role="search" method="get" class="search-form ps-404-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 				<label>
 					<span class="screen-reader-text"><?php esc_html_e( 'Search for:', 'peptide-starter' ); ?></span>
-					<input type="search" class="search-submit" placeholder="<?php esc_attr_e( 'Search peptides...', 'peptide-starter' ); ?>" value="<?php echo get_search_query(); ?>" name="s" title="<?php esc_attr_e( 'Search for:', 'peptide-starter' ); ?>" />
+					<input type="search" class="search-submit" placeholder="<?php esc_attr_e( 'Search peptides...', 'peptide-starter' ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" title="<?php esc_attr_e( 'Search for:', 'peptide-starter' ); ?>" />
 				</label>
 			</form>
 
