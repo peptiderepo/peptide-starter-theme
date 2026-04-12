@@ -29,14 +29,16 @@
 		<!-- Primary Navigation -->
 		<nav class="primary-navigation">
 			<?php
-			wp_nav_menu( array(
-				'theme_location' => 'primary',
-				'fallback_cb'     => 'peptide_starter_primary_menu_fallback',
-				'walker'          => new Peptide_Starter_Nav_Walker(),
-				'depth'           => 2,
-				'container'       => false,
-				'items_wrap'      => '<ul>%3$s</ul>',
-			) );
+			wp_nav_menu(
+				array(
+					'theme_location' => 'primary',
+					'fallback_cb'     => 'peptide_starter_primary_menu_fallback',
+					'walker'          => new Peptide_Starter_Nav_Walker(),
+					'depth'           => 2,
+					'container'       => false,
+					'items_wrap'      => '<ul>%3$s</ul>',
+				)
+			);
 			?>
 		</nav>
 

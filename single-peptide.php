@@ -39,25 +39,45 @@ get_header();
 					<!-- Meta Information -->
 					<div class="peptide-meta" style="margin-top: var(--spacing-3xl); padding-top: var(--spacing-2xl); border-top: 1px solid var(--color-border-default);">
 						<dl>
-							<?php if ( $formula = get_post_meta( get_the_ID(), 'peptide_formula', true ) ) { ?>
+							<?php
+							$formula = get_post_meta( get_the_ID(), 'peptide_formula', true );
+							if ( $formula ) {
+								?>
 								<dt><strong><?php esc_html_e( 'Molecular Formula:', 'peptide-starter' ); ?></strong></dt>
 								<dd><code><?php echo esc_html( $formula ); ?></code></dd>
-							<?php } ?>
+								<?php
+							}
+							?>
 
-							<?php if ( $sequence = get_post_meta( get_the_ID(), 'peptide_sequence', true ) ) { ?>
+							<?php
+							$sequence = get_post_meta( get_the_ID(), 'peptide_sequence', true );
+							if ( $sequence ) {
+								?>
 								<dt><strong><?php esc_html_e( 'Sequence:', 'peptide-starter' ); ?></strong></dt>
 								<dd><code><?php echo esc_html( $sequence ); ?></code></dd>
-							<?php } ?>
+								<?php
+							}
+							?>
 
-							<?php if ( $molecular_weight = get_post_meta( get_the_ID(), 'peptide_molecular_weight', true ) ) { ?>
+							<?php
+							$molecular_weight = get_post_meta( get_the_ID(), 'peptide_molecular_weight', true );
+							if ( $molecular_weight ) {
+								?>
 								<dt><strong><?php esc_html_e( 'Molecular Weight:', 'peptide-starter' ); ?></strong></dt>
 								<dd><?php echo esc_html( $molecular_weight ); ?> Da</dd>
-							<?php } ?>
+								<?php
+							}
+							?>
 
-							<?php if ( $therapeutic_use = get_post_meta( get_the_ID(), 'peptide_therapeutic_use', true ) ) { ?>
+							<?php
+							$therapeutic_use = get_post_meta( get_the_ID(), 'peptide_therapeutic_use', true );
+							if ( $therapeutic_use ) {
+								?>
 								<dt><strong><?php esc_html_e( 'Therapeutic Use:', 'peptide-starter' ); ?></strong></dt>
 								<dd><?php echo esc_html( $therapeutic_use ); ?></dd>
-							<?php } ?>
+								<?php
+							}
+							?>
 						</dl>
 					</div>
 

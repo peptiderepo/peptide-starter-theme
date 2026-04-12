@@ -24,21 +24,26 @@ function peptide_starter_setup() {
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'custom-logo' );
-	add_theme_support( 'html5', array(
-		'search-form',
-		'comment-form',
-		'comment-list',
-		'gallery',
-		'caption',
-		'style',
-		'script',
-	) );
+	add_theme_support(
+		'html5',
+		array(
+			'search-form',
+			'comment-form',
+			'comment-list',
+			'gallery',
+			'caption',
+			'style',
+			'script',
+		)
+	);
 
 	// Register navigation menus
-	register_nav_menus( array(
-		'primary' => esc_html__( 'Primary Menu', 'peptide-starter' ),
-		'footer'  => esc_html__( 'Footer Menu', 'peptide-starter' ),
-	) );
+	register_nav_menus(
+		array(
+			'primary' => esc_html__( 'Primary Menu', 'peptide-starter' ),
+			'footer'  => esc_html__( 'Footer Menu', 'peptide-starter' ),
+		)
+	);
 
 	// Add support for wide blocks
 	add_theme_support( 'align-wide' );
@@ -60,10 +65,14 @@ function peptide_starter_scripts() {
 	wp_enqueue_script( 'peptide-starter-theme', PEPTIDE_STARTER_URI . '/assets/js/theme.js', array(), PEPTIDE_STARTER_VERSION, true );
 
 	// Pass PHP data to JavaScript
-	wp_localize_script( 'peptide-starter-theme', 'peptideStarterData', array(
-		'siteUrl'     => home_url( '/' ),
-		'isDarkMode'  => get_theme_mod( 'dark_mode_default', false ),
-	) );
+	wp_localize_script(
+		'peptide-starter-theme',
+		'peptideStarterData',
+		array(
+			'siteUrl'     => home_url( '/' ),
+			'isDarkMode'  => get_theme_mod( 'dark_mode_default', false ),
+		)
+	);
 
 	// Dequeue comment reply script if comments are not open
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -77,7 +86,9 @@ add_action( 'wp_enqueue_scripts', 'peptide_starter_scripts' );
  * This ensures theme overrides (e.g. removing line-clamp on article excerpts) beat plugin CSS.
  */
 function peptide_starter_plugin_overrides() {
-	wp_add_inline_style( 'peptide-starter-style', '
+	wp_add_inline_style(
+		'peptide-starter-style',
+		'
 		/* Override Peptide News plugin line-clamp — show full summaries */
 		p.pn-article-excerpt,
 		.pn-article-card p.pn-article-excerpt,
@@ -87,7 +98,8 @@ function peptide_starter_plugin_overrides() {
 			display: block !important;
 			overflow: visible !important;
 		}
-	' );
+	'
+	);
 }
 add_action( 'wp_enqueue_scripts', 'peptide_starter_plugin_overrides', 99 );
 
@@ -95,45 +107,53 @@ add_action( 'wp_enqueue_scripts', 'peptide_starter_plugin_overrides', 99 );
  * Register widget areas
  */
 function peptide_starter_widgets_init() {
-	register_sidebar( array(
-		'name'          => esc_html__( 'Footer - Column 1', 'peptide-starter' ),
-		'id'            => 'footer-1',
-		'description'   => esc_html__( 'Footer widget area 1', 'peptide-starter' ),
-		'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
-	) );
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Footer - Column 1', 'peptide-starter' ),
+			'id'            => 'footer-1',
+			'description'   => esc_html__( 'Footer widget area 1', 'peptide-starter' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		)
+	);
 
-	register_sidebar( array(
-		'name'          => esc_html__( 'Footer - Column 2', 'peptide-starter' ),
-		'id'            => 'footer-2',
-		'description'   => esc_html__( 'Footer widget area 2', 'peptide-starter' ),
-		'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
-	) );
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Footer - Column 2', 'peptide-starter' ),
+			'id'            => 'footer-2',
+			'description'   => esc_html__( 'Footer widget area 2', 'peptide-starter' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		)
+	);
 
-	register_sidebar( array(
-		'name'          => esc_html__( 'Footer - Column 3', 'peptide-starter' ),
-		'id'            => 'footer-3',
-		'description'   => esc_html__( 'Footer widget area 3', 'peptide-starter' ),
-		'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
-	) );
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Footer - Column 3', 'peptide-starter' ),
+			'id'            => 'footer-3',
+			'description'   => esc_html__( 'Footer widget area 3', 'peptide-starter' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		)
+	);
 
-	register_sidebar( array(
-		'name'          => esc_html__( 'Footer - Column 4', 'peptide-starter' ),
-		'id'            => 'footer-4',
-		'description'   => esc_html__( 'Footer widget area 4', 'peptide-starter' ),
-		'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
-	) );
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Footer - Column 4', 'peptide-starter' ),
+			'id'            => 'footer-4',
+			'description'   => esc_html__( 'Footer widget area 4', 'peptide-starter' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s footer-widget">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		)
+	);
 }
 add_action( 'widgets_init', 'peptide_starter_widgets_init' );
 
@@ -142,93 +162,135 @@ add_action( 'widgets_init', 'peptide_starter_widgets_init' );
  */
 function peptide_starter_customize_register( $wp_customize ) {
 	// Logo section
-	$wp_customize->add_section( 'peptide_starter_branding', array(
-		'title'    => esc_html__( 'Branding', 'peptide-starter' ),
-		'priority' => 30,
-	) );
+	$wp_customize->add_section(
+		'peptide_starter_branding',
+		array(
+			'title'    => esc_html__( 'Branding', 'peptide-starter' ),
+			'priority' => 30,
+		)
+	);
 
 	// Hero settings section
-	$wp_customize->add_section( 'peptide_starter_hero', array(
-		'title'    => esc_html__( 'Hero Section', 'peptide-starter' ),
-		'priority' => 40,
-	) );
+	$wp_customize->add_section(
+		'peptide_starter_hero',
+		array(
+			'title'    => esc_html__( 'Hero Section', 'peptide-starter' ),
+			'priority' => 40,
+		)
+	);
 
 	// Hero Title
-	$wp_customize->add_setting( 'hero_title', array(
-		'default'           => get_bloginfo( 'name' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
+	$wp_customize->add_setting(
+		'hero_title',
+		array(
+			'default'           => get_bloginfo( 'name' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
 
-	$wp_customize->add_control( 'hero_title', array(
-		'label'       => esc_html__( 'Hero Title', 'peptide-starter' ),
-		'section'     => 'peptide_starter_hero',
-		'type'        => 'text',
-	) );
+	$wp_customize->add_control(
+		'hero_title',
+		array(
+			'label'       => esc_html__( 'Hero Title', 'peptide-starter' ),
+			'section'     => 'peptide_starter_hero',
+			'type'        => 'text',
+		)
+	);
 
 	// Hero Subtitle
-	$wp_customize->add_setting( 'hero_subtitle', array(
-		'default'           => esc_html__( 'A scientific peptide reference database', 'peptide-starter' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
+	$wp_customize->add_setting(
+		'hero_subtitle',
+		array(
+			'default'           => esc_html__( 'A scientific peptide reference database', 'peptide-starter' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
 
-	$wp_customize->add_control( 'hero_subtitle', array(
-		'label'       => esc_html__( 'Hero Subtitle', 'peptide-starter' ),
-		'section'     => 'peptide_starter_hero',
-		'type'        => 'textarea',
-	) );
+	$wp_customize->add_control(
+		'hero_subtitle',
+		array(
+			'label'       => esc_html__( 'Hero Subtitle', 'peptide-starter' ),
+			'section'     => 'peptide_starter_hero',
+			'type'        => 'textarea',
+		)
+	);
 
 	// Hero Search Placeholder
-	$wp_customize->add_setting( 'hero_search_placeholder', array(
-		'default'           => esc_html__( 'Search peptides, sequences, or research...', 'peptide-starter' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
+	$wp_customize->add_setting(
+		'hero_search_placeholder',
+		array(
+			'default'           => esc_html__( 'Search peptides, sequences, or research...', 'peptide-starter' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
 
-	$wp_customize->add_control( 'hero_search_placeholder', array(
-		'label'       => esc_html__( 'Search Placeholder', 'peptide-starter' ),
-		'section'     => 'peptide_starter_hero',
-		'type'        => 'text',
-	) );
+	$wp_customize->add_control(
+		'hero_search_placeholder',
+		array(
+			'label'       => esc_html__( 'Search Placeholder', 'peptide-starter' ),
+			'section'     => 'peptide_starter_hero',
+			'type'        => 'text',
+		)
+	);
 
 	// Footer section
-	$wp_customize->add_section( 'peptide_starter_footer', array(
-		'title'    => esc_html__( 'Footer', 'peptide-starter' ),
-		'priority' => 50,
-	) );
+	$wp_customize->add_section(
+		'peptide_starter_footer',
+		array(
+			'title'    => esc_html__( 'Footer', 'peptide-starter' ),
+			'priority' => 50,
+		)
+	);
 
 	// Footer Copyright Text — allows safe HTML (links, bold, em) via wp_kses_post
-	$wp_customize->add_setting( 'footer_copyright', array(
-		'default'           => esc_html__( 'Copyright © 2026 Peptide Repo. All rights reserved.', 'peptide-starter' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'wp_kses_post',
-	) );
+	$wp_customize->add_setting(
+		'footer_copyright',
+		array(
+			'default'           => esc_html__( 'Copyright © 2026 Peptide Repo. All rights reserved.', 'peptide-starter' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
 
-	$wp_customize->add_control( 'footer_copyright', array(
-		'label'       => esc_html__( 'Copyright Text', 'peptide-starter' ),
-		'section'     => 'peptide_starter_footer',
-		'type'        => 'textarea',
-	) );
+	$wp_customize->add_control(
+		'footer_copyright',
+		array(
+			'label'       => esc_html__( 'Copyright Text', 'peptide-starter' ),
+			'section'     => 'peptide_starter_footer',
+			'type'        => 'textarea',
+		)
+	);
 
 	// Dark mode section
-	$wp_customize->add_section( 'peptide_starter_theme_mode', array(
-		'title'    => esc_html__( 'Theme Mode', 'peptide-starter' ),
-		'priority' => 60,
-	) );
+	$wp_customize->add_section(
+		'peptide_starter_theme_mode',
+		array(
+			'title'    => esc_html__( 'Theme Mode', 'peptide-starter' ),
+			'priority' => 60,
+		)
+	);
 
 	// Dark mode default
-	$wp_customize->add_setting( 'dark_mode_default', array(
-		'default'           => false,
-		'transport'         => 'refresh',
-		'sanitize_callback' => 'peptide_starter_sanitize_checkbox',
-	) );
+	$wp_customize->add_setting(
+		'dark_mode_default',
+		array(
+			'default'           => false,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'peptide_starter_sanitize_checkbox',
+		)
+	);
 
-	$wp_customize->add_control( 'dark_mode_default', array(
-		'label'       => esc_html__( 'Enable Dark Mode by Default', 'peptide-starter' ),
-		'section'     => 'peptide_starter_theme_mode',
-		'type'        => 'checkbox',
-	) );
+	$wp_customize->add_control(
+		'dark_mode_default',
+		array(
+			'label'       => esc_html__( 'Enable Dark Mode by Default', 'peptide-starter' ),
+			'section'     => 'peptide_starter_theme_mode',
+			'type'        => 'checkbox',
+		)
+	);
 }
 add_action( 'customize_register', 'peptide_starter_customize_register' );
 
@@ -382,15 +444,17 @@ function peptide_starter_pagination() {
 	$total_pages  = $wp_query->max_num_pages;
 
 	echo '<nav class="ps-pagination">';
-	echo paginate_links( array(
-		'base'      => get_pagenum_link( 1 ) . '%_%',
-		'format'    => 'page/%#%/',
-		'current'   => $current_page,
-		'total'     => $total_pages,
-		'prev_text' => esc_html__( '← Previous', 'peptide-starter' ),
-		'next_text' => esc_html__( 'Next →', 'peptide-starter' ),
-		'type'      => 'plain',
-	) );
+	echo paginate_links(
+		array(
+			'base'      => get_pagenum_link( 1 ) . '%_%',
+			'format'    => 'page/%#%/',
+			'current'   => $current_page,
+			'total'     => $total_pages,
+			'prev_text' => esc_html__( '← Previous', 'peptide-starter' ),
+			'next_text' => esc_html__( 'Next →', 'peptide-starter' ),
+			'type'      => 'plain',
+		)
+	);
 	echo '</nav>';
 }
 

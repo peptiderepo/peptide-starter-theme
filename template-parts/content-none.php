@@ -15,7 +15,7 @@
 		<?php
 		if ( is_search() ) {
 			?>
-			<p><?php esc_html_e( "Sorry, but nothing matched your search terms. Please try again with some different keywords.", 'peptide-starter' ); ?></p>
+			<p><?php esc_html_e( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'peptide-starter' ); ?></p>
 			<?php
 			get_search_form();
 		} elseif ( is_home() && current_user_can( 'publish_posts' ) ) {
@@ -38,11 +38,11 @@
 			<?php
 		} elseif ( is_archive() ) {
 			?>
-			<p><?php esc_html_e( "It looks like there are no posts for this archive. Try a different category or date.", 'peptide-starter' ); ?></p>
+			<p><?php esc_html_e( 'It looks like there are no posts for this archive. Try a different category or date.', 'peptide-starter' ); ?></p>
 			<?php
 		} else {
 			?>
-			<p><?php esc_html_e( "It seems we can't find what you're looking for. Perhaps searching can help.", 'peptide-starter' ); ?></p>
+			<p><?php esc_html_e( 'It seems we can\'t find what you\'re looking for. Perhaps searching can help.', 'peptide-starter' ); ?></p>
 			<?php
 			get_search_form();
 		}

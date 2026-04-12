@@ -26,4 +26,9 @@
 	<rule ref="Generic.Arrays.DisallowShortArraySyntax">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
 	</rule>
+
+	<!-- Standard WordPress practice: Walker class lives in functions.php -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+	</rule>
 </ruleset>
