@@ -25,13 +25,7 @@ jobs:
 
       - name: Run PHPCS (WordPress Core)
         run: |
-          ~/.composer/vendor/bin/phpcs \
-            --standard=WordPress-Core \
-            --extensions=php \
-            --ignore=vendor/,node_modules/,tests/ \
-            --warning-severity=0 \
-            -s \
-            .
+          ~/.composer/vendor/bin/phpcs -s .
 
       - name: JS Syntax Check
         run: |

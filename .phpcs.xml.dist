@@ -5,6 +5,12 @@
 	<!-- Scan these files -->
 	<file>.</file>
 
+	<!-- Only check PHP files -->
+	<arg name="extensions" value="php"/>
+
+	<!-- Only report errors, not warnings -->
+	<arg name="warning-severity" value="0"/>
+
 	<!-- Exclude third-party and dev-only directories -->
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
