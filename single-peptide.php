@@ -2,6 +2,9 @@
 /**
  * The single peptide template
  *
+ * Displays a single peptide with back link, content box,
+ * and meta information in a card grid layout.
+ *
  * @package peptide-starter
  */
 
@@ -17,7 +20,35 @@ get_header();
 			<!-- Page Header -->
 			<header class="page-header">
 				<div class="ps-container">
+					<a href="<?php echo esc_url( get_post_type_archive_link( 'peptide' ) ); ?>" class="ps-back-link">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M13 8H3M3 8L7 4M3 8L7 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<?php esc_html_e( 'Back to Peptides', 'peptide-starter' ); ?>
+					</a>
+
+					<?php
+					// Show featured badge if the peptide is marked as featured
+					if ( is_sticky() || get_post_meta( get_the_ID(), 'peptide_featured', true ) ) {
+						?>
+						<span class="ps-featured-badge">&#9733; <?php esc_html_e( 'Featured', 'peptide-starter' ); ?></span>
+						<?php
+					}
+					?>
+
 					<h1 class="page-title"><?php the_title(); ?></h1>
+
+					<?php
+					// Category tag pills
+					$categories = get_the_terms( get_the_ID(), 'peptide-category' );
+					if ( $categories && ! is_wp_error( $categories ) ) {
+						echo '<div class="peptide-card__meta" style="margin-top: var(--spacing-sm);">';
+						foreach ( $categories as $cat ) {
+							echo '<span class="peptide-card__badge">' . esc_html( $cat->name ) . '</span>';
+						}
+						echo '</div>';
+					}
+					?>
 				</div>
 			</header>
 
@@ -31,55 +62,66 @@ get_header();
 						</div>
 					<?php } ?>
 
-					<!-- Post Content -->
-					<div class="peptide-content">
-						<?php the_content(); ?>
+					<!-- Post Content in a styled box -->
+					<div class="peptide-content-box">
+						<div class="peptide-content">
+							<?php the_content(); ?>
+						</div>
 					</div>
 
-					<!-- Meta Information -->
-					<div class="peptide-meta" style="margin-top: var(--spacing-3xl); padding-top: var(--spacing-2xl); border-top: 1px solid var(--color-border-default);">
-						<dl>
-							<?php
-							$formula = get_post_meta( get_the_ID(), 'peptide_formula', true );
-							if ( $formula ) {
-								?>
-								<dt><strong><?php esc_html_e( 'Molecular Formula:', 'peptide-starter' ); ?></strong></dt>
-								<dd><code><?php echo esc_html( $formula ); ?></code></dd>
-								<?php
-							}
-							?>
+					<!-- Meta Information as card grid -->
+					<?php
+					$formula          = get_post_meta( get_the_ID(), 'peptide_formula', true );
+					$sequence         = get_post_meta( get_the_ID(), 'peptide_sequence', true );
+					$molecular_weight = get_post_meta( get_the_ID(), 'peptide_molecular_weight', true );
+					$therapeutic_use  = get_post_meta( get_the_ID(), 'peptide_therapeutic_use', true );
 
-							<?php
-							$sequence = get_post_meta( get_the_ID(), 'peptide_sequence', true );
-							if ( $sequence ) {
-								?>
-								<dt><strong><?php esc_html_e( 'Sequence:', 'peptide-starter' ); ?></strong></dt>
-								<dd><code><?php echo esc_html( $sequence ); ?></code></dd>
-								<?php
-							}
-							?>
+					if ( $formula || $sequence || $molecular_weight || $therapeutic_use ) {
+						?>
+						<h2 class="ps-section-heading">
+							<span class="ps-section-icon" style="background: var(--color-accent-sky);">&#128300;</span>
+							<?php esc_html_e( 'Properties', 'peptide-starter' ); ?>
+						</h2>
+						<div class="peptide-meta-grid">
+							<?php if ( $formula ) { ?>
+								<div class="peptide-meta-card">
+									<dl>
+										<dt><?php esc_html_e( 'Molecular Formula', 'peptide-starter' ); ?></dt>
+										<dd><code><?php echo esc_html( $formula ); ?></code></dd>
+									</dl>
+								</div>
+							<?php } ?>
 
-							<?php
-							$molecular_weight = get_post_meta( get_the_ID(), 'peptide_molecular_weight', true );
-							if ( $molecular_weight ) {
-								?>
-								<dt><strong><?php esc_html_e( 'Molecular Weight:', 'peptide-starter' ); ?></strong></dt>
-								<dd><?php echo esc_html( $molecular_weight ); ?> Da</dd>
-								<?php
-							}
-							?>
+							<?php if ( $sequence ) { ?>
+								<div class="peptide-meta-card">
+									<dl>
+										<dt><?php esc_html_e( 'Sequence', 'peptide-starter' ); ?></dt>
+										<dd><code><?php echo esc_html( $sequence ); ?></code></dd>
+									</dl>
+								</div>
+							<?php } ?>
 
-							<?php
-							$therapeutic_use = get_post_meta( get_the_ID(), 'peptide_therapeutic_use', true );
-							if ( $therapeutic_use ) {
-								?>
-								<dt><strong><?php esc_html_e( 'Therapeutic Use:', 'peptide-starter' ); ?></strong></dt>
-								<dd><?php echo esc_html( $therapeutic_use ); ?></dd>
-								<?php
-							}
-							?>
-						</dl>
-					</div>
+							<?php if ( $molecular_weight ) { ?>
+								<div class="peptide-meta-card">
+									<dl>
+										<dt><?php esc_html_e( 'Molecular Weight', 'peptide-starter' ); ?></dt>
+										<dd><?php echo esc_html( $molecular_weight ); ?> Da</dd>
+									</dl>
+								</div>
+							<?php } ?>
+
+							<?php if ( $therapeutic_use ) { ?>
+								<div class="peptide-meta-card">
+									<dl>
+										<dt><?php esc_html_e( 'Therapeutic Use', 'peptide-starter' ); ?></dt>
+										<dd><?php echo esc_html( $therapeutic_use ); ?></dd>
+									</dl>
+								</div>
+							<?php } ?>
+						</div>
+						<?php
+					}
+					?>
 
 					<!-- Edit Link -->
 					<?php
@@ -101,10 +143,10 @@ get_header();
 				<nav class="post-navigation" style="margin-top: var(--spacing-3xl); padding-top: var(--spacing-2xl); border-top: 1px solid var(--color-border-default);">
 					<div style="display: flex; justify-content: space-between; gap: var(--spacing-lg);">
 						<div>
-							<?php previous_post_link( '%link', '← %title' ); ?>
+							<?php previous_post_link( '%link', '&larr; %title' ); ?>
 						</div>
 						<div>
-							<?php next_post_link( '%link', '%title →' ); ?>
+							<?php next_post_link( '%link', '%title &rarr;' ); ?>
 						</div>
 					</div>
 				</nav>

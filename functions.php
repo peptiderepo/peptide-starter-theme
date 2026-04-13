@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'PEPTIDE_STARTER_VERSION', '1.3.2' );
+define( 'PEPTIDE_STARTER_VERSION', '1.4.0' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 

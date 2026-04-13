@@ -12,7 +12,19 @@ get_header();
 	<!-- Hero Section -->
 	<section class="hero-section">
 		<div class="hero-content">
-			<h1 class="hero-title"><?php echo esc_html( peptide_starter_get_hero_title() ); ?></h1>
+			<h1 class="hero-title">
+				<?php
+				$hero_title = peptide_starter_get_hero_title();
+				// Wrap the last word in an accent span for the wavy underline effect
+				$words      = explode( ' ', $hero_title );
+				if ( count( $words ) > 1 ) {
+					$last_word = array_pop( $words );
+					echo esc_html( implode( ' ', $words ) ) . ' <span class="ps-hero-accent">' . esc_html( $last_word ) . '</span>';
+				} else {
+					echo esc_html( $hero_title );
+				}
+				?>
+			</h1>
 			<p class="hero-subtitle"><?php echo esc_html( peptide_starter_get_hero_subtitle() ); ?></p>
 
 			<!-- Hero Search (Peptide Search AI) -->

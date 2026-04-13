@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 1.3.2
+Version: 1.4.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -170,8 +170,16 @@ img, svg {
   --color-status-warning: #F59E0B;
   --color-status-error: #DC2626;
 
-  /* Note: Secondary accent (#7C3AED) removed per Design Director */
-  /* (Option A: Simplify to primary + status colors) */
+  /* Accent Colors (Clawdiverse-inspired warm tints for cards/categories) */
+  --color-accent-warm: #F59E0B;
+  --color-accent-mint: #D1FAE5;
+  --color-accent-lavender: #EDE9FE;
+  --color-accent-peach: #FEE2D5;
+  --color-accent-sky: #DBEAFE;
+
+  /* Featured badge */
+  --color-featured-bg: #FEF3C7;
+  --color-featured-text: #92400E;
 
   /* Text Colors */
   --color-text-primary: #111827;
@@ -182,10 +190,10 @@ img, svg {
   --color-border-default: #E5E7EB;
   --color-border-subtle: #F3F4F6;
 
-  /* Background Colors */
-  --color-bg-primary: #FFFFFF;
-  --color-bg-secondary: #F9FAFB;
-  --color-bg-tertiary: #F3F4F6;
+  /* Background Colors (warm off-white base, à la Clawdiverse) */
+  --color-bg-primary: #FAFAF7;
+  --color-bg-secondary: #F5F3EE;
+  --color-bg-tertiary: #EDEAE3;
 
   /* Component-Specific Colors */
   --color-input-focus: #0066CC;
@@ -497,16 +505,18 @@ nav a {
   transform: translateY(0);
 }
 
-/* Secondary Button */
+/* Secondary Button (ghost/outline style) */
 .ps-btn-secondary {
-  background-color: var(--color-bg-tertiary);
+  background-color: transparent;
   color: var(--color-text-primary);
   border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
 }
 
 .ps-btn-secondary:hover {
   background-color: var(--color-bg-secondary);
   border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
 }
 
 /* Tertiary Button */
@@ -946,6 +956,18 @@ input[type="radio"] {
   border-radius: var(--radius-md);
 }
 
+/* Header CTA button — hidden on mobile */
+.ps-header-cta {
+  display: none;
+  border-radius: var(--radius-lg);
+}
+
+@media (min-width: 768px) {
+  .ps-header-cta {
+    display: inline-flex;
+  }
+}
+
 /* Hamburger Menu */
 .menu-toggle {
   display: none;
@@ -1058,21 +1080,74 @@ input[type="radio"] {
 /* ---- HOME PAGE / HERO ---- */
 
 .hero-section {
-  background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
-  padding: var(--spacing-4xl) var(--spacing-xl);
+  background-color: var(--color-bg-primary);
+  padding: var(--spacing-5xl) var(--spacing-xl) var(--spacing-4xl);
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative geometric shapes (Clawdiverse-inspired) */
+.hero-section::before,
+.hero-section::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Soft pink circle — top left */
+.hero-section::before {
+  width: 200px;
+  height: 200px;
+  background: rgba(244, 114, 182, 0.10);
+  top: 8%;
+  left: -4%;
+}
+
+/* Mint/teal shape — right side */
+.hero-section::after {
+  width: 260px;
+  height: 260px;
+  background: rgba(52, 211, 153, 0.08);
+  top: 20%;
+  right: -6%;
 }
 
 .hero-content {
   max-width: var(--container-lg);
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-title {
-  font-size: var(--text-h1);
-  font-weight: 700;
+  font-size: 48px;
+  font-weight: 800;
   margin-bottom: var(--spacing-md);
   color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* Accent word in hero title */
+.hero-title .ps-hero-accent {
+  color: var(--color-brand-primary);
+  position: relative;
+  display: inline-block;
+}
+
+/* Wavy underline on accent word */
+.hero-title .ps-hero-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8'%3E%3Cpath d='M0 4 Q12.5 0 25 4 T50 4 T75 4 T100 4' fill='none' stroke='%230066CC' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
+  background-size: 50px 6px;
 }
 
 .hero-subtitle {
@@ -1082,6 +1157,7 @@ input[type="radio"] {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.7;
 }
 
 .hero-search {
@@ -1090,15 +1166,19 @@ input[type="radio"] {
 
 /* Legacy theme search form (fallback when PSA plugin is not active) */
 .hero-search .ps-search-form {
-  max-width: 500px;
+  max-width: 560px;
   margin: 0 auto;
 }
 
 .hero-search .ps-search-input {
   width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
   padding-right: 48px;
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ---- PEPTIDE SEARCH AI PLUGIN INTEGRATION ---- */
@@ -1110,12 +1190,13 @@ input[type="radio"] {
 }
 
 .hero-search .psa-search-input {
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   color: var(--color-text-primary);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-lg);
-  font-size: var(--text-body-md);
+  font-size: var(--text-body-lg);
   padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .hero-search .psa-search-input::placeholder {
@@ -1318,9 +1399,23 @@ body .pn-article-title {
 /* ---- ARCHIVE PAGE ---- */
 
 .archive-header {
-  padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
-  background-color: var(--color-bg-secondary);
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-2xl);
+  background-color: var(--color-bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative shape on archive header */
+.archive-header::after {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: rgba(52, 211, 153, 0.08);
+  border-radius: 50%;
+  top: -40px;
+  right: -40px;
+  pointer-events: none;
 }
 
 .archive-title {
@@ -1365,41 +1460,51 @@ body .pn-article-title {
   padding: var(--spacing-3xl) var(--spacing-lg);
 }
 
-/* Peptide Card */
+/* Peptide Card (Clawdiverse-inspired: white card, tinted left border, soft shadow) */
 .peptide-card {
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-left: 3px solid var(--color-accent-mint);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
 .peptide-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left-width: 4px;
 }
+
+/* Category-coded left borders via nth-child for visual variety */
+.peptide-card:nth-child(4n+1) { border-left-color: var(--color-accent-mint); }
+.peptide-card:nth-child(4n+2) { border-left-color: var(--color-accent-sky); }
+.peptide-card:nth-child(4n+3) { border-left-color: var(--color-accent-lavender); }
+.peptide-card:nth-child(4n+4) { border-left-color: var(--color-accent-peach); }
 
 .peptide-card__header {
   margin-bottom: var(--spacing-md);
 }
 
 .peptide-card__title {
-  font-size: var(--text-h4);
-  font-weight: 700;
+  font-size: var(--text-h5);
+  font-weight: 600;
   line-height: 1.3;
   margin: 0 0 var(--spacing-sm) 0;
 }
 
 .peptide-card__title a {
-  color: var(--color-brand-primary);
+  color: var(--color-text-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 .peptide-card__title a:hover {
-  color: var(--color-link-hover);
+  color: var(--color-brand-primary);
 }
 
 .peptide-card__meta {
@@ -1408,16 +1513,34 @@ body .pn-article-title {
   flex-wrap: wrap;
 }
 
+/* Category tag pills (Clawdiverse-style colored pills) */
 .peptide-card__badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  background-color: var(--color-brand-primary);
-  color: #ffffff;
+  letter-spacing: 0.3px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background-color: var(--color-accent-mint);
+  color: #065F46;
+}
+
+/* Cycle badge colors to match card border */
+.peptide-card:nth-child(4n+2) .peptide-card__badge {
+  background-color: var(--color-accent-sky);
+  color: #1E3A5F;
+}
+
+.peptide-card:nth-child(4n+3) .peptide-card__badge {
+  background-color: var(--color-accent-lavender);
+  color: #4C1D95;
+}
+
+.peptide-card:nth-child(4n+4) .peptide-card__badge {
+  background-color: var(--color-accent-peach);
+  color: #7C2D12;
 }
 
 .peptide-card__excerpt {
@@ -1476,15 +1599,33 @@ body .pn-article-title {
 /* ---- SINGLE PAGE / PEPTIDE ---- */
 
 .page-header {
-  padding: var(--spacing-2xl) var(--spacing-lg);
-  background-color: var(--color-bg-secondary);
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-2xl);
+  background-color: var(--color-bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative accent on page header */
+.page-header::after {
+  content: '';
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  background: rgba(244, 114, 182, 0.08);
+  border-radius: 50%;
+  top: -30px;
+  right: -30px;
+  pointer-events: none;
 }
 
 .page-title {
   max-width: var(--container-lg);
   margin: 0 auto;
-  font-size: var(--text-h2);
+  font-size: var(--text-h1);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
 }
 
 .page-content {
@@ -1521,6 +1662,141 @@ body .pn-article-title {
 .page-content .elementor-element:empty,
 .page-content div:empty:not([data-peptide-news-feed]) {
   display: none;
+}
+
+/* ---- BACK LINK (breadcrumb-style) ---- */
+
+.ps-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin-bottom: var(--spacing-lg);
+  transition: color var(--transition-fast);
+}
+
+.ps-back-link:hover {
+  color: var(--color-brand-primary);
+}
+
+/* ---- FEATURED BADGE ---- */
+
+.ps-featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: var(--text-label);
+  font-weight: 700;
+  background-color: var(--color-featured-bg);
+  color: var(--color-featured-text);
+  margin-bottom: var(--spacing-md);
+}
+
+/* ---- PEPTIDE META CARDS (single page) ---- */
+
+.peptide-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
+}
+
+.peptide-meta-card {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.peptide-meta-card dt {
+  font-size: var(--text-label);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.peptide-meta-card dd {
+  font-size: var(--text-body-md);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.peptide-meta-card dd code {
+  font-size: var(--text-body-sm);
+}
+
+/* ---- PEPTIDE CONTENT BOX (description block on single page) ---- */
+
+.peptide-content-box {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* ---- SECTION HEADING WITH ICON (Clawdiverse-style) ---- */
+
+.ps-section-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+}
+
+.ps-section-heading .ps-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+/* ---- DECORATIVE BODY SHAPES ---- */
+/* Geometric accents on the main content area for visual warmth */
+
+body > .site-main {
+  position: relative;
+}
+
+/* Large peach blob — left side of body */
+body > .site-main::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(254, 226, 213, 0.15);
+  border-radius: 50%;
+  top: 40%;
+  left: -8%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Lavender ring — right side of body */
+body > .site-main::after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: 30px solid rgba(237, 233, 254, 0.12);
+  border-radius: 50%;
+  top: 65%;
+  right: -3%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* ---- 404 PAGE ---- */
@@ -1672,6 +1948,15 @@ body .pn-article-title {
     --color-status-warning: #F59E0B;
     --color-status-error: #EF4444;
 
+    /* Accent Colors (muted for dark mode) */
+    --color-accent-warm: #D97706;
+    --color-accent-mint: #064E3B;
+    --color-accent-lavender: #312E81;
+    --color-accent-peach: #7C2D12;
+    --color-accent-sky: #1E3A5F;
+    --color-featured-bg: #78350F;
+    --color-featured-text: #FEF3C7;
+
     /* Text Colors */
     --color-text-primary: #F9FAFB;
     --color-text-secondary: #D1D5DB;
@@ -1705,6 +1990,13 @@ html[data-theme="dark"] {
   --color-status-success: #10B981;
   --color-status-warning: #F59E0B;
   --color-status-error: #EF4444;
+  --color-accent-warm: #D97706;
+  --color-accent-mint: #064E3B;
+  --color-accent-lavender: #312E81;
+  --color-accent-peach: #7C2D12;
+  --color-accent-sky: #1E3A5F;
+  --color-featured-bg: #78350F;
+  --color-featured-text: #FEF3C7;
   --color-text-primary: #F9FAFB;
   --color-text-secondary: #D1D5DB;
   --color-text-tertiary: #9CA3AF;
@@ -1727,14 +2019,21 @@ html[data-theme="light"] {
   --color-status-success: #059669;
   --color-status-warning: #F59E0B;
   --color-status-error: #DC2626;
+  --color-accent-warm: #F59E0B;
+  --color-accent-mint: #D1FAE5;
+  --color-accent-lavender: #EDE9FE;
+  --color-accent-peach: #FEE2D5;
+  --color-accent-sky: #DBEAFE;
+  --color-featured-bg: #FEF3C7;
+  --color-featured-text: #92400E;
   --color-text-primary: #111827;
   --color-text-secondary: #6B7280;
   --color-text-tertiary: #9CA3AF;
   --color-border-default: #E5E7EB;
   --color-border-subtle: #F3F4F6;
-  --color-bg-primary: #FFFFFF;
-  --color-bg-secondary: #F9FAFB;
-  --color-bg-tertiary: #F3F4F6;
+  --color-bg-primary: #FAFAF7;
+  --color-bg-secondary: #F5F3EE;
+  --color-bg-tertiary: #EDEAE3;
   --color-input-focus: #0066CC;
   --color-link-hover: #0052A3;
   --color-badge-bg: #DBEAFE;
@@ -1778,6 +2077,18 @@ html[data-theme="light"] {
 /* ============================================================================
    12. RESPONSIVE DESIGN (Mobile-first)
    ============================================================================ */
+
+/* Hide decorative shapes on small screens */
+@media (max-width: 767px) {
+  .hero-section::before,
+  .hero-section::after,
+  .archive-header::after,
+  .page-header::after,
+  body > .site-main::before,
+  body > .site-main::after {
+    display: none;
+  }
+}
 
 /* Extra Small (320px - 479px) */
 @media (max-width: 479px) {
@@ -1885,7 +2196,7 @@ html[data-theme="light"] {
   }
 
   .hero-title {
-    font-size: 40px;
+    font-size: 44px;
   }
 
   .newsletter-form {

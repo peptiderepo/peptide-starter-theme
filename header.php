@@ -47,6 +47,11 @@
 
 		<!-- Header Icons -->
 		<div class="header-icons">
+			<!-- Browse Peptides CTA (accent button, hidden on mobile) -->
+			<a href="<?php echo esc_url( home_url( '/peptides' ) ); ?>" class="ps-btn ps-btn-primary ps-btn-sm ps-header-cta">
+				<?php esc_html_e( 'Browse Peptides', 'peptide-starter' ); ?>
+			</a>
+
 			<!-- Search Icon -->
 			<button class="header-icon-btn search-toggle" aria-label="<?php esc_attr_e( 'Search', 'peptide-starter' ); ?>">
 				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
