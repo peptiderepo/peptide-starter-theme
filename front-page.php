@@ -2,6 +2,13 @@
 /**
  * The front page template
  *
+ * Layout: Hero → Research Modules → PRAutoBlogger posts → Peptide News feed.
+ * Newsletter signup is handled by footer.php (via template part) on the front page.
+ *
+ * @see template-parts/module-cards.php — research modules grid
+ * @see template-parts/newsletter-signup.php — included via footer.php on front page
+ * @see functions.php — helper functions for hero content
+ *
  * @package peptide-starter
  */
 
@@ -15,8 +22,8 @@ get_header();
 			<h1 class="hero-title">
 				<?php
 				$hero_title = peptide_starter_get_hero_title();
-				// Wrap the last word in an accent span for the wavy underline effect
-				$words      = explode( ' ', $hero_title );
+				// Wrap the last word in an accent span for the wavy underline effect.
+				$words = explode( ' ', $hero_title );
 				if ( count( $words ) > 1 ) {
 					$last_word = array_pop( $words );
 					echo esc_html( implode( ' ', $words ) ) . ' <span class="ps-hero-accent">' . esc_html( $last_word ) . '</span>';
@@ -53,12 +60,15 @@ get_header();
 				<a href="<?php echo esc_url( home_url( '/peptides' ) ); ?>" class="ps-btn ps-btn-primary">
 					<?php esc_html_e( 'Browse Peptides', 'peptide-starter' ); ?>
 				</a>
-				<a href="<?php echo esc_url( home_url( '/about' ) ); ?>" class="ps-btn ps-btn-secondary">
-					<?php esc_html_e( 'Learn More', 'peptide-starter' ); ?>
+				<a href="<?php echo esc_url( home_url( '/documentation' ) ); ?>" class="ps-btn ps-btn-secondary">
+					<?php esc_html_e( 'Documentation', 'peptide-starter' ); ?>
 				</a>
 			</div>
 		</div>
 	</section>
+
+	<!-- Research Modules Grid (6 cards) -->
+	<?php get_template_part( 'template-parts/module', 'cards' ); ?>
 
 	<!-- PRAutoBlogger Posts Widget -->
 	<?php
@@ -69,7 +79,6 @@ get_header();
 
 	<!-- News Feed Section -->
 	<?php
-	// Display the Peptide News plugin shortcode if available
 	if ( shortcode_exists( 'peptide_news' ) ) {
 		?>
 		<section class="news-feed-section">
@@ -85,12 +94,6 @@ get_header();
 		</section>
 		<?php
 	}
-	?>
-
-	<?php
-	// Note: The front page layout is handled entirely by this template.
-	// Old page content (e.g. from Elementor) is intentionally NOT rendered here
-	// to avoid duplicate hero sections and empty space.
 	?>
 </main>
 

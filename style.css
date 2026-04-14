@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 1.4.1
+Version: 1.5.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -2252,6 +2252,826 @@ html[data-theme="light"] {
   gap: var(--spacing-md);
   justify-content: center;
   flex-wrap: wrap;
+}
+
+/* ============================================================================
+   14. TOOL PAGES — Generic wrapper for plugin shortcode templates
+   ============================================================================ */
+
+.ps-tool-page {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  min-height: 60vh;
+}
+
+.ps-tool-fallback {
+  text-align: center;
+  padding: var(--spacing-4xl) 0;
+}
+
+.ps-tool-fallback h1 {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-tool-fallback p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* ============================================================================
+   15. RESEARCH MODULE CARDS — Front page grid
+   ============================================================================ */
+
+.ps-modules-section {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background-color: var(--color-bg-secondary);
+}
+
+.ps-modules-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.ps-modules-title {
+  font-size: var(--text-h2);
+  margin-bottom: var(--spacing-sm);
+  margin-top: 0;
+}
+
+.ps-modules-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-md);
+}
+
+.ps-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+}
+
+.ps-module-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xl);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: all var(--transition-normal);
+}
+
+.ps-module-card:hover {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.1);
+  transform: translateY(-2px);
+}
+
+.ps-module-card--inactive {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ps-module-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(0, 102, 204, 0.1);
+  color: var(--color-brand-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-module-card__title {
+  font-size: var(--text-h4);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  margin-top: 0;
+}
+
+.ps-module-card__description {
+  font-size: var(--text-body-md);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  flex: 1;
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-module-card__link {
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-brand-primary);
+}
+
+/* ============================================================================
+   16. DOCUMENTATION PAGE — Two-column layout with ToC sidebar
+   ============================================================================ */
+
+.ps-docs-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: var(--spacing-2xl);
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  align-items: start;
+}
+
+.ps-docs-sidebar {
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding: var(--spacing-lg) 0;
+}
+
+.ps-docs-sidebar-inner {
+  padding-right: var(--spacing-lg);
+  border-right: 1px solid var(--color-border-subtle);
+}
+
+.ps-docs-toc-title {
+  font-size: var(--text-h6);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  margin-top: 0;
+  cursor: default;
+}
+
+.ps-docs-toc ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.ps-docs-toc-link {
+  display: block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  border-left: 2px solid transparent;
+}
+
+.ps-docs-toc-link:hover {
+  color: var(--color-brand-primary);
+  background-color: var(--color-bg-secondary);
+}
+
+.ps-docs-toc-link--active {
+  color: var(--color-brand-primary);
+  border-left-color: var(--color-brand-primary);
+  background-color: var(--color-bg-secondary);
+  font-weight: 500;
+}
+
+.ps-docs-content {
+  min-width: 0;
+}
+
+.ps-docs-header {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.ps-docs-header h1 {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-docs-intro {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.ps-docs-body h2 {
+  margin-top: var(--spacing-3xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.ps-docs-body h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Documentation step styling for SOPs */
+.ps-docs-step {
+  counter-increment: step-counter;
+  position: relative;
+  padding-left: var(--spacing-2xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.ps-docs-step::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  background-color: var(--color-brand-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+}
+
+/* Warning callout for docs */
+.ps-docs-warning {
+  padding: var(--spacing-lg);
+  background-color: #FEF3C7;
+  border-left: 4px solid var(--color-status-warning);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-lg) 0;
+  color: #78350F;
+}
+
+/* Documentation tables */
+.ps-docs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-lg) 0;
+}
+
+.ps-docs-table th,
+.ps-docs-table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border-default);
+  text-align: left;
+  font-size: var(--text-body-md);
+}
+
+.ps-docs-table th {
+  background-color: var(--color-bg-secondary);
+  font-weight: 600;
+}
+
+/* Mobile: collapse sidebar to dropdown */
+@media (max-width: 1023px) {
+  .ps-docs-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ps-docs-sidebar {
+    position: static;
+    max-height: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .ps-docs-sidebar-inner {
+    border-right: none;
+    padding-right: 0;
+  }
+
+  .ps-docs-toc-title {
+    cursor: pointer;
+  }
+
+  .ps-docs-toc-title::after {
+    content: ' ▾';
+  }
+
+  .ps-docs-toc {
+    display: none;
+  }
+
+  .ps-docs-sidebar--open .ps-docs-toc {
+    display: block;
+  }
+}
+
+/* ============================================================================
+   17. AUTH PAGE — Sign-in / Register forms
+   ============================================================================ */
+
+.ps-auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+}
+
+.ps-auth-container {
+  max-width: 440px;
+}
+
+.ps-auth-card {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.ps-auth-card h1 {
+  font-size: var(--text-h3);
+  margin-bottom: var(--spacing-lg);
+}
+
+.ps-auth-info {
+  margin-bottom: var(--spacing-lg);
+}
+
+.ps-auth-info p {
+  margin-bottom: 0;
+  font-size: var(--text-body-sm);
+}
+
+.ps-auth-form .ps-form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-auth-link {
+  text-align: center;
+  margin-top: var(--spacing-md);
+  font-size: var(--text-body-sm);
+}
+
+.ps-auth-toggle {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-subtle);
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.ps-auth-toggle a {
+  color: var(--color-brand-primary);
+  font-weight: 500;
+}
+
+.ps-auth-form-wrap--hidden {
+  display: none;
+}
+
+.ps-auth-messages {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-form-hint {
+  display: block;
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
+  margin-top: 4px;
+}
+
+/* Password strength */
+.ps-password-strength {
+  margin-top: 4px;
+  font-size: var(--text-caption);
+  font-weight: 500;
+}
+
+.ps-strength-weak { color: var(--color-status-error); }
+.ps-strength-fair { color: var(--color-status-warning); }
+.ps-strength-strong { color: var(--color-status-success); }
+
+/* ============================================================================
+   18. NEWSLETTER SECTION — Standalone signup CTA
+   ============================================================================ */
+
+.ps-newsletter-section {
+  background-color: var(--color-bg-tertiary);
+  padding: var(--spacing-3xl) var(--spacing-lg);
+}
+
+.ps-newsletter-inner {
+  max-width: var(--container-md);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ps-newsletter-title {
+  font-size: var(--text-h2);
+  margin-bottom: var(--spacing-sm);
+  margin-top: 0;
+}
+
+.ps-newsletter-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.ps-newsletter-form-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.ps-newsletter-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.ps-newsletter-status {
+  margin-top: var(--spacing-md);
+  text-align: left;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ps-newsletter-learn-more {
+  margin-top: var(--spacing-md);
+  font-size: var(--text-body-sm);
+}
+
+.ps-newsletter-learn-more a {
+  color: var(--color-brand-primary);
+}
+
+@media (max-width: 479px) {
+  .ps-newsletter-form-row {
+    flex-direction: column;
+  }
+}
+
+/* ============================================================================
+   19. USER MENU — Logged-in dropdown in header
+   ============================================================================ */
+
+.ps-user-menu {
+  position: relative;
+}
+
+.ps-user-menu__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: none;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ps-user-menu__toggle:hover {
+  border-color: var(--color-brand-primary);
+}
+
+.ps-user-menu__name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ps-user-menu__dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-xs);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 180px;
+  z-index: var(--z-dropdown);
+  padding: var(--spacing-xs) 0;
+}
+
+.ps-user-menu:hover .ps-user-menu__dropdown,
+.ps-user-menu__toggle:focus + .ps-user-menu__dropdown {
+  display: block;
+}
+
+.ps-user-menu__dropdown a {
+  display: block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--text-body-sm);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.ps-user-menu__dropdown a:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-brand-primary);
+}
+
+/* ============================================================================
+   20. SETTINGS PANEL — Slide-out support panel
+   ============================================================================ */
+
+.ps-settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: var(--z-modal-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+
+.ps-settings-overlay--active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ps-settings-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 380px;
+  max-width: 90vw;
+  height: 100vh;
+  background-color: var(--color-bg-primary);
+  border-left: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  overflow-y: auto;
+  transition: right var(--transition-slow);
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-settings-panel--open {
+  right: 0;
+}
+
+.ps-settings-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.ps-settings-panel__header h2 {
+  font-size: var(--text-h4);
+  margin: 0;
+}
+
+.ps-settings-panel__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.ps-settings-panel__close:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-secondary);
+}
+
+.ps-settings-panel__body {
+  padding: var(--spacing-xl);
+  flex: 1;
+}
+
+.ps-settings-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.ps-settings-section h3 {
+  font-size: var(--text-h5);
+  margin-bottom: var(--spacing-md);
+  margin-top: 0;
+}
+
+.ps-settings-disclaimer {
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.ps-settings-disclaimer p {
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+}
+
+.ps-contact-form .ps-form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-contact-status {
+  margin-top: var(--spacing-md);
+}
+
+/* ============================================================================
+   21. LANGUAGE PLACEHOLDER — Header icon
+   ============================================================================ */
+
+.ps-lang-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  cursor: default;
+}
+
+.ps-lang-code {
+  font-size: var(--text-label);
+}
+
+@media (max-width: 767px) {
+  .ps-lang-placeholder {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   22. FOOTER UPDATES — Disclaimer and language links
+   ============================================================================ */
+
+.footer-disclaimer {
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
+  max-width: var(--container-md);
+  margin: var(--spacing-md) auto;
+  line-height: 1.5;
+}
+
+.footer-languages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  font-size: var(--text-body-sm);
+  flex-wrap: wrap;
+}
+
+.footer-languages-label {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.footer-languages a {
+  color: var(--color-brand-primary);
+}
+
+/* ============================================================================
+   23. PROFILE PAGE — Basic profile fallback
+   ============================================================================ */
+
+.ps-profile-basic {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.ps-profile-basic h1 {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-profile-links {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xl);
+}
+
+/* Science Feed header */
+.ps-science-feed-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.ps-science-feed-header h1 {
+  margin-bottom: var(--spacing-md);
+}
+
+.ps-science-feed-header p {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================================
+   24. DARK MODE — Additions for new components
+   ============================================================================ */
+
+html[data-theme="dark"] .ps-module-card__icon {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+
+html[data-theme="dark"] .ps-module-card:hover {
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+html[data-theme="dark"] .ps-docs-warning {
+  background-color: #78350F;
+  border-color: #F59E0B;
+  color: #FEF3C7;
+}
+
+html[data-theme="dark"] .ps-auth-card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .ps-newsletter-section {
+  background-color: var(--color-bg-secondary);
+}
+
+html[data-theme="dark"] .ps-settings-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .ps-modules-section {
+  background-color: var(--color-bg-secondary);
+}
+
+/* Dropdown submenu support for primary navigation */
+.primary-navigation li.menu-item-has-children {
+  position: relative;
+}
+
+.primary-navigation .sub-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: var(--z-dropdown);
+  padding: var(--spacing-xs) 0;
+  margin-top: var(--spacing-sm);
+}
+
+.primary-navigation li.menu-item-has-children:hover > .sub-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.primary-navigation .sub-menu li {
+  display: block;
+}
+
+.primary-navigation .sub-menu a {
+  display: block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--text-body-sm);
+  white-space: nowrap;
+}
+
+.primary-navigation .sub-menu a:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.primary-navigation .sub-menu a::after {
+  display: none;
+}
+
+/* ============================================================================
+   25. RESPONSIVE — Additions for new components
+   ============================================================================ */
+
+@media (max-width: 767px) {
+  .ps-user-menu__toggle {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--text-caption);
+  }
+
+  .ps-user-menu__name {
+    display: none;
+  }
+
+  .ps-modules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .ps-modules-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ps-modules-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* ============================================================================

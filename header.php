@@ -2,6 +2,14 @@
 /**
  * The header for Peptide Starter theme
  *
+ * Updated navigation: Home | Tools ▾ | My Data ▾ | Resources ▾ | [Sign In] ⚙ 🌐
+ * Sign In / User menu is state-aware (logged in vs logged out).
+ *
+ * @see functions.php — nav menu registration, walker
+ * @see assets/js/navigation.js — mobile menu toggle
+ * @see assets/js/settings-panel.js — settings icon trigger
+ * @see template-parts/settings-panel.php — settings slide-out
+ *
  * @package peptide-starter
  */
 
@@ -47,10 +55,46 @@
 
 		<!-- Header Icons -->
 		<div class="header-icons">
-			<!-- Browse Peptides CTA (accent button, hidden on mobile) -->
-			<a href="<?php echo esc_url( home_url( '/peptides' ) ); ?>" class="ps-btn ps-btn-primary ps-btn-sm ps-header-cta">
-				<?php esc_html_e( 'Browse Peptides', 'peptide-starter' ); ?>
-			</a>
+			<!-- Sign In / User Menu (state-aware) -->
+			<?php if ( is_user_logged_in() ) : ?>
+				<?php $current_user = wp_get_current_user(); ?>
+				<div class="ps-user-menu">
+					<button class="ps-user-menu__toggle" aria-expanded="false" aria-haspopup="true">
+						<span class="ps-user-menu__name"><?php echo esc_html( $current_user->display_name ); ?></span>
+						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+							<path d="M3 5L6 8L9 5"/>
+						</svg>
+					</button>
+					<div class="ps-user-menu__dropdown" aria-label="<?php esc_attr_e( 'User menu', 'peptide-starter' ); ?>">
+						<a href="<?php echo esc_url( home_url( '/profile' ) ); ?>"><?php esc_html_e( 'My Profile', 'peptide-starter' ); ?></a>
+						<a href="<?php echo esc_url( home_url( '/tracker' ) ); ?>"><?php esc_html_e( 'Tracker', 'peptide-starter' ); ?></a>
+						<a href="<?php echo esc_url( home_url( '/subject-log' ) ); ?>"><?php esc_html_e( 'Subject Log', 'peptide-starter' ); ?></a>
+						<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Sign Out', 'peptide-starter' ); ?></a>
+					</div>
+				</div>
+			<?php else : ?>
+				<a href="<?php echo esc_url( home_url( '/auth' ) ); ?>" class="ps-btn ps-btn-primary ps-btn-sm ps-header-cta">
+					<?php esc_html_e( 'Sign In', 'peptide-starter' ); ?>
+				</a>
+			<?php endif; ?>
+
+			<!-- Settings Icon -->
+			<button class="header-icon-btn" id="ps-settings-toggle" aria-label="<?php esc_attr_e( 'Support & settings', 'peptide-starter' ); ?>">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="10" cy="10" r="3"/>
+					<path d="M16.474 12.32a1.26 1.26 0 00.252 1.39l.046.046a1.527 1.527 0 11-2.16 2.16l-.046-.046a1.27 1.27 0 00-2.15.9v.13a1.527 1.527 0 11-3.055 0v-.07a1.26 1.26 0 00-.825-1.152 1.26 1.26 0 00-1.39.252l-.046.046a1.527 1.527 0 11-2.16-2.16l.046-.046a1.27 1.27 0 00-.9-2.15h-.13a1.527 1.527 0 110-3.055h.07a1.26 1.26 0 001.152-.825 1.26 1.26 0 00-.252-1.39l-.046-.046a1.527 1.527 0 112.16-2.16l.046.046a1.26 1.26 0 001.39.252h.06a1.26 1.26 0 00.764-1.152v-.13a1.527 1.527 0 113.055 0v.07a1.27 1.27 0 002.15.9l.046-.046a1.527 1.527 0 112.16 2.16l-.046.046a1.26 1.26 0 00-.252 1.39v.06a1.26 1.26 0 001.152.764h.13a1.527 1.527 0 110 3.055h-.07a1.26 1.26 0 00-1.152.825z"/>
+				</svg>
+			</button>
+
+			<!-- Language Placeholder -->
+			<span class="ps-lang-placeholder" aria-label="<?php esc_attr_e( 'Language', 'peptide-starter' ); ?>" title="<?php esc_attr_e( 'Language selection coming soon', 'peptide-starter' ); ?>">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="10" cy="10" r="8"/>
+					<line x1="2" y1="10" x2="18" y2="10"/>
+					<path d="M10 2a14.5 14.5 0 014 8 14.5 14.5 0 01-4 8 14.5 14.5 0 01-4-8 14.5 14.5 0 014-8z"/>
+				</svg>
+				<span class="ps-lang-code">EN</span>
+			</span>
 
 			<!-- Search Icon -->
 			<button class="header-icon-btn search-toggle" aria-label="<?php esc_attr_e( 'Search', 'peptide-starter' ); ?>">
@@ -112,25 +156,34 @@
 
 <?php
 /**
- * Fallback menu if none is set
+ * Fallback menu if none is set — provides the new nav structure.
  */
 function peptide_starter_primary_menu_fallback() {
 	?>
 	<ul>
 		<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'peptide-starter' ); ?></a></li>
-		<?php
-		$about_page = get_page_by_path( 'about' );
-		if ( $about_page ) {
-			echo '<li><a href="' . esc_url( get_permalink( $about_page ) ) . '">' . esc_html__( 'About', 'peptide-starter' ) . '</a></li>';
-		}
-		// Display link to Peptides archive
-		if ( post_type_exists( 'peptide' ) ) {
-			echo '<li><a href="' . esc_url( get_post_type_archive_link( 'peptide' ) ) . '">' . esc_html__( 'Peptides', 'peptide-starter' ) . '</a></li>';
-		} else {
-			// Fallback to /peptides/ URL if CPT not registered yet
-			echo '<li><a href="' . esc_url( home_url( '/peptides/' ) ) . '">' . esc_html__( 'Peptides', 'peptide-starter' ) . '</a></li>';
-		}
-		?>
+		<li class="menu-item-has-children">
+			<a href="#"><?php esc_html_e( 'Tools', 'peptide-starter' ); ?></a>
+			<ul class="sub-menu">
+				<li><a href="<?php echo esc_url( home_url( '/calculator' ) ); ?>"><?php esc_html_e( 'Calculator', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/protocol-builder' ) ); ?>"><?php esc_html_e( 'Protocol Builder', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/tracker' ) ); ?>"><?php esc_html_e( 'Tracker', 'peptide-starter' ); ?></a></li>
+			</ul>
+		</li>
+		<li class="menu-item-has-children">
+			<a href="#"><?php esc_html_e( 'My Data', 'peptide-starter' ); ?></a>
+			<ul class="sub-menu">
+				<li><a href="<?php echo esc_url( home_url( '/peptides' ) ); ?>"><?php esc_html_e( 'Peptides', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/subject-log' ) ); ?>"><?php esc_html_e( 'Subject Log', 'peptide-starter' ); ?></a></li>
+			</ul>
+		</li>
+		<li class="menu-item-has-children">
+			<a href="#"><?php esc_html_e( 'Resources', 'peptide-starter' ); ?></a>
+			<ul class="sub-menu">
+				<li><a href="<?php echo esc_url( home_url( '/documentation' ) ); ?>"><?php esc_html_e( 'Documentation', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/news' ) ); ?>"><?php esc_html_e( 'Science Feed', 'peptide-starter' ); ?></a></li>
+			</ul>
+		</li>
 	</ul>
 	<?php
 }

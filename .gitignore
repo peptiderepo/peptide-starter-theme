@@ -20,5 +20,10 @@ composer.lock
 # Zip artifacts (built by CI)
 *.zip
 
+# Environment & credentials
+.env
+.env.local
+.env.credentials
+
 # AI agent context (local only, not deployed)
 .claude/
