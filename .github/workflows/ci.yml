@@ -102,7 +102,8 @@ jobs:
           WP_CORE_DIR: /tmp/wordpress
         run: |
           chmod +x bin/install-wp-tests.sh
-          bin/install-wp-tests.sh wp_tests root root 127.0.0.1:3306 ${{ matrix.wp }}
+          # 6th arg = skip-database-creation: the MySQL service already created wp_tests via MYSQL_DATABASE env.
+          bin/install-wp-tests.sh wp_tests root root 127.0.0.1:3306 ${{ matrix.wp }} true
       - name: Run PHPUnit
         env:
           WP_TESTS_DIR: /tmp/wordpress-tests-lib
