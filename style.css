@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 1.5.0
+Version: 1.5.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -3077,3 +3077,79 @@ html[data-theme="dark"] .ps-modules-section {
 /* ============================================================================
    END OF STYLESHEET
    ============================================================================ */
+
+/* =====================================================================
+   Section 26 — v1.5.1 security/UX additions
+   ===================================================================== */
+
+/* Visually hidden honeypot wrapper — off-screen, keyboard-skipped, bot-visible. */
+.ps-hp-wrap {
+	position: absolute;
+	left: -9999px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+/* Email verification banner on /profile */
+.ps-verify-required {
+	padding: var(--spacing-md);
+	margin-bottom: var(--spacing-lg);
+	border-left: 4px solid #F59E0B;
+	background-color: #FEF3C7;
+	color: #78350F;
+	border-radius: 6px;
+}
+
+html[data-theme="dark"] .ps-verify-required {
+	background-color: #451A03;
+	color: #FEF3C7;
+	border-left-color: #F59E0B;
+}
+
+.ps-verify-required h3 {
+	margin: 0 0 var(--spacing-xs) 0;
+	font-size: 1.05rem;
+}
+
+.ps-verify-resend {
+	margin-top: var(--spacing-sm);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+}
+
+.ps-verify-resend-status {
+	font-size: 0.9rem;
+	color: inherit;
+}
+
+/* Newsletter consent + privacy link */
+.ps-newsletter-consent {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--spacing-xs);
+	margin-top: var(--spacing-sm);
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+.ps-newsletter-consent input[type="checkbox"] {
+	margin-top: 0.25em;
+	flex-shrink: 0;
+}
+
+.ps-newsletter-privacy {
+	margin-top: var(--spacing-xs);
+	font-size: 0.85rem;
+	opacity: 0.85;
+}
+
+/* Footer translations note */
+.footer-languages-note {
+	margin-top: var(--spacing-sm);
+	font-size: 0.85rem;
+	opacity: 0.7;
+}

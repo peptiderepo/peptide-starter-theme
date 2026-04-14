@@ -2,16 +2,17 @@
 /**
  * Theme Helper Functions
  *
- * Customizer output helpers, nav walker, custom logo, pagination,
- * and other utility functions shared across the theme.
+ * Customizer output helpers, nav walker, custom logo, pagination, menu
+ * fallback, auth gates, and assorted utilities shared across the theme.
  *
  * @see functions.php — includes this file
- * @see header.php — uses peptide_starter_the_custom_logo()
- * @see front-page.php — uses hero getters
+ * @see header.php — uses peptide_starter_the_custom_logo() + menu fallback
+ * @see page-subject-log.php, page-tracker.php, page-protocol-builder.php —
+ *   use peptide_starter_require_login()
  *
- * What: Utility functions for template output and theme mods.
- * Who calls it: Various templates and functions.php.
- * Dependencies: WordPress Customizer API, Walker_Nav_Menu.
+ * What: Utility functions for template output, theme mods, auth gating.
+ * Who calls it: Templates and handler files.
+ * Dependencies: WordPress Customizer API, Walker_Nav_Menu, email-verification.
  *
  * @package peptide-starter
  */
@@ -22,33 +23,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Navigation Menu Walker for handling active states.
+ * Navigation Menu Walker — adds active classes.
  *
- * Adds an 'active' class to current menu items and their parents
- * for CSS styling via the .primary-navigation a.active selector.
+ * What: Renders menu items with an 'active' class for current + ancestor.
+ * Who calls it: wp_nav_menu() in header.php with walker => new instance.
+ * Dependencies: Walker_Nav_Menu.
  */
 class Peptide_Starter_Nav_Walker extends Walker_Nav_Menu {
 
 	/**
 	 * Render a single menu item.
 	 *
-	 * @param string   $output Item output.
+	 * @param string   $output Item output accumulator.
 	 * @param WP_Post  $item   Menu item data.
-	 * @param int      $depth  Depth of menu item.
+	 * @param int      $depth  Menu depth.
 	 * @param stdClass $args   Menu arguments.
 	 * @param int      $id     Current item ID.
 	 * @return void
 	 */
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
-		$indent  = ( $depth ) ? str_repeat( "\t", $depth ) : '';
-		$classes = empty( $item->classes ) ? array() : (array) $item->classes;
+		$indent    = ( $depth ) ? str_repeat( "\t", $depth ) : '';
+		$classes   = empty( $item->classes ) ? array() : (array) $item->classes;
 		$classes[] = 'menu-item-' . $item->ID;
 
 		if ( in_array( 'current-menu-item', $classes, true ) || in_array( 'current-menu-parent', $classes, true ) ) {
 			$classes[] = 'active';
 		}
 
-		$args       = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
+		$args        = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
 		$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
 		$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
 
@@ -87,17 +89,55 @@ class Peptide_Starter_Nav_Walker extends Walker_Nav_Menu {
 }
 
 /**
- * Display custom logo with fallback to site name.
+ * Fallback menu when no primary nav is assigned in WP admin.
+ *
+ * Previously lived inline inside header.php; moved here in v1.5.1 to
+ * prevent redeclaration if header.php is ever included twice.
+ *
+ * @return void Echoes a complete <ul>.
+ */
+function peptide_starter_primary_menu_fallback() {
+	?>
+	<ul>
+		<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'peptide-starter' ); ?></a></li>
+		<li class="menu-item-has-children">
+			<a href="#"><?php esc_html_e( 'Tools', 'peptide-starter' ); ?></a>
+			<ul class="sub-menu">
+				<li><a href="<?php echo esc_url( home_url( '/calculator' ) ); ?>"><?php esc_html_e( 'Calculator', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/protocol-builder' ) ); ?>"><?php esc_html_e( 'Protocol Builder', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/tracker' ) ); ?>"><?php esc_html_e( 'Tracker', 'peptide-starter' ); ?></a></li>
+			</ul>
+		</li>
+		<li class="menu-item-has-children">
+			<a href="#"><?php esc_html_e( 'My Data', 'peptide-starter' ); ?></a>
+			<ul class="sub-menu">
+				<li><a href="<?php echo esc_url( home_url( '/peptides' ) ); ?>"><?php esc_html_e( 'Peptides', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/subject-log' ) ); ?>"><?php esc_html_e( 'Subject Log', 'peptide-starter' ); ?></a></li>
+			</ul>
+		</li>
+		<li class="menu-item-has-children">
+			<a href="#"><?php esc_html_e( 'Resources', 'peptide-starter' ); ?></a>
+			<ul class="sub-menu">
+				<li><a href="<?php echo esc_url( home_url( '/documentation' ) ); ?>"><?php esc_html_e( 'Documentation', 'peptide-starter' ); ?></a></li>
+				<li><a href="<?php echo esc_url( home_url( '/news' ) ); ?>"><?php esc_html_e( 'Science Feed', 'peptide-starter' ); ?></a></li>
+			</ul>
+		</li>
+	</ul>
+	<?php
+}
+
+/**
+ * Display custom logo with fallback to site name link.
  *
  * @return void
  */
 function peptide_starter_the_custom_logo() {
-	if ( function_exists( 'the_custom_logo' ) ) {
+	if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
 		the_custom_logo();
-	} else {
-		$site_name = get_bloginfo( 'name' );
-		echo '<a class="site-logo" href="' . esc_url( home_url( '/' ) ) . '" rel="home">' . esc_html( $site_name ) . '</a>';
+		return;
 	}
+	$site_name = get_bloginfo( 'name' );
+	echo '<a class="site-logo" href="' . esc_url( home_url( '/' ) ) . '" rel="home">' . esc_html( $site_name ) . '</a>';
 }
 
 /**
@@ -137,16 +177,16 @@ function peptide_starter_get_footer_copyright() {
 }
 
 /**
- * Check if newsletter form should display.
+ * Whether to render the newsletter signup section. Filterable.
  *
- * @return bool Whether to show the newsletter form.
+ * @return bool
  */
 function peptide_starter_show_newsletter_form() {
 	return apply_filters( 'peptide_starter_show_newsletter', true );
 }
 
 /**
- * Render pagination links for archive pages.
+ * Render pagination for archive pages.
  *
  * @return void
  */
@@ -161,6 +201,7 @@ function peptide_starter_pagination() {
 	$total   = $wp_query->max_num_pages;
 
 	echo '<nav class="ps-pagination">';
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- paginate_links returns safe HTML.
 	echo paginate_links(
 		array(
 			'base'      => get_pagenum_link( 1 ) . '%_%',
@@ -176,11 +217,86 @@ function peptide_starter_pagination() {
 }
 
 /**
- * Check if a specific plugin is active by its main file path.
+ * Whether a plugin is active by its main file path.
  *
- * @param string $plugin Plugin file path relative to plugins directory.
- * @return bool Whether the plugin is active.
+ * @param string $plugin Plugin file path relative to plugins/.
+ * @return bool
  */
 function peptide_starter_is_plugin_active( $plugin ) {
 	return in_array( $plugin, (array) get_option( 'active_plugins', array() ), true );
+}
+
+/**
+ * Safe wp_get_referer fallback — never returns empty.
+ *
+ * @return string Referer or home_url('/').
+ */
+function peptide_starter_safe_referer() {
+	$ref = wp_get_referer();
+	return $ref ? $ref : home_url( '/' );
+}
+
+/**
+ * Gate a template behind login + verified email.
+ *
+ * Unauthenticated → redirect to /auth?redirect_to=current-uri.
+ * Logged in but unverified → redirect to /profile?verify_required=1.
+ *
+ * Side effects: emits 302 and exits the request.
+ *
+ * @param string|null $redirect_to Optional override for post-login target.
+ * @return void
+ */
+function peptide_starter_require_login( $redirect_to = null ) {
+	if ( ! is_user_logged_in() ) {
+		$target = $redirect_to ? $redirect_to : ( isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/' );
+		wp_safe_redirect( home_url( '/auth?redirect_to=' . rawurlencode( $target ) ) );
+		exit;
+	}
+
+	if ( function_exists( 'peptide_starter_user_is_verified' ) && ! peptide_starter_user_is_verified( get_current_user_id() ) ) {
+		wp_safe_redirect( home_url( '/profile?verify_required=1' ) );
+		exit;
+	}
+}
+
+/**
+ * Render a honeypot input block for a given form.
+ *
+ * Pair with peptide_starter_honeypot_triggered() in the handler.
+ *
+ * @param string $form_name Short slug embedded in the field name.
+ * @return void Echoes HTML.
+ */
+function peptide_starter_render_honeypot( $form_name ) {
+	$field = 'ps_hp_' . preg_replace( '/[^a-z0-9_]/', '', $form_name );
+	?>
+	<div class="ps-hp-wrap" aria-hidden="true">
+		<label>
+			<?php esc_html_e( 'Leave this field empty', 'peptide-starter' ); ?>
+			<input type="text" name="<?php echo esc_attr( $field ); ?>" tabindex="-1" autocomplete="off" value="">
+		</label>
+	</div>
+	<?php
+}
+
+/**
+ * CSV-injection-safe value for fputcsv output.
+ *
+ * Prefixes dangerous leading characters (=, +, -, @, tab, CR) with a
+ * single quote so Excel/Sheets won't interpret the cell as a formula.
+ *
+ * @param string $value Raw cell value.
+ * @return string Safe cell value.
+ */
+function peptide_starter_csv_safe( $value ) {
+	$value = (string) $value;
+	if ( '' === $value ) {
+		return $value;
+	}
+	$dangerous = array( '=', '+', '-', '@', "\t", "\r" );
+	if ( in_array( $value[0], $dangerous, true ) ) {
+		return "'" . $value;
+	}
+	return $value;
 }

@@ -2,15 +2,11 @@
 /**
  * Template Name: Subject Log
  *
- * Page template for the longitudinal subject tracking log.
- * Loads the Peptide Tracker plugin subject log via shortcode.
+ * Longitudinal subject-tracking log. Requires authenticated + email-verified
+ * users — contains user-owned PII (lab / assay results).
  *
+ * @see inc/helpers.php — peptide_starter_require_login()
  * @see page-tracker.php — related tracker template
- * @see functions.php — enqueue and page auto-creation
- *
- * What: Renders the subject log page with plugin shortcode integration.
- * Who calls it: WordPress template hierarchy when a page uses this template.
- * Dependencies: Peptide Tracker plugin (optional — graceful fallback).
  *
  * @package peptide-starter
  */
@@ -19,6 +15,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+// Auth gate — redirects unauthenticated users to /auth with return path,
+// and unverified users to /profile with verify-required banner.
+peptide_starter_require_login();
 
 get_header();
 ?>

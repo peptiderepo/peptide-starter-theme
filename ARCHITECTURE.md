@@ -1,91 +1,96 @@
-# Peptide Starter Theme - Architecture
+# Peptide Starter Theme — Architecture
 
 ## Overview
 
-Peptide Starter (peptide-starter) is a premium, accessible WordPress theme for peptiderepo.com — a scientific peptide reference database. The theme is a classic (non-block) WordPress theme that assembles a modern, responsive frontend by combining a monolithic CSS architecture with vanilla JavaScript. It integrates seamlessly with five companion plugins (Peptide Search AI, Peptide News, PRAutoBlogger, Peptide Tools, Peptide Tracker, Peptide Community) via shortcodes, coordinates dark mode across the ecosystem via CSS custom properties and the DOM `data-theme` attribute, and provides customizable hero, navigation, authentication, and footer sections.
+Peptide Starter (slug: `peptide-starter`) is a premium classic WordPress
+theme for peptiderepo.com — a scientific peptide reference database. It
+assembles a modern, accessible frontend from a monolithic stylesheet, a
+handful of vanilla-JS modules, and a collection of PHP modules under
+`inc/`. The theme integrates with six companion plugins through
+shortcodes (graceful degradation via `shortcode_exists`), coordinates
+dark mode via CSS custom properties + a `data-theme` attribute, and — as
+of v1.5.1 — runs a self-contained abuse-control layer (rate limiting,
+honeypots, email verification) over its frontend auth surface.
 
 ## Directory Structure
 
 ```
 peptide-starter/
-├── style.css                    # All theme CSS. Architecture: reset → tokens → typography →
-│                                 # globals → components → regions → pages → animations →
-│                                 # a11y → dark mode → responsive → new feature sections
-│
-├── functions.php                # Theme setup entry point (~206 lines)
-│                                 # - Constants, feature module loading
-│                                 # - Theme support registration
-│                                 # - Script/style enqueueing (incl conditional)
-│                                 # - Widget areas, newsletter handler, dark mode inline script
+├── style.css                      # All theme CSS. Section 26 = v1.5.1 additions.
+├── functions.php                  # Theme setup entry point (<250 lines).
+│                                   # - Constants, feature module loading (order matters)
+│                                   # - Theme support + nav menus
+│                                   # - Script/style enqueue (conditional per template)
+│                                   # - Newsletter signup POST handler
+│                                   # - Inline dark mode flash preventer in wp_head
 │
 ├── inc/
-│   ├── helpers.php              # Nav walker, custom logo, hero/footer getters, pagination
-│   ├── customizer.php           # Customizer sections, settings, sanitize callbacks
-│   ├── auth-handlers.php        # AJAX login + registration handlers
-│   ├── contact-handler.php      # AJAX contact form handler (settings panel)
-│   ├── page-setup.php           # Auto-create pages on theme activation
-│   └── newsletter-admin.php     # Admin page to view/export subscriber emails
+│   ├── config.php                 # [v1.5.1] Security config — single source of truth.
+│   │                               # Every threshold lives here; filterable.
+│   ├── helpers.php                # Nav walker + menu fallback, logo, getters,
+│   │                               # pagination, honeypot renderer, csv_safe,
+│   │                               # require_login gate, safe referer.
+│   ├── rate-limiter.php           # [v1.5.1] Peptide_Starter_Rate_Limiter +
+│   │                               # peptide_starter_get_client_ip (CF-aware).
+│   ├── email-verification.php     # [v1.5.1] Token send + verify route + resend
+│   │                               # endpoint + user_is_verified().
+│   ├── customizer.php             # Customizer sections/settings/controls.
+│   ├── auth-handlers.php          # AJAX login + register — unified errors,
+│   │                               # honeypot, rate limit, no auto-login.
+│   ├── contact-handler.php        # AJAX contact — header-injection guard,
+│   │                               # honeypot, rate limit, request IDs in mail.
+│   ├── newsletter-admin.php       # Subscriber viewer + CSV-safe export +
+│   │                               # /newsletter-unsubscribe route.
+│   ├── mail-diagnostic.php        # [v1.5.1] Tools → Mail Test — wp_mail probe.
+│   └── page-setup.php             # Auto-create pages on activation +
+│                                    # v1.5.0 user migration (enrol into verify).
 │
-├── header.php                   # Global header (~190 lines)
-│                                 # - Site logo, primary navigation with dropdowns
-│                                 # - Sign In / User menu (state-aware)
-│                                 # - Settings icon, language placeholder
-│                                 # - Search, dark mode toggle, cart, mobile menu
-│                                 # - Search overlay, fallback nav
+├── header.php                     # Site header, nav, icons, search overlay.
+├── footer.php                     # Widget grid + copyright + settings panel.
+├── front-page.php                 # Hero → module cards → plugin feeds.
 │
-├── footer.php                   # Global footer (~100 lines)
-│                                 # - Newsletter signup (front page via template part)
-│                                 # - 4-column widget grid with updated defaults
-│                                 # - Copyright, disclaimer, language links
-│                                 # - Settings panel include
-│
-├── front-page.php               # Home page template (~100 lines)
-│                                 # - Hero section (title, subtitle, search, CTAs)
-│                                 # - Research Modules grid (6 cards)
-│                                 # - [prautoblogger_posts] shortcode
-│                                 # - [peptide_news] shortcode
-│
-├── page-calculator.php          # Calculator page template → [peptide_tools_calculator]
-├── page-protocol-builder.php    # Protocol Builder template → [peptide_tools_protocol_builder]
-├── page-tracker.php             # Tracker template → [peptide_tracker]
-├── page-subject-log.php         # Subject Log template → [peptide_tracker_subject_log]
-├── page-documentation.php       # Documentation/SOP page — two-column layout with ToC sidebar
-├── page-directory.php           # Peptide Directory template → [peptide_directory]
-├── page-science-feed.php        # Science Feed template → [peptide_news] + newsletter
-├── page-profile.php             # User Profile template → [peptide_community_profile]
-├── page-auth.php                # Sign In / Register — branded auth forms with AJAX
-│
-├── page.php                     # Generic page template
-├── index.php                    # Fallback template
-├── single-peptide.php           # Peptide detail page (CPT)
-├── archive-peptide.php          # Peptide archive (CPT grid)
-├── 404.php                      # 404 error page
-├── searchform.php               # Search form template
+├── page-calculator.php            # OPEN — reconstitution calculator (no PII).
+├── page-protocol-builder.php      # GATED — require_login (builds saved protocols).
+├── page-tracker.php               # GATED — require_login (per-user tracking).
+├── page-subject-log.php           # GATED — require_login (user lab data).
+├── page-directory.php             # Peptide directory.
+├── page-documentation.php         # Two-column docs with ToC sidebar.
+├── page-science-feed.php          # Science feed + newsletter signup.
+├── page-profile.php               # Profile + verify-required banner + resend.
+├── page-auth.php                  # Sign In / Register forms (honeypotted).
+├── page.php, index.php, 404.php   # Standard fallbacks.
+├── single-peptide.php             # Peptide CPT detail.
+├── archive-peptide.php            # Peptide CPT archive.
 │
 ├── template-parts/
-│   ├── content.php              # Default post/page loop item
-│   ├── content-peptide.php      # Peptide CPT card template
-│   ├── content-none.php         # Empty state template
-│   ├── module-cards.php         # Research Modules 6-card grid (front page)
-│   ├── newsletter-signup.php    # Reusable newsletter signup section
-│   └── settings-panel.php       # Slide-out support/contact panel
+│   ├── content.php, content-*.php # Loop / CPT / empty state.
+│   ├── module-cards.php           # Front-page 6-card grid.
+│   ├── newsletter-signup.php      # [v1.5.1] Signup + consent + honeypot.
+│   └── settings-panel.php         # Slide-out support/contact panel + honeypot.
 │
 ├── assets/js/
-│   ├── navigation.js            # Mobile menu toggle (85 lines)
-│   ├── theme.js                 # Dark mode + search overlay + utilities (210 lines)
-│   ├── documentation.js         # ToC generation + scroll spy for docs page (145 lines)
-│   ├── auth.js                  # Auth form toggle, validation, AJAX (192 lines)
-│   └── settings-panel.js        # Settings panel open/close + contact form (163 lines)
+│   ├── navigation.js              # Mobile menu + body-overflow save/restore.
+│   ├── theme.js                   # Dark mode + search overlay + plugin API.
+│   ├── documentation.js           # ToC builder (text-slug IDs) + scroll spy.
+│   ├── auth.js                    # Form toggle + AJAX + XSS-safe status.
+│   └── settings-panel.js          # Open/close + focus trap + AJAX contact.
 │
-├── languages/                   # Translation files (.pot, .po, .mo)
-├── tests/                       # PHPUnit tests
-├── .phpcs.xml.dist              # PHPCS config
-├── phpunit.xml                  # PHPUnit config
-├── composer.json                # Dev dependencies
-├── README.md                    # User-facing docs
-├── CLAUDE.md                    # Developer context
-├── CHANGELOG.md                 # Version history
-└── screenshot.png               # Theme preview image
+├── tests/
+│   ├── bootstrap.php              # PHPUnit bootstrap.
+│   ├── test-functions.php         # Legacy helper tests.
+│   ├── test-theme-setup.php       # Theme setup tests.
+│   ├── test-rate-limiter.php      # [v1.5.1] Rate limiter lifecycle + IP resolver.
+│   ├── test-auth-handlers.php     # [v1.5.1] Login + register unified errors.
+│   ├── test-email-verification.php# [v1.5.1] Token send/verify/reject.
+│   ├── test-contact-handler.php   # [v1.5.1] Header injection + rate limit + honeypot.
+│   ├── test-newsletter.php        # [v1.5.1] Signup + consent + CSV-safe.
+│   └── test-auth-gate.php         # [v1.5.1] require_login redirects.
+│
+├── .phpcs.xml.dist                # PHPCS config (WordPress-Core).
+├── phpunit.xml                    # PHPUnit config (theme suite).
+├── composer.json                  # Dev-only dependencies.
+├── CHANGELOG.md, CONVENTIONS.md, README.md, CLAUDE.md
+└── screenshot.png
 ```
 
 ## Navigation Structure
@@ -93,115 +98,141 @@ peptide-starter/
 ```
 Home | Tools ▾ | My Data ▾ | Resources ▾ | [Sign In / Username ▾] ⚙ 🌐 🔍 🌙
 
-Tools dropdown:
-  ├── Calculator → /calculator
-  ├── Protocol Builder → /protocol-builder
-  └── Tracker → /tracker
-
-My Data dropdown:
-  ├── Peptides → /peptides
-  └── Subject Log → /subject-log
-
-Resources dropdown:
-  ├── Documentation → /documentation
-  └── Science Feed → /news
-
-User menu (logged in):
-  ├── My Profile → /profile
-  ├── Tracker → /tracker
-  ├── Subject Log → /subject-log
-  └── Sign Out
+Tools:       Calculator (open) · Protocol Builder · Tracker
+My Data:     Peptides · Subject Log
+Resources:   Documentation · Science Feed
+User menu:   My Profile · Tracker · Subject Log · Sign Out
 ```
 
 ## Page Template Map
 
-| Page Title | Slug | Template File | Plugin Shortcode |
-|------------|------|---------------|-----------------|
-| Calculator | calculator | page-calculator.php | [peptide_tools_calculator] |
-| Protocol Builder | protocol-builder | page-protocol-builder.php | [peptide_tools_protocol_builder] |
-| Tracker | tracker | page-tracker.php | [peptide_tracker] |
-| Subject Log | subject-log | page-subject-log.php | [peptide_tracker_subject_log] |
-| Documentation | documentation | page-documentation.php | (WordPress content + JS ToC) |
-| Peptide Directory | peptides | page-directory.php | [peptide_directory] |
-| Science Feed | news | page-science-feed.php | [peptide_news] |
-| Profile | profile | page-profile.php | [peptide_community_profile] |
-| Sign In | auth | page-auth.php | (Custom auth forms) |
+| Page Title        | Slug             | Template                    | Gated     | Shortcode                           |
+|-------------------|------------------|-----------------------------|-----------|-------------------------------------|
+| Calculator        | calculator       | page-calculator.php         | open      | [peptide_tools_calculator]          |
+| Protocol Builder  | protocol-builder | page-protocol-builder.php   | login+verify | [peptide_tools_protocol_builder] |
+| Tracker           | tracker          | page-tracker.php            | login+verify | [peptide_tracker]                |
+| Subject Log       | subject-log      | page-subject-log.php        | login+verify | [peptide_tracker_subject_log]    |
+| Documentation     | documentation    | page-documentation.php      | open      | —                                   |
+| Peptide Directory | peptides         | page-directory.php          | open      | [peptide_directory]                 |
+| Science Feed      | news             | page-science-feed.php       | open      | [peptide_news]                      |
+| Profile           | profile          | page-profile.php            | login     | [peptide_community_profile]         |
+| Sign In           | auth             | page-auth.php               | open      | (custom forms)                      |
 
-Pages are auto-created on theme activation via `inc/page-setup.php`.
+Pages auto-created via `inc/page-setup.php` on theme activation.
+"Gated" templates call `peptide_starter_require_login()` before `get_header()`.
 
-## Data Flow & Architecture Diagrams
+## Data Flow
 
-### Front Page Assembly
-
-```
-front-page.php
-    ├─→ Hero Section (title, subtitle, search, CTAs)
-    │   └─→ [peptide_search] shortcode (Peptide Search AI plugin)
-    │
-    ├─→ Research Modules Grid (template-parts/module-cards.php)
-    │   └─→ 6 cards linking to tool/section pages
-    │       └─→ Checks shortcode_exists() for graceful degradation
-    │
-    ├─→ [prautoblogger_posts] shortcode (PRAutoBlogger plugin)
-    │
-    └─→ [peptide_news] shortcode (Peptide News plugin)
-```
-
-### Authentication Flow
+### Authentication (v1.5.1)
 
 ```
 page-auth.php
-    ├─→ Sign In form → auth.js AJAX → inc/auth-handlers.php
-    │   └─→ wp_signon() → redirect to original page
-    │
-    └─→ Register form → auth.js AJAX → inc/auth-handlers.php
-        └─→ wp_create_user() → auto-login → redirect to /profile
+  ├─ Sign In form  → auth.js AJAX → inc/auth-handlers.php::peptide_starter_ajax_login
+  │                                    ├─ Nonce check
+  │                                    ├─ Honeypot check (fake success on trip)
+  │                                    ├─ Rate-limit check (login bucket, IP+email hash)
+  │                                    ├─ wp_signon (all failures → unified message)
+  │                                    └─ Success → reset limiter → redirect
+  │                                        (unverified users → /profile?verify_required=1)
+  │
+  └─ Register form → auth.js AJAX → inc/auth-handlers.php::peptide_starter_ajax_register
+                                       ├─ Nonce check
+                                       ├─ Honeypot check (fake success on trip)
+                                       ├─ Rate-limit check (register bucket, IP only)
+                                       ├─ Validation (all failures → unified message)
+                                       ├─ wp_create_user
+                                       ├─ peptide_starter_send_verification_email
+                                       │     ├─ Generate 43-char token
+                                       │     ├─ Set ps_pending_verification=1,
+                                       │     │   ps_verify_token, ps_verify_expires
+                                       │     └─ wp_mail with /verify?uid=&token= link
+                                       └─ Respond with "check your inbox" (no redirect, no auto-login)
+
+/verify?uid=&token=
+  → inc/email-verification.php::peptide_starter_handle_verify_request
+     ├─ hash_equals() token match + TTL check
+     ├─ Clear verify meta on success
+     ├─ wp_set_auth_cookie
+     └─ Redirect /profile?verified=1   (failure → /auth?verify_error=1)
 ```
 
-### Dark Mode Coordination
+### Abuse controls (v1.5.1)
 
 ```
-functions.php (wp_head inline script)
-    └─→ Sets html[data-theme] from localStorage → system pref → customizer default
-        ├─→ style.css reads data-theme for color overrides
-        └─→ theme.js dispatches 'themechange' event to plugins
+Every public form submit:
+  1. Nonce verify                    → 403-equivalent security error if missing/invalid
+  2. Honeypot check                   → Fake-success drop on non-empty hidden field
+  3. Peptide_Starter_Rate_Limiter     → Silent generic error on budget exhaustion
+  4. Business logic                   → Unified error on any validation failure
+
+Rate-limit state:
+  Storage: wp_options transients, key ps_rl_{action}_{hash}
+  Hash:    substr( wp_hash( ip . '|' . identifier ), 0, 16 )
+  Never stores raw IPs or identifiers.
+```
+
+### Front page assembly
+
+```
+front-page.php
+  ├─ Hero (title, subtitle, search CTA)
+  │    └─ [peptide_search] (Peptide Search AI)
+  ├─ Research Modules grid (template-parts/module-cards.php)
+  ├─ [prautoblogger_posts]  (PRAutoBlogger)
+  └─ [peptide_news]         (Peptide News)
+```
+
+### Dark mode coordination
+
+```
+wp_head inline script        sets html[data-theme] from localStorage → system pref → customizer default
+CSS :root vs html[data-theme="dark"]        colour tokens swap
+theme.js toggle                              writes localStorage, dispatches 'themechange' DOM event
 ```
 
 ## External Integrations
 
-### Plugin Integrations (via Shortcodes)
+Shortcodes (plugins), all wrapped in `shortcode_exists()`:
 
-1. **Peptide Search AI** (`[peptide_search]`) — Hero + search overlay. Namespace: `.psa-*`
-2. **Peptide News** (`[peptide_news]`) — Front page + science feed. Namespace: `.pn-*`
-3. **PRAutoBlogger** (`[prautoblogger_posts]`) — Front page articles. Namespace: `.prab-*`
-4. **Peptide Tools** (`[peptide_tools_calculator]`, `[peptide_tools_protocol_builder]`) — Tool pages
-5. **Peptide Tracker** (`[peptide_tracker]`, `[peptide_tracker_subject_log]`) — Tracker pages
-6. **Peptide Community** (`[peptide_community_profile]`, `[peptide_directory]`) — Profile + directory
-
-All plugins checked with `shortcode_exists()` for graceful degradation.
+1. **Peptide Search AI** (`[peptide_search]`) — `.psa-*`
+2. **Peptide News** (`[peptide_news]`) — `.pn-*`
+3. **PRAutoBlogger** (`[prautoblogger_posts]`) — `.prab-*`
+4. **Peptide Tools** (`[peptide_tools_calculator]`, `[peptide_tools_protocol_builder]`)
+5. **Peptide Tracker** (`[peptide_tracker]`, `[peptide_tracker_subject_log]`)
+6. **Peptide Community** (`[peptide_community_profile]`, `[peptide_directory]`)
 
 ## Key Architectural Decisions
 
-1. **Classic Theme (Not FSE)** — Stability, control, plugin compatibility
-2. **Monolithic CSS** — No build step, CSS custom properties for abstraction
-3. **Vanilla JavaScript** — No bundler, direct browser ES6+, `node --check` validation
-4. **Shortcode Integration** — Decouples plugins from theme via `shortcode_exists()`
-5. **CSS Custom Properties for Dark Mode** — Single source of truth for colors
-6. **No `!important` Policy** — Explicit specificity over cascade tricks
-7. **Inline Dark Mode Script** — Prevents flash of wrong theme on load
-8. **Split functions.php into inc/** — Keeps all files under 300 lines
+1. **Classic theme (not FSE)** — stability, plugin compatibility.
+2. **Monolithic CSS** — no build step, CSS custom properties for tokens.
+3. **Vanilla JavaScript** — no bundler; `node --check` in CI.
+4. **Shortcode integration** — plugins decoupled; theme degrades gracefully.
+5. **Split `functions.php` into `inc/` modules** — every file < 300 lines.
+6. **Self-contained auth hardening (v1.5.1 / ADR-0001)** — rate limiter,
+   honeypots, email verification all live in the theme. No plugin
+   dependencies, no paid services. Swappable via two small interfaces
+   (`Peptide_Starter_Rate_Limiter`, `peptide_starter_require_login`).
+7. **Transient-backed rate limits** — auto-expire, no custom table, no
+   uninstall cleanup. If the site ever goes multi-server, swap to the
+   shared object cache without caller changes.
 
-## Security
+## Security Summary
 
-- CSRF nonces on all forms (auth, newsletter, contact)
-- All input sanitized at boundary (`sanitize_text_field`, `sanitize_email`, `sanitize_textarea_field`)
-- All output escaped (`esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`)
-- Login redirect validated with `wp_validate_redirect()` to prevent open redirects
-- Auth form uses AJAX to avoid exposing credentials in URL
-- Contact form topics restricted to allowlist
+- CSRF nonces on every form (auth, newsletter, contact, mail-test, unsubscribe).
+- Unified error messages on login + registration (no enumeration).
+- Rate limiting on login / register / contact / newsletter / verify-resend.
+- Honeypots on the four public forms (login, register, contact, newsletter).
+- `require_login()` gate on every template that owns user data.
+- Email verification required for write access to user-data tools.
+- CSV export formula-injection safe.
+- All input sanitized at the boundary; all output escaped.
+- Login redirect validated with `wp_validate_redirect`.
+- Rate-limit storage keys are hashed — no raw IPs persisted.
+- Contact sender names reject header-injection characters before `wp_mail`.
 
 ## Version
 
-**Current:** v1.5.0
+**Current:** v1.5.1 (2026-04-14)
 
-When releasing a new version, update `style.css` header (line 7) and `PEPTIDE_STARTER_VERSION` in `functions.php`.
+Bump `style.css` header line 7 and `PEPTIDE_STARTER_VERSION` in
+`functions.php` together on release.

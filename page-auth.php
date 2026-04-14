@@ -55,6 +55,7 @@ get_header();
 						<?php wp_nonce_field( 'ps_auth_login', 'ps_login_nonce' ); ?>
 						<input type="hidden" name="action" value="ps_auth_login">
 						<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>">
+						<?php peptide_starter_render_honeypot( 'login' ); ?>
 
 						<div class="ps-form-group">
 							<label for="ps-login-email"><?php esc_html_e( 'Email', 'peptide-starter' ); ?></label>
@@ -104,6 +105,7 @@ get_header();
 						<?php wp_nonce_field( 'ps_auth_register', 'ps_register_nonce' ); ?>
 						<input type="hidden" name="action" value="ps_auth_register">
 						<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>">
+						<?php peptide_starter_render_honeypot( 'register' ); ?>
 
 						<div class="ps-form-group">
 							<label for="ps-reg-username"><?php esc_html_e( 'Username', 'peptide-starter' ); ?></label>

@@ -8,7 +8,7 @@
  * - Menu state persistence
  */
 
-(function() {
+(function () {
 	'use strict';
 
 	const menuToggle = document.querySelector('.menu-toggle');
@@ -19,66 +19,48 @@
 		return;
 	}
 
-	/**
-	 * Toggle mobile menu visibility
-	 */
-	function toggleMenu() {
-		const isActive = primaryNav.classList.contains('active');
+	let previousOverflow = '';
 
-		if (isActive) {
+	function openMenu() {
+		primaryNav.classList.add('active');
+		navOverlay.classList.add('active');
+		previousOverflow = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		menuToggle.setAttribute('aria-expanded', 'true');
+	}
+
+	function closeMenu() {
+		primaryNav.classList.remove('active');
+		navOverlay.classList.remove('active');
+		document.body.style.overflow = previousOverflow;
+		previousOverflow = '';
+		menuToggle.setAttribute('aria-expanded', 'false');
+	}
+
+	function toggleMenu() {
+		if (primaryNav.classList.contains('active')) {
 			closeMenu();
 		} else {
 			openMenu();
 		}
 	}
 
-	/**
-	 * Open mobile menu
-	 */
-	function openMenu() {
-		primaryNav.classList.add('active');
-		navOverlay.classList.add('active');
-		document.body.style.overflow = 'hidden';
-		menuToggle.setAttribute('aria-expanded', 'true');
-	}
-
-	/**
-	 * Close mobile menu
-	 */
-	function closeMenu() {
-		primaryNav.classList.remove('active');
-		navOverlay.classList.remove('active');
-		document.body.style.overflow = '';
-		menuToggle.setAttribute('aria-expanded', 'false');
-	}
-
-	// Menu toggle button click
 	menuToggle.addEventListener('click', toggleMenu);
-
-	// Overlay click
 	navOverlay.addEventListener('click', closeMenu);
 
-	// Close menu when a nav link is clicked
 	const navLinks = primaryNav.querySelectorAll('a');
-	navLinks.forEach(link => {
+	navLinks.forEach(function (link) {
 		link.addEventListener('click', closeMenu);
 	});
 
-	// Close menu on Escape key
-	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape') {
-			closeMenu();
-		}
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape') { closeMenu(); }
 	});
 
-	// Set initial aria-expanded state
 	menuToggle.setAttribute('aria-expanded', 'false');
 
-	// Close menu when window is resized above mobile breakpoint
 	const mediaQuery = window.matchMedia('(min-width: 768px)');
-	mediaQuery.addEventListener('change', (e) => {
-		if (e.matches) {
-			closeMenu();
-		}
+	mediaQuery.addEventListener('change', function (e) {
+		if (e.matches) { closeMenu(); }
 	});
 })();

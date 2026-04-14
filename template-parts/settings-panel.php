@@ -47,6 +47,7 @@ $user_email   = is_user_logged_in() ? $current_user->user_email : '';
 			<form id="ps-contact-form" class="ps-contact-form" novalidate>
 				<?php wp_nonce_field( 'ps_contact_form', 'ps_contact_nonce' ); ?>
 				<input type="hidden" name="action" value="ps_contact_submit">
+				<?php peptide_starter_render_honeypot( 'contact' ); ?>
 
 				<div class="ps-form-group">
 					<label for="ps-contact-name"><?php esc_html_e( 'Name', 'peptide-starter' ); ?></label>
