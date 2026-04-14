@@ -160,11 +160,18 @@ function peptide_starter_ajax_register() {
 
 	$pattern = sprintf( '/^[a-zA-Z0-9]{%d,%d}$/', (int) $config['username_min'], (int) $config['username_max'] );
 
-	if ( ! preg_match( $pattern, $username ) ||
-		! is_email( $email ) ||
-		strlen( $password ) < (int) $config['password_min'] ||
-		username_exists( $username ) ||
-		email_exists( $email ) ) {
+	// Evaluate every check unconditionally so response time doesn't reveal
+	// which branch failed. `username_exists` and `email_exists` are each a
+	// DB round-trip; skipping them when an earlier cheap check already
+	// failed produces a response-time oracle that enables enumeration. We
+	// intentionally accept the extra queries as the cost of not leaking.
+	$invalid_username = ! preg_match( $pattern, $username );
+	$invalid_email    = ! is_email( $email );
+	$invalid_password = strlen( $password ) < (int) $config['password_min'];
+	$username_taken   = (bool) username_exists( $username );
+	$email_taken      = (bool) email_exists( $email );
+
+	if ( $invalid_username || $invalid_email || $invalid_password || $username_taken || $email_taken ) {
 		wp_send_json_error( array( 'message' => peptide_starter_register_failure_message() ) );
 	}
 

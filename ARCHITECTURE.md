@@ -30,8 +30,11 @@ peptide-starter/
 │   ├── helpers.php                # Nav walker + menu fallback, logo, getters,
 │   │                               # pagination, honeypot renderer, csv_safe,
 │   │                               # require_login gate, safe referer.
-│   ├── rate-limiter.php           # [v1.5.1] Peptide_Starter_Rate_Limiter +
-│   │                               # peptide_starter_get_client_ip (CF-aware).
+│   ├── cloudflare-ips.php         # [v1.5.2] CF edge range snapshot +
+│   │                               # CIDR matcher (v4 and v6).
+│   ├── rate-limiter.php           # Peptide_Starter_Rate_Limiter +
+│   │                               # peptide_starter_get_client_ip (peer-validated,
+│   │                               # PSEC-007).
 │   ├── email-verification.php     # [v1.5.1] Token send + verify route + resend
 │   │                               # endpoint + user_is_verified().
 │   ├── customizer.php             # Customizer sections/settings/controls.
@@ -220,19 +223,47 @@ Shortcodes (plugins), all wrapped in `shortcode_exists()`:
 
 - CSRF nonces on every form (auth, newsletter, contact, mail-test, unsubscribe).
 - Unified error messages on login + registration (no enumeration).
+- Registration validation does **not** short-circuit — all checks
+  evaluate unconditionally so response timing can't distinguish which
+  one failed (PSEC-009, v1.5.2).
 - Rate limiting on login / register / contact / newsletter / verify-resend.
 - Honeypots on the four public forms (login, register, contact, newsletter).
 - `require_login()` gate on every template that owns user data.
 - Email verification required for write access to user-data tools.
+- Existing accounts (created before v1.5.2) are grandfathered as
+  verified. Verification enforces only on registrations from v1.5.2
+  onward (PSEC-008, v1.5.2).
 - CSV export formula-injection safe.
 - All input sanitized at the boundary; all output escaped.
 - Login redirect validated with `wp_validate_redirect`.
 - Rate-limit storage keys are hashed — no raw IPs persisted.
 - Contact sender names reject header-injection characters before `wp_mail`.
 
+### Client-IP trust model (PSEC-007, v1.5.2)
+
+peptiderepo.com sits behind Cloudflare. The rate limiter keys on client
+IP, so the source of that IP matters for correctness of every abuse
+control in the theme.
+
+`peptide_starter_get_client_ip()` trusts in this priority order:
+
+1. **`HTTP_CF_CONNECTING_IP`** — only when `REMOTE_ADDR` is itself
+   inside a published Cloudflare edge range (see `inc/cloudflare-ips.php`).
+   Direct-to-origin connections that bypass Cloudflare cannot forge this
+   header because their peer IP is not a CF edge.
+2. **`HTTP_X_FORWARDED_FOR`** — ignored by default. Opt in via
+   `add_filter( 'peptide_starter_trust_xff', '__return_true' )` only
+   when a known, trusted non-CF proxy fronts the origin.
+3. **`REMOTE_ADDR`** — always trusted as the final fallback. Cannot be
+   client-controlled at the TCP layer.
+
+`inc/cloudflare-ips.php` holds a static snapshot of CF ranges. Refresh
+quarterly. Override via `peptide_starter_cloudflare_ip_ranges` filter
+for out-of-band updates.
+
 ## Version
 
-**Current:** v1.5.1 (2026-04-14)
+**Current:** v1.5.2 (2026-04-14)
 
 Bump `style.css` header line 7 and `PEPTIDE_STARTER_VERSION` in
 `functions.php` together on release.

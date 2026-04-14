@@ -2,6 +2,64 @@
 
 All notable changes to the Peptide Starter Theme are documented in this file.
 
+## [1.5.2] - 2026-04-14 — Security
+
+Same-day follow-up to v1.5.1. Closes four issues the v1.5.1 post-merge
+review flagged — two ship-blockers (PSEC-007 CF header spoof, PSEC-008
+synchronous migration) and two mediums (PSEC-009 timing oracle,
+PSEC-010 test-coverage gap). All fixes stay within ADR-0001's decision
+envelope — no new ADR required.
+
+### Security fixes
+
+- **PSEC-007** — `peptide_starter_get_client_ip()` now only trusts
+  `HTTP_CF_CONNECTING_IP` when `REMOTE_ADDR` itself is inside a
+  published Cloudflare edge range. Direct-to-origin requests (which
+  Hostinger allows) can no longer forge their source IP by sending a
+  `CF-Connecting-IP` header. `HTTP_X_FORWARDED_FOR` is ignored unless
+  explicitly opted in via the `peptide_starter_trust_xff` filter. New
+  module `inc/cloudflare-ips.php` holds the range snapshot (dated
+  2026-04-14) + a CIDR matcher for both IPv4 and IPv6. Override the
+  list via the `peptide_starter_cloudflare_ip_ranges` filter.
+- **PSEC-008** — Removed the v1.5.1 re-verification migration entirely
+  (Option A). Existing subscribers are now grandfathered — treated as
+  verified. Verification applies to accounts registered from v1.5.2
+  onward. The `admin_init`-driven synchronous `wp_mail` loop that blocked
+  wp-admin is gone; its `ps_verify_migration_version` option is cleared
+  on theme activation.
+- **PSEC-009** — Registration validation no longer short-circuits.
+  Pattern / email / password / `username_exists` / `email_exists` all
+  evaluate unconditionally before the combined rejection, closing the
+  response-time enumeration oracle that distinguished microsecond-fast
+  regex rejection from DB-round-trip rejection.
+
+### Tests
+
+- `test-rate-limiter.php` — seven new cases covering CF-peer trust,
+  spoofed-header rejection, invalid-value fallthrough, XFF default-off
+  behaviour, XFF filter opt-in, filter override of the CF range list,
+  IPv6 CIDR matching, and family-mismatch rejection.
+- `test-auth-handlers.php` — `test_register_runs_all_checks_even_when_early_one_fails`
+  asserts DB-backed user lookups still execute when a cheap validation
+  check has already failed (PSEC-009).
+- `test-email-verification.php` — `test_valid_token_verifies_user_clears_meta_and_fires_hook`
+  covers the happy-path verify flow end-to-end including hook firing
+  (PSEC-010).
+
+### Documentation
+
+- `ARCHITECTURE.md` — CF IP trust model explained in the Security
+  Summary; migration decision (grandfather) documented.
+- `CONVENTIONS.md` — new "Trust model for request headers" note.
+
+### Rollback note
+
+If v1.5.2 causes login or registration failures, roll back to v1.5.0
+(not v1.5.1 — v1.5.1 carried the unresolved PSEC-007 hole and the
+blocking migration). Rate-limit transients auto-expire.
+
+---
+
 ## [1.5.1] - 2026-04-14 — Security
 
 Security-only release hardening the frontend authentication surface introduced

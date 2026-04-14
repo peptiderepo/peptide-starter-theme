@@ -78,17 +78,66 @@ class Test_Rate_Limiter extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( 'alice', $a );
 	}
 
-	public function test_client_ip_prefers_cf_header() {
+	public function test_client_ip_trusts_cf_header_when_peer_is_cloudflare() {
+		// 172.68.0.5 is inside 172.64.0.0/13 (published CF range).
+		$_SERVER['REMOTE_ADDR']           = '172.68.0.5';
 		$_SERVER['HTTP_CF_CONNECTING_IP'] = '203.0.113.5';
-		$_SERVER['REMOTE_ADDR']           = '10.0.0.1';
 		$this->assertSame( '203.0.113.5', peptide_starter_get_client_ip() );
-		unset( $_SERVER['HTTP_CF_CONNECTING_IP'] );
+		unset( $_SERVER['HTTP_CF_CONNECTING_IP'], $_SERVER['REMOTE_ADDR'] );
 	}
 
-	public function test_client_ip_rejects_garbage() {
+	public function test_client_ip_ignores_spoofed_cf_header_from_non_cloudflare_peer() {
+		// 8.8.8.8 is not Cloudflare — any CF-Connecting-IP header must be
+		// treated as hostile and ignored. This is PSEC-007.
+		$_SERVER['REMOTE_ADDR']           = '8.8.8.8';
+		$_SERVER['HTTP_CF_CONNECTING_IP'] = '203.0.113.5';
+		$this->assertSame( '8.8.8.8', peptide_starter_get_client_ip() );
+		unset( $_SERVER['HTTP_CF_CONNECTING_IP'], $_SERVER['REMOTE_ADDR'] );
+	}
+
+	public function test_client_ip_rejects_invalid_cf_header_value() {
+		$_SERVER['REMOTE_ADDR']           = '172.68.0.5';
 		$_SERVER['HTTP_CF_CONNECTING_IP'] = 'not-an-ip';
+		$this->assertSame( '172.68.0.5', peptide_starter_get_client_ip() );
+		unset( $_SERVER['HTTP_CF_CONNECTING_IP'], $_SERVER['REMOTE_ADDR'] );
+	}
+
+	public function test_client_ip_ignores_xff_by_default() {
 		$_SERVER['REMOTE_ADDR']           = '10.0.0.1';
+		$_SERVER['HTTP_X_FORWARDED_FOR']  = '203.0.113.5';
 		$this->assertSame( '10.0.0.1', peptide_starter_get_client_ip() );
-		unset( $_SERVER['HTTP_CF_CONNECTING_IP'] );
+		unset( $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['REMOTE_ADDR'] );
+	}
+
+	public function test_client_ip_respects_xff_when_filter_enables_trust() {
+		$_SERVER['REMOTE_ADDR']           = '10.0.0.1';
+		$_SERVER['HTTP_X_FORWARDED_FOR']  = '203.0.113.5, 172.68.0.5';
+		add_filter( 'peptide_starter_trust_xff', '__return_true' );
+		$this->assertSame( '203.0.113.5', peptide_starter_get_client_ip() );
+		remove_filter( 'peptide_starter_trust_xff', '__return_true' );
+		unset( $_SERVER['HTTP_X_FORWARDED_FOR'], $_SERVER['REMOTE_ADDR'] );
+	}
+
+	public function test_cloudflare_ranges_filter_override_is_honoured() {
+		add_filter(
+			'peptide_starter_cloudflare_ip_ranges',
+			function () {
+				return array( 'v4' => array( '10.0.0.0/8' ), 'v6' => array() );
+			}
+		);
+		// Default snapshot would treat 172.68.0.5 as CF; filter override
+		// should now treat 10.0.0.5 as CF instead.
+		$this->assertTrue( peptide_starter_is_cloudflare_peer( '10.0.0.5' ) );
+		$this->assertFalse( peptide_starter_is_cloudflare_peer( '172.68.0.5' ) );
+		remove_all_filters( 'peptide_starter_cloudflare_ip_ranges' );
+	}
+
+	public function test_cidr_match_handles_ipv6() {
+		$this->assertTrue( peptide_starter_cidr_match( '2606:4700::1234', '2606:4700::/32' ) );
+		$this->assertFalse( peptide_starter_cidr_match( '2001:db8::1', '2606:4700::/32' ) );
+	}
+
+	public function test_cidr_match_rejects_family_mismatch() {
+		$this->assertFalse( peptide_starter_cidr_match( '203.0.113.5', '2606:4700::/32' ) );
 	}
 }

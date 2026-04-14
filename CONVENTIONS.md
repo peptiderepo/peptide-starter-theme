@@ -592,6 +592,26 @@ echo get_theme_mod( 'hero_title' );
 echo get_theme_mod( 'dark_mode_default', false );
 ```
 
+## Trust model for request headers (v1.5.2)
+
+Never trust `HTTP_X_FORWARDED_FOR`, `HTTP_CF_CONNECTING_IP`, or any other
+client-controlled header without first validating the peer. Always read
+the client IP via `peptide_starter_get_client_ip()` — it handles the
+Cloudflare-peer check, the XFF opt-in, and the `REMOTE_ADDR` fallback.
+
+If a new feature needs to trust a different proxy header (e.g. a new CDN
+in front of CF):
+
+1. Add the upstream proxy's IP ranges to a new file under `inc/`.
+2. Extend `peptide_starter_get_client_ip()` with a new validated branch
+   guarded by a filter defaulted to off.
+3. Never accept a header whose source can't be validated at the TCP
+   layer.
+
+Refresh the Cloudflare range snapshot in `inc/cloudflare-ips.php`
+quarterly. Out-of-band bumps go through the
+`peptide_starter_cloudflare_ip_ranges` filter.
+
 ## Security Patterns (v1.5.1)
 
 ### Rate-limit a handler

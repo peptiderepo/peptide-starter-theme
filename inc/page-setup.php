@@ -1,18 +1,21 @@
 <?php
 /**
- * Auto-Create Pages + v1.5.0 User Migration
+ * Auto-Create Pages on Theme Activation
  *
- * On theme activation, creates the required WordPress pages with the
- * correct templates assigned, and runs a one-time migration that enrols
- * pre-v1.5.1 users into the email-verification flow.
+ * Creates the required WordPress pages with the correct templates
+ * assigned on theme activation, and performs small one-off cleanups
+ * tied to version bumps.
+ *
+ * As of v1.5.2 this file does NOT run a user-verification migration:
+ * existing accounts created before v1.5.2 are grandfathered as
+ * verified (see ADR-0001 addendum / CHANGELOG [1.5.2] PSEC-008).
  *
  * @see functions.php — includes this file
- * @see inc/email-verification.php — peptide_starter_send_verification_email()
  * @see ARCHITECTURE.md — page/template map
  *
- * What: Theme-activation hooks for page provisioning and user enrolment.
+ * What: Theme-activation hook for page provisioning + version cleanup.
  * Who calls it: WordPress after_switch_theme.
- * Dependencies: wp_insert_post, update_post_meta, user meta.
+ * Dependencies: wp_insert_post, update_post_meta.
  *
  * @package peptide-starter
  */
@@ -101,54 +104,9 @@ function peptide_starter_create_pages() {
 			update_post_meta( $page_id, '_wp_page_template', $page_data['template'] );
 		}
 	}
+
+	// v1.5.2 cleanup: the v1.5.1 migration writes this flag. Drop it on
+	// activation so the removed migration doesn't leave dangling state.
+	delete_option( 'ps_verify_migration_version' );
 }
 add_action( 'after_switch_theme', 'peptide_starter_create_pages' );
-
-/**
- * One-time migration: enrol v1.5.0 subscribers into email verification.
- *
- * Runs once per site — guarded by the ps_verify_migration_version option.
- * Iterates subscribers in batches of 50 via wp_mail(). Users created by
- * admin (any role above subscriber) are skipped — we assume admin-created
- * accounts are trusted.
- *
- * Side effects: writes user meta + sends email per enrolled user.
- *
- * Cost note: worst case N emails on first admin page load after deploy.
- * If the site has many users, move this to WP-Cron before shipping a
- * large-user release (not a concern for the current zero-user site).
- *
- * @return void
- */
-function peptide_starter_migrate_existing_users_to_verification() {
-	if ( ! is_admin() ) {
-		return;
-	}
-	$done = get_option( 'ps_verify_migration_version' );
-	if ( PEPTIDE_STARTER_VERSION === $done ) {
-		return;
-	}
-
-	$subscribers = get_users(
-		array(
-			'role'    => 'subscriber',
-			'fields'  => array( 'ID' ),
-			'number'  => 500,
-			'orderby' => 'ID',
-			'order'   => 'ASC',
-		)
-	);
-
-	foreach ( $subscribers as $user ) {
-		$already_enrolled = get_user_meta( $user->ID, 'ps_pending_verification', true );
-		if ( '' !== (string) $already_enrolled ) {
-			continue;
-		}
-		if ( function_exists( 'peptide_starter_send_verification_email' ) ) {
-			peptide_starter_send_verification_email( $user->ID );
-		}
-	}
-
-	update_option( 'ps_verify_migration_version', PEPTIDE_STARTER_VERSION, false );
-}
-add_action( 'admin_init', 'peptide_starter_migrate_existing_users_to_verification' );
