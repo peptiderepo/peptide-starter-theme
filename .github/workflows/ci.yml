@@ -99,7 +99,9 @@ jobs:
       - name: Install WordPress test suite
         env:
           WP_TESTS_DIR: /tmp/wordpress-tests-lib
-          WP_CORE_DIR: /tmp/wordpress
+          # Trailing slash matters: the bootstrap config substitutes this verbatim into ABSPATH,
+          # then concatenates 'wp-settings.php'. Without the slash you get '/tmp/wordpresswp-settings.php'.
+          WP_CORE_DIR: /tmp/wordpress/
         run: |
           chmod +x bin/install-wp-tests.sh
           # 6th arg = skip-database-creation: the MySQL service already created wp_tests via MYSQL_DATABASE env.
