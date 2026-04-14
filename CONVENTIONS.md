@@ -592,6 +592,84 @@ echo get_theme_mod( 'hero_title' );
 echo get_theme_mod( 'dark_mode_default', false );
 ```
 
+## Security Patterns (v1.5.1)
+
+### Rate-limit a handler
+
+Every new public POST handler must be rate-limited.
+
+```php
+// After nonce + honeypot checks.
+$identifier = peptide_starter_hash_identifier( strtolower( $email ) ); // or 'ip' for IP-only bucket
+if ( ! Peptide_Starter_Rate_Limiter::check( 'login', $identifier ) ) {
+    // Respond with the SAME message the real-validation-failure path uses.
+    wp_send_json_error( array( 'message' => peptide_starter_login_failure_message() ) );
+}
+Peptide_Starter_Rate_Limiter::record( 'login', $identifier ); // on failure
+// ...successful operation...
+Peptide_Starter_Rate_Limiter::reset( 'login', $identifier ); // on success
+```
+
+Pick a short action slug. Register its limit in `inc/config.php` under
+`rate_limits`. Never hardcode numbers in the handler.
+
+### Honeypot a form
+
+1. Render the trap in the form template part:
+
+```php
+<?php peptide_starter_render_honeypot( 'myform' ); ?>
+```
+
+2. In the handler, right after nonce verification:
+
+```php
+if ( peptide_starter_honeypot_triggered( 'ps_hp_myform' ) ) {
+    // Fake-success response — do NOT return an error. Bots learn from errors.
+    wp_send_json_success( array( 'message' => __( 'OK', 'peptide-starter' ) ) );
+}
+```
+
+### Gate a template
+
+At the very top of the template, after the `ABSPATH` guard, before
+`get_header()`:
+
+```php
+peptide_starter_require_login();
+```
+
+This redirects unauthenticated users to `/auth?redirect_to=current-uri`
+and unverified users to `/profile?verify_required=1`. Do not reinvent
+this per-template.
+
+### CSV-safe export
+
+Route every cell through the helper before `fputcsv`:
+
+```php
+fputcsv( $output, array(
+    peptide_starter_csv_safe( $email ),
+    peptide_starter_csv_safe( $date ),
+) );
+```
+
+### Error unification
+
+Login + registration failures must emit the same message regardless of
+which validation check failed. Use:
+
+- `peptide_starter_login_failure_message()` — "Invalid email or password."
+- `peptide_starter_register_failure_message()` — "Unable to create account..."
+
+Branching on failure reason is an enumeration oracle. Don't do it.
+
+### Adding a new security threshold
+
+Add a key to the defaults array in `inc/config.php` and always read it
+via `peptide_starter_config_get()` or the shortcut helpers. No magic
+numbers in handler files.
+
 ## Related Documentation
 
 - **ARCHITECTURE.md** — System design, data flows, integrations

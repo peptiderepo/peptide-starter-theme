@@ -2,15 +2,11 @@
 /**
  * Template Name: Tracker
  *
- * Page template for the compound tracker tool.
- * Loads the Peptide Tracker plugin via shortcode.
+ * Compound tracker UI. Requires authenticated + email-verified users —
+ * stores per-user compound tracking state.
  *
- * @see page-subject-log.php — related tracker template
- * @see functions.php — enqueue and page auto-creation
- *
- * What: Renders the tracker page with plugin shortcode integration.
- * Who calls it: WordPress template hierarchy when a page uses this template.
- * Dependencies: Peptide Tracker plugin (optional — graceful fallback).
+ * @see inc/helpers.php — peptide_starter_require_login()
+ * @see page-subject-log.php — related template
  *
  * @package peptide-starter
  */
@@ -19,6 +15,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+peptide_starter_require_login();
 
 get_header();
 ?>

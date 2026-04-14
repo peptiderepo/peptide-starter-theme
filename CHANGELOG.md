@@ -2,6 +2,129 @@
 
 All notable changes to the Peptide Starter Theme are documented in this file.
 
+## [1.5.1] - 2026-04-14 — Security
+
+Security-only release hardening the frontend authentication surface introduced
+in v1.5.0. Governed by ADR-0001 (Frontend authentication and abuse-control
+strategy). No breaking changes to public routes, AJAX action names, or nonce
+action strings.
+
+### Security fixes
+
+- **PSEC-001** — Rate limiting on login (5/min per IP+email), registration
+  (3/hour per IP), contact (5/hour per IP), newsletter (3/hour per IP), and
+  verification resend (2/hour per IP+email). Transient-backed, auto-expiring.
+  Storage never holds raw IPs — keys are truncated `wp_hash` digests.
+- **PSEC-002** — Unified error messages on login and registration. Removed
+  separate "username exists" / "email exists" / "user not found" branches
+  that enabled account enumeration via the error-message oracle. All login
+  failures now return `Invalid email or password.`; all registration
+  validation failures return `Unable to create account. Please check your
+  entries and try again.`
+- **PSEC-003** — Removed auto-login from the registration handler. New
+  registrations now go through an email verification flow: a 43-char random
+  token (stored in user meta with a 24h TTL) is emailed via `wp_mail` and
+  must be clicked to activate the account. Verification route is `/verify`.
+  `wp_mail` deliverability can be validated any time via the new admin tool
+  at Tools → Mail Test.
+- **PSEC-004** — `peptide_starter_require_login()` gate applied at the top
+  of `page-subject-log.php`, `page-tracker.php`, `page-protocol-builder.php`.
+  Unauthenticated users bounce to `/auth?redirect_to=…`; unverified users
+  bounce to `/profile?verify_required=1` which surfaces a resend button.
+  `page-calculator.php` stays open — it holds no PII and does no writes.
+- **PSEC-005** — CSV injection fix in the newsletter admin export. Every
+  cell passed to `fputcsv` routes through `peptide_starter_csv_safe()`,
+  which prefixes values starting with `=`, `+`, `-`, `@`, `\t`, `\r` with
+  a single quote so spreadsheet apps won't interpret them as formulas.
+- **PSEC-006** — Honeypot fields on all four public forms (login, register,
+  contact, newsletter). Any non-empty value fakes a success response and
+  drops the submission. No PII is ever logged — only a sha256-truncated
+  IP hash so admins can correlate if they need to.
+
+### Added
+
+- `inc/config.php` — single source of truth for every security threshold;
+  filterable via `peptide_starter_security_config`.
+- `inc/rate-limiter.php` — `Peptide_Starter_Rate_Limiter` class with
+  `check`/`record`/`reset` lifecycle + `peptide_starter_get_client_ip()`
+  helper (Cloudflare-aware).
+- `inc/email-verification.php` — token generation, verification route
+  handler, user-verified check, and rate-limited AJAX resend endpoint
+  (`ps_resend_verify`).
+- `inc/mail-diagnostic.php` — permanent admin tool under Tools → Mail Test
+  that exercises `wp_mail` and surfaces duration + PHPMailer error.
+- v1.5.0 user migration in `inc/page-setup.php`: existing subscribers are
+  enrolled into the email verification flow on first admin load after the
+  upgrade (guarded by `ps_verify_migration_version` option).
+- Newsletter consent checkbox + privacy policy link on the signup form.
+- Newsletter unsubscribe flow: every subscription now stores a token;
+  `/newsletter-unsubscribe?token=…` flips the `unsubscribed` flag without
+  requiring a login.
+- Profile page verify-required banner with resend button (AJAX).
+- `peptide_starter_render_honeypot()` and `peptide_starter_csv_safe()`
+  helpers in `inc/helpers.php`.
+- PHPUnit suites: `test-rate-limiter.php`, `test-auth-handlers.php`,
+  `test-email-verification.php`, `test-contact-handler.php`,
+  `test-newsletter.php`, `test-auth-gate.php`.
+
+### Changed
+
+- `functions.php` loads the five new modules in dependency order.
+- Newsletter handler stores entries with `autoload=false` so a large
+  subscriber list no longer bloats every page load. Admin notice surfaces
+  once subscribers exceed 1000 (threshold is configurable).
+- Newsletter handler collapses `success` and `duplicate` response states
+  into a single `ok` state — no longer leaks subscription status.
+- Contact handler rejects sender names containing `\r`, `\n`, `,`, `<`,
+  `>` up front (header-injection defence) and tags mail failures with a
+  request ID so admins can correlate without storing message content.
+- Fallback primary-menu function moved from `header.php` into
+  `inc/helpers.php` to eliminate redeclaration risk.
+- Footer placeholder language links (`href="#"`) replaced with a
+  "Translations coming soon" note. Will render localized links once
+  per-language blogs exist.
+- Footer copyright now renders through `peptide_starter_get_footer_copyright()`
+  so the customizer control is live (was dead before).
+- Settings panel now implements a proper Tab / Shift+Tab focus trap and
+  saves + restores `document.body.style.overflow` so nested overlays
+  don't corrupt scroll state.
+- Documentation heading IDs are slugified from heading text with a
+  collision counter so deep links survive reorders.
+- `assets/js/auth.js`, `settings-panel.js`, `documentation.js`,
+  `theme.js`, `navigation.js` standardized on `const` / `let`.
+
+### Removed
+
+- Auto-login on registration (see PSEC-003).
+- Placeholder-link spam in the footer (see Changed).
+
+### Documentation
+
+- `ARCHITECTURE.md` updated with the new `inc/` module list, authentication
+  data flow, security abuse-control overview, and verification route.
+- `CONVENTIONS.md` documents the rate-limiter usage pattern, the honeypot
+  pattern, the `require_login` gate, and CSV-safe export.
+- ADR-0001 (Frontend authentication and abuse-control strategy) governs
+  the trade-offs behind this release.
+
+### Known follow-ups (out of scope; tracked as future ADRs)
+
+- ADR-0003 — consolidate the six duplicated tool templates.
+- ADR-0004 — migrate newsletter storage from `wp_options` to a dedicated
+  table once subscriber count exceeds ~1000.
+
+---
+
+## [1.5.0] - 2026-04-14
+
+Theme extension release: navigation dropdowns, 9 page templates, branded
+frontend auth UI, newsletter signup, contact/support panel, footer update,
+and Research Modules cards on the front page. Superseded by v1.5.1 on the
+same day — v1.5.0 shipped with the auth-surface issues captured in
+ADR-0001.
+
+---
+
 ## [1.3.2] - 2026-04-12
 
 ### Security

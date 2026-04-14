@@ -62,15 +62,7 @@
 			<!-- Footer Bottom -->
 			<div class="footer-bottom">
 				<p class="footer-copyright">
-					<?php
-					echo wp_kses_post(
-						sprintf(
-							/* translators: %s: current year */
-							__( '&copy; %s Research Directory | Laboratory Standards', 'peptide-starter' ),
-							gmdate( 'Y' )
-						)
-					);
-					?>
+					<?php echo wp_kses_post( peptide_starter_get_footer_copyright() ); ?>
 				</p>
 
 				<!-- Disclaimer -->
@@ -78,14 +70,11 @@
 					<?php esc_html_e( 'All data is provided for informational and educational purposes only. This platform does not provide medical advice, diagnoses, or treatment recommendations. Always consult qualified professionals.', 'peptide-starter' ); ?>
 				</p>
 
-				<!-- Language Links (placeholder) -->
-				<div class="footer-languages">
-					<span class="footer-languages-label"><?php esc_html_e( 'Our Blogs:', 'peptide-starter' ); ?></span>
-					<a href="#" hreflang="en"><?php esc_html_e( 'English', 'peptide-starter' ); ?></a>
-					<a href="#" hreflang="el"><?php esc_html_e( 'Greek', 'peptide-starter' ); ?></a>
-					<a href="#" hreflang="es"><?php esc_html_e( 'Spanish', 'peptide-starter' ); ?></a>
-					<a href="#" hreflang="nl"><?php esc_html_e( 'Dutch', 'peptide-starter' ); ?></a>
-				</div>
+				<!-- Translations note — placeholder links removed in v1.5.1;
+					renders only when localized blog URLs are wired up. -->
+				<p class="footer-languages-note">
+					<?php esc_html_e( 'Translations coming soon.', 'peptide-starter' ); ?>
+				</p>
 			</div>
 		</div>
 	</footer>

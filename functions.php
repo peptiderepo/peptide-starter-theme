@@ -2,13 +2,19 @@
 /**
  * Peptide Starter Theme Functions
  *
- * Core theme setup: supports, menus, scripts, customizer, helpers.
- * Feature-specific logic is split into inc/ files to keep this under 300 lines.
+ * Core theme setup: supports, menus, scripts, customizer, security modules.
+ * Feature-specific logic is split across inc/ files to keep this under
+ * 300 lines and to make responsibilities discoverable.
  *
- * @see inc/auth-handlers.php — AJAX login/register handlers
- * @see inc/contact-handler.php — AJAX contact form handler
- * @see inc/page-setup.php — auto-create pages on theme activation
- * @see inc/newsletter-admin.php — admin page for subscriber export
+ * @see inc/config.php           — security configuration
+ * @see inc/rate-limiter.php     — transient-backed rate limiter
+ * @see inc/email-verification.php — token-gated email verification
+ * @see inc/auth-handlers.php    — AJAX login + registration
+ * @see inc/contact-handler.php  — AJAX contact form
+ * @see inc/newsletter-admin.php — admin subscriber viewer + unsubscribe
+ * @see inc/page-setup.php       — auto-create pages + v1.5.0 user migration
+ * @see inc/mail-diagnostic.php  — admin deliverability test tool
+ * @see inc/helpers.php          — nav walker, menu fallback, gates, utilities
  *
  * @package peptide-starter
  */
@@ -18,21 +24,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Define constants.
-define( 'PEPTIDE_STARTER_VERSION', '1.5.0' );
+// Theme constants.
+define( 'PEPTIDE_STARTER_VERSION', '1.5.1' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
-// Load feature modules.
+// Load feature modules. Order matters — config must load before anything
+// that calls peptide_starter_config_*; rate limiter before handlers.
+require_once PEPTIDE_STARTER_DIR . '/inc/config.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/helpers.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/rate-limiter.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/email-verification.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/customizer.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/auth-handlers.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/contact-handler.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/page-setup.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/newsletter-admin.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/mail-diagnostic.php';
 
 /**
- * Set up theme defaults and register support for various WordPress features.
+ * Set up theme defaults and register support for WordPress features.
  *
  * @return void
  */
@@ -80,7 +91,6 @@ function peptide_starter_scripts() {
 		)
 	);
 
-	// Conditional scripts for specific page templates.
 	if ( is_page_template( 'page-documentation.php' ) ) {
 		wp_enqueue_script( 'peptide-starter-docs', PEPTIDE_STARTER_URI . '/assets/js/documentation.js', array(), PEPTIDE_STARTER_VERSION, true );
 	}
@@ -118,7 +128,7 @@ function peptide_starter_plugin_overrides() {
 add_action( 'wp_enqueue_scripts', 'peptide_starter_plugin_overrides', 99 );
 
 /**
- * Register widget areas.
+ * Register footer widget areas.
  *
  * @return void
  */
@@ -142,10 +152,16 @@ function peptide_starter_widgets_init() {
 add_action( 'widgets_init', 'peptide_starter_widgets_init' );
 
 /**
- * Handle newsletter signup form submission.
- * Stores email in wp_options with duplicate check.
+ * Handle newsletter signup.
  *
- * @return void Redirects back with status parameter.
+ * Applies: nonce, honeypot, rate limit, consent, email validity. Stores
+ * entries with an unsubscribe token; collapses success + duplicate into
+ * a single "ok" state server-side so the response doesn't leak whether
+ * the address was already subscribed.
+ *
+ * Side effects: writes a wp_options array with autoload=false.
+ *
+ * @return void
  */
 function peptide_starter_handle_newsletter_signup() {
 	if ( ! isset( $_POST['ps_newsletter_nonce'] ) ||
@@ -153,31 +169,48 @@ function peptide_starter_handle_newsletter_signup() {
 		wp_die( esc_html__( 'Security check failed.', 'peptide-starter' ), esc_html__( 'Error', 'peptide-starter' ), array( 'response' => 403 ) );
 	}
 
-	$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
-
-	if ( ! is_email( $email ) ) {
-		wp_safe_redirect( add_query_arg( 'ps_newsletter', 'invalid', wp_get_referer() ) );
+	// Honeypot: fake-ok redirect.
+	if ( peptide_starter_honeypot_triggered( 'ps_hp_newsletter' ) ) {
+		wp_safe_redirect( add_query_arg( 'ps_newsletter', 'ok', peptide_starter_safe_referer() ) );
 		exit;
 	}
 
-	// Store in wp_options with duplicate check.
-	$emails = get_option( 'ps_newsletter_emails', array() );
+	if ( ! Peptide_Starter_Rate_Limiter::check( 'newsletter', 'ip' ) ) {
+		wp_safe_redirect( add_query_arg( 'ps_newsletter', 'ok', peptide_starter_safe_referer() ) );
+		exit;
+	}
+	Peptide_Starter_Rate_Limiter::record( 'newsletter', 'ip' );
+
+	$email   = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+	$consent = ! empty( $_POST['ps_consent'] );
+
+	if ( ! is_email( $email ) || ! $consent ) {
+		wp_safe_redirect( add_query_arg( 'ps_newsletter', 'invalid', peptide_starter_safe_referer() ) );
+		exit;
+	}
+
+	$emails          = get_option( 'ps_newsletter_emails', array() );
 	$existing_emails = array_column( $emails, 'email' );
 
-	if ( in_array( $email, $existing_emails, true ) ) {
-		wp_safe_redirect( add_query_arg( 'ps_newsletter', 'duplicate', wp_get_referer() ) );
-		exit;
+	// Collapse success + duplicate into a single 'ok' state — no enumeration.
+	if ( ! in_array( $email, $existing_emails, true ) ) {
+		$emails[] = array(
+			'email'       => $email,
+			'date'        => current_time( 'Y-m-d H:i:s' ),
+			'unsub_token' => wp_generate_password( 32, false, false ),
+		);
+		// autoload=false so a large subscriber list doesn't bloat every page load.
+		update_option( 'ps_newsletter_emails', $emails, false );
+
+		/**
+		 * Fires when a new subscriber is added to the newsletter list.
+		 *
+		 * @param string $email Subscriber email.
+		 */
+		do_action( 'peptide_starter_newsletter_subscribe', $email );
 	}
 
-	$emails[] = array(
-		'email' => $email,
-		'date'  => current_time( 'Y-m-d H:i:s' ),
-	);
-	update_option( 'ps_newsletter_emails', $emails );
-
-	do_action( 'peptide_starter_newsletter_subscribe', $email );
-
-	wp_safe_redirect( add_query_arg( 'ps_newsletter', 'success', wp_get_referer() ) );
+	wp_safe_redirect( add_query_arg( 'ps_newsletter', 'ok', peptide_starter_safe_referer() ) );
 	exit;
 }
 add_action( 'admin_post_peptide_starter_newsletter_signup', 'peptide_starter_handle_newsletter_signup' );

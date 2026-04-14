@@ -2,15 +2,11 @@
 /**
  * Template Name: Protocol Builder
  *
- * Page template for the interactive protocol builder wizard.
- * Loads the Peptide Tools plugin protocol builder via shortcode.
+ * Interactive protocol builder wizard. Requires authenticated + email-verified
+ * users — protocols are user-owned saved state.
  *
- * @see page-calculator.php — sibling tool template
- * @see functions.php — enqueue and page auto-creation
- *
- * What: Renders the protocol builder page with plugin shortcode integration.
- * Who calls it: WordPress template hierarchy when a page uses this template.
- * Dependencies: Peptide Tools plugin (optional — graceful fallback).
+ * @see inc/helpers.php — peptide_starter_require_login()
+ * @see page-calculator.php — sibling tool (intentionally open to anon — no PII).
  *
  * @package peptide-starter
  */
@@ -19,6 +15,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+peptide_starter_require_login();
 
 get_header();
 ?>

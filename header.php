@@ -155,36 +155,6 @@
 </div>
 
 <?php
-/**
- * Fallback menu if none is set — provides the new nav structure.
- */
-function peptide_starter_primary_menu_fallback() {
-	?>
-	<ul>
-		<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'peptide-starter' ); ?></a></li>
-		<li class="menu-item-has-children">
-			<a href="#"><?php esc_html_e( 'Tools', 'peptide-starter' ); ?></a>
-			<ul class="sub-menu">
-				<li><a href="<?php echo esc_url( home_url( '/calculator' ) ); ?>"><?php esc_html_e( 'Calculator', 'peptide-starter' ); ?></a></li>
-				<li><a href="<?php echo esc_url( home_url( '/protocol-builder' ) ); ?>"><?php esc_html_e( 'Protocol Builder', 'peptide-starter' ); ?></a></li>
-				<li><a href="<?php echo esc_url( home_url( '/tracker' ) ); ?>"><?php esc_html_e( 'Tracker', 'peptide-starter' ); ?></a></li>
-			</ul>
-		</li>
-		<li class="menu-item-has-children">
-			<a href="#"><?php esc_html_e( 'My Data', 'peptide-starter' ); ?></a>
-			<ul class="sub-menu">
-				<li><a href="<?php echo esc_url( home_url( '/peptides' ) ); ?>"><?php esc_html_e( 'Peptides', 'peptide-starter' ); ?></a></li>
-				<li><a href="<?php echo esc_url( home_url( '/subject-log' ) ); ?>"><?php esc_html_e( 'Subject Log', 'peptide-starter' ); ?></a></li>
-			</ul>
-		</li>
-		<li class="menu-item-has-children">
-			<a href="#"><?php esc_html_e( 'Resources', 'peptide-starter' ); ?></a>
-			<ul class="sub-menu">
-				<li><a href="<?php echo esc_url( home_url( '/documentation' ) ); ?>"><?php esc_html_e( 'Documentation', 'peptide-starter' ); ?></a></li>
-				<li><a href="<?php echo esc_url( home_url( '/news' ) ); ?>"><?php esc_html_e( 'Science Feed', 'peptide-starter' ); ?></a></li>
-			</ul>
-		</li>
-	</ul>
-	<?php
-}
+// Nav fallback lives in inc/helpers.php as of v1.5.1 to prevent redeclaration
+// if header.php is ever included more than once in a request.
 ?>

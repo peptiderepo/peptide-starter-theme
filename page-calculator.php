@@ -20,6 +20,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/*
+ * Intentionally open to anonymous users — the reconstitution calculator
+ * holds no PII and performs no writes. Gating it would add friction with
+ * no security benefit.
+ */
+
 get_header();
 ?>
 
