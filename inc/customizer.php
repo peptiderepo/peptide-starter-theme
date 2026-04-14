@@ -47,40 +47,58 @@ function peptide_starter_customize_register( $wp_customize ) {
 	);
 
 	// Hero Title.
-	$wp_customize->add_setting( 'hero_title', array(
-		'default'           => get_bloginfo( 'name' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
-	$wp_customize->add_control( 'hero_title', array(
-		'label'   => esc_html__( 'Hero Title', 'peptide-starter' ),
-		'section' => 'peptide_starter_hero',
-		'type'    => 'text',
-	) );
+	$wp_customize->add_setting(
+		'hero_title',
+		array(
+			'default'           => get_bloginfo( 'name' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'hero_title',
+		array(
+			'label'   => esc_html__( 'Hero Title', 'peptide-starter' ),
+			'section' => 'peptide_starter_hero',
+			'type'    => 'text',
+		)
+	);
 
 	// Hero Subtitle.
-	$wp_customize->add_setting( 'hero_subtitle', array(
-		'default'           => esc_html__( 'A scientific peptide reference database', 'peptide-starter' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
-	$wp_customize->add_control( 'hero_subtitle', array(
-		'label'   => esc_html__( 'Hero Subtitle', 'peptide-starter' ),
-		'section' => 'peptide_starter_hero',
-		'type'    => 'textarea',
-	) );
+	$wp_customize->add_setting(
+		'hero_subtitle',
+		array(
+			'default'           => esc_html__( 'A scientific peptide reference database', 'peptide-starter' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'hero_subtitle',
+		array(
+			'label'   => esc_html__( 'Hero Subtitle', 'peptide-starter' ),
+			'section' => 'peptide_starter_hero',
+			'type'    => 'textarea',
+		)
+	);
 
 	// Hero Search Placeholder.
-	$wp_customize->add_setting( 'hero_search_placeholder', array(
-		'default'           => esc_html__( 'Search peptides, sequences, or research...', 'peptide-starter' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
-	$wp_customize->add_control( 'hero_search_placeholder', array(
-		'label'   => esc_html__( 'Search Placeholder', 'peptide-starter' ),
-		'section' => 'peptide_starter_hero',
-		'type'    => 'text',
-	) );
+	$wp_customize->add_setting(
+		'hero_search_placeholder',
+		array(
+			'default'           => esc_html__( 'Search peptides, sequences, or research...', 'peptide-starter' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'sanitize_text_field',
+		)
+	);
+	$wp_customize->add_control(
+		'hero_search_placeholder',
+		array(
+			'label'   => esc_html__( 'Search Placeholder', 'peptide-starter' ),
+			'section' => 'peptide_starter_hero',
+			'type'    => 'text',
+		)
+	);
 
 	// Footer section.
 	$wp_customize->add_section(
@@ -92,16 +110,22 @@ function peptide_starter_customize_register( $wp_customize ) {
 	);
 
 	// Footer Copyright.
-	$wp_customize->add_setting( 'footer_copyright', array(
-		'default'           => esc_html__( 'Copyright © 2026 Peptide Repo. All rights reserved.', 'peptide-starter' ),
-		'transport'         => 'postMessage',
-		'sanitize_callback' => 'wp_kses_post',
-	) );
-	$wp_customize->add_control( 'footer_copyright', array(
-		'label'   => esc_html__( 'Copyright Text', 'peptide-starter' ),
-		'section' => 'peptide_starter_footer',
-		'type'    => 'textarea',
-	) );
+	$wp_customize->add_setting(
+		'footer_copyright',
+		array(
+			'default'           => esc_html__( 'Copyright © 2026 Peptide Repo. All rights reserved.', 'peptide-starter' ),
+			'transport'         => 'postMessage',
+			'sanitize_callback' => 'wp_kses_post',
+		)
+	);
+	$wp_customize->add_control(
+		'footer_copyright',
+		array(
+			'label'   => esc_html__( 'Copyright Text', 'peptide-starter' ),
+			'section' => 'peptide_starter_footer',
+			'type'    => 'textarea',
+		)
+	);
 
 	// Dark mode section.
 	$wp_customize->add_section(
@@ -113,16 +137,22 @@ function peptide_starter_customize_register( $wp_customize ) {
 	);
 
 	// Dark mode default.
-	$wp_customize->add_setting( 'dark_mode_default', array(
-		'default'           => false,
-		'transport'         => 'refresh',
-		'sanitize_callback' => 'peptide_starter_sanitize_checkbox',
-	) );
-	$wp_customize->add_control( 'dark_mode_default', array(
-		'label'   => esc_html__( 'Enable Dark Mode by Default', 'peptide-starter' ),
-		'section' => 'peptide_starter_theme_mode',
-		'type'    => 'checkbox',
-	) );
+	$wp_customize->add_setting(
+		'dark_mode_default',
+		array(
+			'default'           => false,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'peptide_starter_sanitize_checkbox',
+		)
+	);
+	$wp_customize->add_control(
+		'dark_mode_default',
+		array(
+			'label'   => esc_html__( 'Enable Dark Mode by Default', 'peptide-starter' ),
+			'section' => 'peptide_starter_theme_mode',
+			'type'    => 'checkbox',
+		)
+	);
 }
 add_action( 'customize_register', 'peptide_starter_customize_register' );
 
