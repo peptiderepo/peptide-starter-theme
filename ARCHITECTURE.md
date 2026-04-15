@@ -1,5 +1,7 @@
 # Peptide Starter Theme — Architecture
 
+> **Cross-app context:** decisions that affect multiple plugins (Cloudflare AI Gateway routing, OpenRouter account sharing, the interface pattern, image-generation stack, social distributor choice) are recorded in `Peptide Repo CTO/docs/engineering/decisions/`. The incident runbook for cross-app failure modes is at `Peptide Repo CTO/docs/engineering/INCIDENT-RUNBOOK.md`. Read both before making decisions that cross plugin boundaries.
+
 ## Overview
 
 Peptide Starter (slug: `peptide-starter`) is a premium classic WordPress
