@@ -137,6 +137,51 @@ class Test_Auth_Handlers extends WP_UnitTestCase {
 		$this->assertSame( peptide_starter_register_failure_message(), $this->captured['data']['message'] );
 	}
 
+	/**
+	 * PSEC-009: registration validation path is not short-circuit.
+	 *
+	 * We can't directly mock `preg_match` / `username_exists` etc. from
+	 * userland. Instead, we assert the behavioural contract: even when an
+	 * early check has already failed (invalid username pattern), the
+	 * handler still runs the later DB-backed checks. We observe this by
+	 * filtering `pre_user_login` which wp_create_user-adjacent code paths
+	 * consult, and by checking that `username_exists` was called via a
+	 * filter it would fire. A simpler surrogate is to hook into WordPress'
+	 * `user_search_query` / `query` action and confirm at least one user
+	 * lookup happened during a failing registration — which would not
+	 * happen if the handler short-circuited on the pattern failure.
+	 */
+	public function test_register_runs_all_checks_even_when_early_one_fails() {
+		$queries_ran = 0;
+		$counter     = function ( $query ) use ( &$queries_ran ) {
+			// wp_cache_get avoids counting ourselves. We only care whether
+			// any user-table-touching query fires during the handler run.
+			if ( is_string( $query ) && false !== stripos( $query, 'users' ) ) {
+				$queries_ran++;
+			}
+			return $query;
+		};
+		add_filter( 'query', $counter );
+
+		update_option( 'users_can_register', 1 );
+		$_POST = array(
+			'ps_register_nonce' => wp_create_nonce( 'ps_auth_register' ),
+			'username'          => 'ab', // Too short — early check fails.
+			'email'             => 'validformat@example.com',
+			'password'          => 'longenoughpassword',
+		);
+		try { peptide_starter_ajax_register(); } catch ( WPAjaxDieStopException $e ) { /* ok */ }
+
+		remove_filter( 'query', $counter );
+
+		$this->assertGreaterThan(
+			0,
+			$queries_ran,
+			'username_exists / email_exists must still run even when pattern check fails (PSEC-009 non-short-circuit).'
+		);
+		$this->assertSame( peptide_starter_register_failure_message(), $this->captured['data']['message'] );
+	}
+
 	public function test_register_duplicate_email_returns_unified_message() {
 		self::factory()->user->create( array( 'user_email' => 'dup@example.com' ) );
 		update_option( 'users_can_register', 1 );

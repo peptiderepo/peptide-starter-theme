@@ -99,10 +99,11 @@ function peptide_starter_send_verification_email( $user_id ) {
 /**
  * Whether a user has completed email verification.
  *
- * Users without the ps_pending_verification meta are treated as verified
- * (covers accounts created before v1.5.1 that were never enrolled; the
- * migration in inc/page-setup.php enrolls existing v1.5.0 users explicitly
- * where applicable).
+ * Users without the ps_pending_verification meta are treated as verified.
+ * This includes all accounts created before v1.5.2 — the v1.5.1 re-verify
+ * migration was removed in v1.5.2 (see CHANGELOG § [1.5.2] PSEC-008);
+ * existing accounts are grandfathered. Verification is enforced on new
+ * registrations from v1.5.2 forward.
  *
  * @param int $user_id User ID.
  * @return bool True if verified or exempt; false if pending.

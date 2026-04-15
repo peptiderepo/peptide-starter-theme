@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Theme constants.
-define( 'PEPTIDE_STARTER_VERSION', '1.5.1' );
+define( 'PEPTIDE_STARTER_VERSION', '1.5.2' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
@@ -33,6 +33,7 @@ define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 // that calls peptide_starter_config_*; rate limiter before handlers.
 require_once PEPTIDE_STARTER_DIR . '/inc/config.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/helpers.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/cloudflare-ips.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/rate-limiter.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/email-verification.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/customizer.php';
