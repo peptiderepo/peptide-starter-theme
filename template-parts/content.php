@@ -39,8 +39,8 @@
 		<?php
 		if ( has_post_thumbnail() ) {
 			?>
-			<div style="margin-bottom: var(--spacing-lg);">
-				<?php the_post_thumbnail( 'medium' ); ?>
+			<div class="ps-featured-image" style="margin-bottom: var(--spacing-lg);">
+				<?php the_post_thumbnail( 'full' ); ?>
 			</div>
 			<?php
 		}

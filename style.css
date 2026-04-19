@@ -583,6 +583,24 @@ nav a {
   color: var(--color-text-primary);
 }
 
+/* ---- FEATURED IMAGES ---- */
+
+.ps-featured-image {
+  width: 100%;
+  text-align: center;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.ps-featured-image img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+}
+
 /* ---- BADGES & TAGS ---- */
 
 .ps-badge {
