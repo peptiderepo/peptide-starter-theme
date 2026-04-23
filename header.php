@@ -115,15 +115,6 @@
 				</svg>
 			</button>
 
-			<!-- Cart Icon (WooCommerce) -->
-			<?php if ( class_exists( 'WooCommerce' ) ) { ?>
-				<button class="header-icon-btn cart-toggle" aria-label="<?php esc_attr_e( 'View cart', 'peptide-starter' ); ?>">
-					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M1 1H3.27924M3.27924 1L5.20081 13.5631C5.35072 14.4571 5.80765 15.2614 6.4543 15.8285C7.10095 16.3956 7.92274 16.6882 8.76721 16.6882H16.7257M16.7257 16.6882C17.3169 16.6882 17.7793 17.1506 17.7793 17.7418C17.7793 18.333 17.3169 18.7955 16.7257 18.7955M16.7257 16.6882C15.6515 16.6882 14.4632 16.6882 8.76721 16.6882M8.76721 16.6882C8.17601 16.6882 7.71365 17.1506 7.71365 17.7418C7.71365 18.333 8.17601 18.7955 8.76721 18.7955M5.20081 13.5631H16.7257" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-				</button>
-			<?php } ?>
-
 			<!-- Mobile Menu Toggle -->
 			<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Toggle menu', 'peptide-starter' ); ?>">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
