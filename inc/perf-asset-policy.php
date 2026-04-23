@@ -4,7 +4,7 @@
  *
  * Optimizes the front-end asset graph by dequeuing unnecessary plugin styles/scripts
  * and slimming font requests. Targets mobile LCP improvement through:
- * - Conditional dequeue of WC, Elementor, and USMI assets
+ * - Conditional dequeue of Elementor and USMI assets
  * - Google Fonts weight slimming (36 faces → 5)
  * - Preconnect hints for font.googleapis.com + fonts.gstatic.com
  * - Defer attribute on cookie-notice script
@@ -49,11 +49,10 @@ function peptide_starter_perf_asset_policy_init() {
 /**
  * Dequeue assets on non-applicable page types.
  *
- * Removes WooCommerce, Elementor, and Ultimate Social Media Icons assets from pages
+ * Removes Elementor and Ultimate Social Media Icons assets from pages
  * that don't use them. Controlled by the kill-switch constant PEPTIDE_STARTER_PERF_DEQUEUE.
  *
  * Dequeue conditions:
- * - WC: removed unless on shop, cart, checkout, or account pages
  * - Elementor: removed if page doesn't use Elementor builder
  * - USMI: removed on homepage, archives, and blog index
  *
@@ -63,28 +62,6 @@ function peptide_starter_perf_dequeue_plugin_assets() {
 	// Kill-switch: if disabled in wp-config.php, do nothing.
 	if ( defined( 'PEPTIDE_STARTER_PERF_DEQUEUE' ) && ! PEPTIDE_STARTER_PERF_DEQUEUE ) {
 		return;
-	}
-
-	// WooCommerce assets: dequeue on non-shop pages.
-	if ( function_exists( 'is_woocommerce' ) && ! is_woocommerce() && ! is_cart() && ! is_checkout() && ! is_account_page() ) {
-		// Get configured WC handles from filter; default list.
-		$wc_styles = apply_filters(
-			'peptide_starter_perf_woocommerce_styles',
-			array( 'woocommerce-layout', 'woocommerce-smallscreen', 'woocommerce-general' )
-		);
-
-		foreach ( $wc_styles as $handle ) {
-			wp_dequeue_style( $handle );
-		}
-
-		$wc_scripts = apply_filters(
-			'peptide_starter_perf_woocommerce_scripts',
-			array( 'wc-add-to-cart', 'woocommerce', 'sourcebuster-js', 'wc-order-attribution' )
-		);
-
-		foreach ( $wc_scripts as $handle ) {
-			wp_dequeue_script( $handle );
-		}
 	}
 
 	// Elementor assets: dequeue if page doesn't use Elementor.
