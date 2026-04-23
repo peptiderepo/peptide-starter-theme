@@ -233,4 +233,11 @@ function peptide_starter_inline_dark_mode_script() {
 		var html = document.documentElement;
 		var stored = localStorage.getItem('peptide-starter-theme');
 		var defaultTheme = <?php echo wp_json_encode( $default_dark ); ?>;
-		var systemDark = window.matchMedia('(prefers-col
+		var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var theme = stored || (systemDark ? 'dark' : defaultTheme);
+		html.setAttribute('data-theme', theme);
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_head', 'peptide_starter_inline_dark_mode_script' );

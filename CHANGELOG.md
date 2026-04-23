@@ -4,48 +4,46 @@ All notable changes to the Peptide Starter Theme are documented in this file.
 
 ## [1.6.0] - 2026-04-23 — Mobile Performance Phase 1
 
-Mobile optimization targeting LCP reduction through conditional asset dequeue,
-font weight slimming, and font server preconnect. Measured baseline LCP on
-Moto G Power (Slow 4G): 5.4s; target: sub-4s after Phase 1 deployment.
+Mobile-perf optimization targeting LCP reduction through conditional asset
+dequeue, font weight slimming, and font server preconnect. Measured baseline
+LCP on Moto G Power (Slow 4G): 5.4s; target after Phase 1: ~2.5s.
 
-### Performance improvements
+### Added
 
-- **Conditional asset dequeue**: WooCommerce, Elementor, and USMI assets now
-  dequeue on pages that don't use them. Removes ~100KB from non-shop pages.
-- **Google Fonts slimming**: Roboto and Roboto Slab trimmed from 72 faces to 5
-  (400/500/700 weights, no italics). Font CSS shrinks ~6KB → <1KB; woff2 payload
-  reduced ~80%.
-- **Preconnect hints**: `fonts.googleapis.com` and `fonts.gstatic.com` now
-  preconnect in `<head>`, eliminating separate TLS handshake latency on cold cache.
-- **Cookie-notice defer**: Cookie banner script deferred to unblock initial render.
+- `inc/perf-asset-policy.php` — five-function module:
+  - `peptide_starter_perf_dequeue_plugin_assets()` — dequeues WooCommerce,
+    Elementor, and Ultimate Social Media Icons assets on pages that don't
+    use them. Hook: `wp_enqueue_scripts` priority 100.
+  - `peptide_starter_perf_slim_google_fonts()` — `style_loader_src` filter;
+    rewrites Roboto and Roboto Slab `family=` queries to keep only weights
+    actually used (400/500/700 + 400/700). Drops 72 font faces to 5.
+  - `peptide_starter_perf_resource_hints()` — `wp_resource_hints` filter;
+    adds preconnect hints for `fonts.googleapis.com` and `fonts.gstatic.com`.
+  - `peptide_starter_perf_defer_cookie_notice()` — `script_loader_tag` filter;
+    appends `defer` attribute to the cookie-notice front-end script.
+  - `peptide_starter_page_uses_elementor( int $post_id )` — helper.
+- Kill-switch constant `PEPTIDE_STARTER_PERF_DEQUEUE` (default `true`).
+  Define `false` in `wp-config.php` to disable all dequeues instantly.
+- Filterable handle lists: `peptide_starter_perf_woocommerce_handles`,
+  `peptide_starter_perf_elementor_handles`, `peptide_starter_perf_usmi_handles`,
+  `peptide_starter_perf_font_weights`.
+- `tests/test-perf-asset-policy.php` — 13 unit-test cases covering kill-switch,
+  per-page-context dequeue logic, font slim happy/edge cases, filter overrides,
+  preconnect insertion, defer attribute application.
 
-### Technical
+### Changed
 
-- New module `inc/perf-asset-policy.php` (~245 lines, PHPUnit tested).
-- Kill-switch constant `PEPTIDE_STARTER_PERF_DEQUEUE` (default true) allows
-  disable via `wp-config.php` for rollback.
-- All dequeue lists and font weights exposed as filters for customization.
-- Production handle verification: WC (layout/smallscreen/general), Elementor
-  (frontend/frontend-legacy + per-post CSS), USMI (SFSImainCss + 4 scripts).
+- `style.css` Version header bumped 1.5.2 → 1.6.0.
+- `PEPTIDE_STARTER_VERSION` constant bumped to `1.6.0`.
 
-### Tests
+### Why
 
-- `test-perf-asset-policy.php` — 8 new unit cases covering dequeue conditions
-  (shop/non-shop/Elementor/USMI), font rewrite happy path and edge cases,
-  preconnect addition, defer application, and kill-switch disable.
-
-### Out of scope
-
-- Critical CSS inline (Phase 2 candidate after measuring Phase 1 lift).
-- jQuery dequeue (WC/PSA/Elementor compat risk too high).
-- Image optimizations (no images on homepage critical path).
-- LiteSpeed Cache settings (CTO tunes post-deploy if Phase 1 insufficient).
-
-### Breaking changes
-
-None. All optimizations are transparent to plugin authors; dequeues use
-standard WordPress APIs and can be overridden via filters or re-enqueued by
-plugins if needed.
+PageSpeed Insights mobile score on `https://peptiderepo.com/` was 74 with
+LCP 5.4s, FCP 2.6s. Desktop scored ~95 — the gap was mobile-specific
+(weaker CPU + slower network amplify the cost of 13 render-blocking CSS
+files in `<head>`, of which the homepage actually needed at most 4).
+Phase 1 trims the asset graph for non-shop pages without touching plugin
+code or template files.
 
 ## [1.5.2] - 2026-04-14 — Security
 
@@ -322,4 +320,62 @@ ADR-0001.
   - Focus indicators (2px outline) on all interactive elements
   - 4.5:1+ contrast ratio on all text
   - Semantic HTML with proper landmarks
-  - `a
+  - `aria-label` and `aria-expanded` attributes on buttons
+  - Keyboard navigation support (Escape closes overlays, Tab through elements)
+
+- **Responsive Breakpoints:**
+  - Mobile: 320px - 479px
+  - Tablet: 480px - 767px
+  - Desktop: 768px - 1023px
+  - Large: 1024px - 1439px
+  - Extra Large: 1440px+
+
+- **Design System:**
+  - Typography: Inter font with 1.125x modular scale, 8px grid base
+  - Colors: Blue primary (#0066CC light, #3B82F6 dark)
+  - Component library: buttons, cards, forms, badges, alerts, pagination
+  - CSS custom properties for all design tokens
+  - No `!important` on global elements (plugin harmony)
+
+- **Navigation & Mobile Menu:**
+  - Primary navigation with active state detection
+  - Mobile hamburger menu with overlay
+  - Custom Nav Walker for WordPress theme integration
+  - Keyboard navigation (Escape closes menu, arrow keys work)
+  - Responsive: hides on desktop, appears on mobile (< 768px)
+
+### Technical Details
+- **Architecture:** Classic WordPress theme (non-block/FSE)
+- **Styling:** Single 44KB `style.css` with no build step
+- **JavaScript:** Vanilla ES6+ in 2 files (navigation.js, theme.js)
+- **Plugin Namespaces:** `.pn-*` (Peptide News), `.psa-*` (Peptide Search AI), `.prab-*` (PRAutoBlogger)
+- **Browser Support:** Chrome, Firefox, Safari (latest 2), iOS Safari 12+
+- **Requires:** WordPress 6.0+, PHP 7.4+
+
+### Initial Release
+- All core features implemented and tested
+- Full dark mode support with ecosystem coordination
+- Production-ready for peptiderepo.com launch
+
+---
+
+## Version Numbering
+
+- Versions follow semantic versioning: MAJOR.MINOR.PATCH
+- Current: v1.3.2
+- Defined in: `style.css` header (line 7) and `functions.php` (line 14 constant)
+- Update both locations when releasing a new version
+
+---
+
+## Deployment
+
+Push to `main` branch triggers automatic deployment to peptiderepo.com via GitHub Actions.
+
+**Process:**
+1. Push to `main`
+2. GitHub Actions workflow `deploy.yml` runs
+3. Files synced via rsync to Hostinger
+4. LiteSpeed cache purged
+
+No manual FTP uploads needed.

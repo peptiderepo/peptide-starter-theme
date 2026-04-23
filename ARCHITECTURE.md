@@ -263,4 +263,11 @@ control in the theme.
 
 `inc/cloudflare-ips.php` holds a static snapshot of CF ranges. Refresh
 quarterly. Override via `peptide_starter_cloudflare_ip_ranges` filter
-for out-of-band update
+for out-of-band updates.
+
+## Version
+
+**Current:** v1.6.0 (2026-04-23)
+
+Bump `style.css` header line 7 and `PEPTIDE_STARTER_VERSION` in
+`functions.php` together on release.
