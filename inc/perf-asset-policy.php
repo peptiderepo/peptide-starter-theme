@@ -66,7 +66,7 @@ function peptide_starter_perf_dequeue_plugin_assets() {
 	}
 
 	// WooCommerce assets: dequeue on non-shop pages.
-	if ( ! is_woocommerce() && ! is_cart() && ! is_checkout() && ! is_account_page() ) {
+	if ( function_exists( 'is_woocommerce' ) && ! is_woocommerce() && ! is_cart() && ! is_checkout() && ! is_account_page() ) {
 		// Get configured WC handles from filter; default list.
 		$wc_styles = apply_filters(
 			'peptide_starter_perf_woocommerce_styles',
