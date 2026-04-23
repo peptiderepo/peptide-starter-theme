@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 1.7.0
+Version: 1.7.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -1674,13 +1674,6 @@ body .pn-article-title {
   margin-bottom: var(--spacing-sm);
 }
 
-/* Collapse empty Elementor/page-builder containers that add phantom space */
-.page-content .elementor-section:empty,
-.page-content .elementor-widget-wrap:empty,
-.page-content .elementor-element:empty,
-.page-content div:empty:not([data-peptide-news-feed]) {
-  display: none;
-}
 
 /* ---- BACK LINK (breadcrumb-style) ---- */
 
