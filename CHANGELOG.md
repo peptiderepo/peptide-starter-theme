@@ -2,6 +2,22 @@
 
 All notable changes to the Peptide Starter Theme are documented in this file.
 
+## [1.7.0] - 2026-04-24 — Remove WooCommerce integration
+
+WooCommerce is not used on peptiderepo.com. Removing dead code reduces the asset
+dequeue surface and eliminates the function_exists() guard introduced in the 2026-04-23
+hotfix.
+
+### Removed
+- WooCommerce asset dequeue block from `inc/perf-asset-policy.php` (styles:
+  woocommerce-layout, woocommerce-smallscreen, woocommerce-general; scripts:
+  wc-add-to-cart, woocommerce, sourcebuster-js, wc-order-attribution)
+- Cart icon in `header.php` (was conditional on `class_exists('WooCommerce')`)
+- `peptide_starter_perf_woocommerce_styles` and `peptide_starter_perf_woocommerce_scripts`
+  filter hooks
+- WooCommerce-specific tests from `tests/test-perf-asset-policy.php`
+- WooCommerce section from README.md and CONVENTIONS.md
+
 ## [1.6.0] - 2026-04-23 — Mobile Performance Phase 1
 
 Mobile-perf optimization targeting LCP reduction through conditional asset
