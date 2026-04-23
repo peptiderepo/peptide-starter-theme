@@ -460,11 +460,6 @@ if ( is_active_sidebar( 'footer-1' ) ) {
 
 ### Class Existence Check
 
-**For WooCommerce:**
-```php
-if ( class_exists( 'WooCommerce' ) ) {
-  // Render cart icon
-}
 ```
 
 **For post types:**
