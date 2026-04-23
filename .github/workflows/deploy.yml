@@ -45,12 +45,24 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          # Best-effort: keyscan stderr captured for diagnosis but never fatal.
-          # We use StrictHostKeyChecking=no on the actual ssh/rsync calls anyway.
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/tmp/keyscan.err || {
             echo "::warning::ssh-keyscan failed (non-fatal). stderr:"
             cat /tmp/keyscan.err || true
           }
+
+      - name: Verify deploy destination is a theme directory
+        run: |
+          # Safety check: abort if destination does not look like a WordPress theme.
+          # Prevents rsync --delete from wiping the wrong directory if the path
+          # is ever mis-configured.
+          DEST="/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter"
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}             "test -f \"${DEST}/style.css\" || { echo \"ERROR: ${DEST}/style.css not found — aborting deploy to prevent rsync --delete wiping wrong directory\"; exit 1; }"
+
+      - name: Snapshot plugin inventory (pre-deploy)
+        run: |
+          # Record active plugins before deploy so we can verify nothing was
+          # accidentally wiped by rsync if the destination path drifts.
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}             "wp --path=/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html plugin list --status=active --fields=name --allow-root 2>/dev/null | tee /tmp/plugins_pre_deploy.txt && echo \"Pre-deploy plugin count: $(wc -l < /tmp/plugins_pre_deploy.txt)\""
 
       - name: Deploy via rsync
         run: |
@@ -66,6 +78,25 @@ jobs:
             --exclude='.phpcs.xml.dist' \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
             ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter/
+
+      - name: Verify plugin inventory unchanged (post-deploy)
+        run: |
+          # Fail the deploy if rsync wiped any plugins. Compares active plugin
+          # list before and after — any drop means something went wrong.
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
+            wp --path=/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html plugin list --status=active --fields=name --allow-root 2>/dev/null > /tmp/plugins_post_deploy.txt
+            PRE=$(wc -l < /tmp/plugins_pre_deploy.txt)
+            POST=$(wc -l < /tmp/plugins_post_deploy.txt)
+            echo "Pre-deploy active plugins:  $PRE"
+            echo "Post-deploy active plugins: $POST"
+            if [ "$POST" -lt "$PRE" ]; then
+              echo "ERROR: Plugin count dropped from $PRE to $POST after deploy."
+              echo "Missing plugins:"
+              diff /tmp/plugins_pre_deploy.txt /tmp/plugins_post_deploy.txt || true
+              exit 1
+            fi
+            echo "Plugin inventory OK."
+          ENDSSH
 
       - name: Purge LiteSpeed Cache
         run: |
@@ -88,11 +119,6 @@ jobs:
         run: |
           sleep 5
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://peptiderepo.com)
-          # 200 = normal healthy response.
-          # 403 = peptide-starter-theme v1.5.2 CF-peer validator rejecting this
-          #       GHA-runner direct-to-origin request as non-Cloudflare traffic.
-          #       That rejection is the validator working — itself a positive
-          #       liveness signal. Real user traffic via Cloudflare gets 200.
           if [ "$STATUS" != "200" ] && [ "$STATUS" != "403" ]; then
             echo "ERROR: Site returned unexpected HTTP $STATUS after deploy"
             exit 1
