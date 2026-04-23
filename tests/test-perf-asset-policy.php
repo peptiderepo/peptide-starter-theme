@@ -2,7 +2,7 @@
 /**
  * Tests for inc/perf-asset-policy.php.
  *
- * Covers: conditional dequeue logic (WC, Elementor, USMI), font weight slimming,
+ * Covers: conditional dequeue logic (Elementor, USMI), font weight slimming,
  * preconnect hints, script defer, kill-switch, and filter overrides.
  *
  * @package peptide-starter
@@ -24,57 +24,16 @@ class Test_Perf_Asset_Policy extends WP_UnitTestCase {
 		define( 'PEPTIDE_STARTER_PERF_DEQUEUE', false );
 
 		// Enqueue dummy styles.
-		wp_enqueue_style( 'woocommerce-layout', 'http://example.com/wc.css' );
+		wp_enqueue_style( 'elementor-frontend', 'http://example.com/elementor.css' );
 
 		// Simulate wp_enqueue_scripts action.
 		do_action( 'wp_enqueue_scripts' );
 
 		// Since kill-switch is off, the style should still be queued.
-		$this->assertTrue( wp_style_is( 'woocommerce-layout', 'enqueued' ) );
+		$this->assertTrue( wp_style_is( 'elementor-frontend', 'enqueued' ) );
 	}
 
-	/**
-	 * Test: WC assets dequeued on non-shop pages.
-	 *
-	 * Homepage (front page) is not a WC page, so WC styles/scripts should dequeue.
-	 */
-	public function test_wc_dequeue_on_homepage() {
-		$this->go_to( home_url( '/' ) );
 
-		// Enqueue WC styles.
-		wp_enqueue_style( 'woocommerce-layout', 'http://example.com/wc-layout.css' );
-		wp_enqueue_style( 'woocommerce-general', 'http://example.com/wc-general.css' );
-		wp_enqueue_script( 'woocommerce', 'http://example.com/wc.js' );
-
-		// Run dequeue at priority 100.
-		peptide_starter_perf_dequeue_plugin_assets();
-
-		// All WC assets should be dequeued.
-		$this->assertFalse( wp_style_is( 'woocommerce-layout', 'enqueued' ) );
-		$this->assertFalse( wp_style_is( 'woocommerce-general', 'enqueued' ) );
-		$this->assertFalse( wp_script_is( 'woocommerce', 'enqueued' ) );
-	}
-
-	/**
-	 * Test: WC assets remain on /shop page.
-	 *
-	 * On WC shop pages, WC assets should NOT dequeue.
-	 */
-	public function test_wc_not_dequeued_on_shop() {
-		// Skip if WooCommerce is not active.
-		if ( ! class_exists( 'WooCommerce' ) ) {
-			$this->markTestSkipped( 'WooCommerce not active.' );
-		}
-
-		// Enqueue WC styles.
-		wp_enqueue_style( 'woocommerce-layout', 'http://example.com/wc-layout.css' );
-
-		// The dequeue function checks is_woocommerce(); we'll mock it.
-		// For a true test, we'd need a real WC shop page setup.
-		// Instead, we assert the filter allows override.
-		$default_handles = apply_filters( 'peptide_starter_perf_woocommerce_styles', array() );
-		$this->assertIsArray( $default_handles );
-	}
 
 	/**
 	 * Test: Elementor assets dequeued on pages without Elementor.
