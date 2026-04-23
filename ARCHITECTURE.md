@@ -47,6 +47,8 @@ peptide-starter/
 │   ├── newsletter-admin.php       # Subscriber viewer + CSV-safe export +
 │   │                               # /newsletter-unsubscribe route.
 │   ├── mail-diagnostic.php        # [v1.5.1] Tools → Mail Test — wp_mail probe.
+│   ├── perf-asset-policy.php      # [v1.6.0] Mobile perf: dequeue + font slim
+│   │                               # + preconnect + defer.
 │   └── page-setup.php             # Auto-create pages on activation +
 │                                    # v1.5.0 user migration (enrol into verify).
 │
@@ -261,11 +263,4 @@ control in the theme.
 
 `inc/cloudflare-ips.php` holds a static snapshot of CF ranges. Refresh
 quarterly. Override via `peptide_starter_cloudflare_ip_ranges` filter
-for out-of-band updates.
-
-## Version
-
-**Current:** v1.5.2 (2026-04-14)
-
-Bump `style.css` header line 7 and `PEPTIDE_STARTER_VERSION` in
-`functions.php` together on release.
+for out-of-band update

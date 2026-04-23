@@ -221,6 +221,75 @@ do_action( 'peptide_starter_hero_before' );
 
 **Important:** Always wrap shortcodes in `shortcode_exists()` checks so theme doesn't break if plugin is missing.
 
+### How to Add a Performance Policy Rule
+
+**Scenario:** Dequeue or transform an asset on certain page conditions
+
+Performance optimizations live in `inc/perf-asset-policy.php` and hook into
+WordPress's enqueue/style-loading pipeline. The module supports conditional
+dequeue (WC, Elementor, USMI), font weight slimming, preconnect hints, and
+script deferral.
+
+1. **For conditional dequeue**, add a block in `peptide_starter_perf_dequeue_plugin_assets()`:
+
+   ```php
+   if ( /* your condition */ ) {
+     $handles = apply_filters( 'peptide_starter_perf_yourplugin_handles',
+       array( 'handle-1', 'handle-2' )
+     );
+     foreach ( $handles as $handle ) {
+       wp_dequeue_style( $handle );  // or wp_dequeue_script
+     }
+   }
+   ```
+
+2. **For style-src rewrites** (e.g., URL parameter slimming), extend
+   `peptide_starter_perf_slim_google_fonts()` with a new loop iteration:
+
+   ```php
+   foreach ( $font_weights_config as $config_family => $weights ) {
+     if ( 0 === strcasecmp( $family, $config_family ) ) {
+       // Rewrite and return
+     }
+   }
+   ```
+
+3. **For preconnect hints**, add URLs to the filter in
+   `peptide_starter_perf_resource_hints()`:
+
+   ```php
+   $font_urls = apply_filters(
+     'peptide_starter_perf_font_preconnect_urls',
+     array( 'https://fonts.googleapis.com', 'https://fonts.gstatic.com' )
+   );
+   ```
+
+4. **For script deferral**, add a new handle check in
+   `peptide_starter_perf_defer_cookie_notice()`:
+
+   ```php
+   if ( 'my-script-handle' !== $handle ) {
+     return $tag;
+   }
+   $tag = str_replace( '<script ', '<script defer ', $tag );
+   return $tag;
+   ```
+
+5. **Test on production** using the kill-switch to verify zero regression:
+
+   - Add `define( 'PEPTIDE_STARTER_PERF_DEQUEUE', false );` to `wp-config.php`
+   - Curl the affected pages and verify assets still load
+   - Remove the define, reload, and verify assets are dequeued/transformed
+
+6. **Document** in CHANGELOG.md and ARCHITECTURE.md with the dequeue conditions
+   and expected asset reductions (file size, count, LCP delta if measured).
+
+**Best practices:**
+- Always expose dequeue lists and thresholds as filters for customization
+- Use production handle names verified via `wp eval` (not guesses)
+- Test with the kill-switch ON to ensure no regression on opt-out
+- Document the expected impact in CHANGELOG (file size, LCP delta, etc.)
+
 ### How to Add a New CSS Component
 
 **Scenario:** Create a new "pill" button style (small, rounded, inline)
@@ -699,46 +768,4 @@ numbers in handler files.
 
 ## Git Workflow — PR-Gated, Soft-Enforced
 
-This repo is private on GitHub's free plan, which does not support branch protection or rulesets. The review gate is enforced at the agent layer, not server-side. Every agent and human contributor follows these rules; the `.github/workflows/main-push-audit.yml` tripwire opens an audit issue on any direct push to `main` that did not come from a merged PR.
-
-### Rules
-
-1. **Never push to `main` directly.** Every change lands via a pull request that the maintainer merges. No self-merging. No force-pushing to `main`.
-
-2. **Branch naming**: `claude/<scope>-<YYYYMMDD>` for agent-authored work, `fix/<scope>` or `feat/<scope>` for human-authored. The scope is a 1–3 word kebab-case description.
-
-3. **Commit trailer**: every commit authored by an agent must end with an `Agent-Session:` trailer so commits can be correlated back to the conversation that produced them, even though all commits share the `peptiderepo` bot identity.
-
-   ```
-   feat: add per-request cost tracking
-
-   Agent-Session: cowork-2026-04-14-cost-audit
-   ```
-
-4. **PR description template**: every PR description covers
-   - **What changed** (one paragraph)
-   - **Why** (motivation or incident link)
-   - **Risk flags** (schema changes, API contract changes, cost impact, compatibility)
-   - **Test plan** (what was run locally, what to smoke-test after merge)
-
-5. **Emergency push exception**: if a situation genuinely requires pushing to `main` without a PR (site down, CI broken, one-line hotfix), surface it in the chat before doing it. Every emergency push gets a follow-up PR that commits the same changes through the normal flow so git stays the source of truth. The tripwire will open an audit issue — close it with a comment explaining why.
-
-### Opening a PR from an agent session
-
-The `gh` CLI is not installed in the Cowork sandbox. Use `curl` with the PAT from the workspace `.env.credentials`:
-
-```bash
-GH_TOKEN=$(grep "^GITHUB_PAT=" "$WORKSPACE/.env.credentials" | cut -d= -f2)
-
-git push -u origin HEAD
-
-curl -s -X POST -H "Authorization: token $GH_TOKEN" \
-  -H "Content-Type: application/json" \
-  "https://api.github.com/repos/peptiderepo/<repo>/pulls" \
-  -d "$(jq -cn --arg title "<title>" --arg head "<branch>" --arg body "<body>" \
-      '{title:$title, head:$head, base:"main", body:$body}')"
-```
-
-### When this changes
-
-If the peptiderepo GitHub account is ever upgraded to Pro (or the repo goes public), replace this soft-enforcement section with a note pointing to the real branch protection rules in repo settings.
+This repo is private on GitHub's free plan, which does not support branch protection or rulesets. The review gate is enforced at the agent layer, not server-sid

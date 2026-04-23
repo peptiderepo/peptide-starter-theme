@@ -15,6 +15,7 @@
  * @see inc/page-setup.php       — auto-create pages + v1.5.0 user migration
  * @see inc/mail-diagnostic.php  — admin deliverability test tool
  * @see inc/helpers.php          — nav walker, menu fallback, gates, utilities
+ * @see inc/perf-asset-policy.php — asset dequeue + font slim + preconnect + defer
  *
  * @package peptide-starter
  */
@@ -25,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Theme constants.
-define( 'PEPTIDE_STARTER_VERSION', '1.5.2' );
+define( 'PEPTIDE_STARTER_VERSION', '1.6.0' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
@@ -42,6 +43,7 @@ require_once PEPTIDE_STARTER_DIR . '/inc/contact-handler.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/page-setup.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/newsletter-admin.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/mail-diagnostic.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/perf-asset-policy.php';
 
 /**
  * Set up theme defaults and register support for WordPress features.
@@ -69,6 +71,7 @@ function peptide_starter_setup() {
 	load_theme_textdomain( 'peptide-starter', PEPTIDE_STARTER_DIR . '/languages' );
 }
 add_action( 'after_setup_theme', 'peptide_starter_setup' );
+add_action( 'after_setup_theme', 'peptide_starter_perf_asset_policy_init' );
 
 /**
  * Register and enqueue stylesheets and scripts.
@@ -230,11 +233,4 @@ function peptide_starter_inline_dark_mode_script() {
 		var html = document.documentElement;
 		var stored = localStorage.getItem('peptide-starter-theme');
 		var defaultTheme = <?php echo wp_json_encode( $default_dark ); ?>;
-		var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-		var theme = stored || (systemDark ? 'dark' : defaultTheme);
-		html.setAttribute('data-theme', theme);
-	})();
-	</script>
-	<?php
-}
-add_action( 'wp_head', 'peptide_starter_inline_dark_mode_script' );
+		var systemDark = window.matchMedia('(prefers-col
