@@ -129,6 +129,43 @@ do_action( 'peptide_starter_hero_before' );
 - **languages/:** Translation files
 - **template-parts/:** Reusable template parts
 
+## How to add a performance policy rule
+
+When adding a new asset-perf rule (e.g., a new plugin's CSS to dequeue on
+non-relevant pages, or a new font family to slim):
+
+1. **For dequeues:** edit `inc/perf-asset-policy.php`. Add the plugin's
+   handle list to a new function (or extend the existing arrays via the
+   matching filter — `peptide_starter_perf_<plugin>_handles`). Hook the
+   new dequeue function on `wp_enqueue_scripts` priority 100, gated by
+   `PEPTIDE_STARTER_PERF_DEQUEUE` and a context predicate (e.g.,
+   `is_front_page()`, `! is_woocommerce()`).
+
+2. **For font slimming:** add the family to the default array in
+   `peptide_starter_perf_slim_google_fonts()`, or override at runtime
+   via the `peptide_starter_perf_font_weights` filter. Specify only
+   weights actually used by the design system; defaulting to "all weights"
+   defeats the purpose.
+
+3. **For new resource hints:** extend `peptide_starter_perf_resource_hints()`
+   with the new domain in the `preconnect` array. WP renders the
+   `<link>` tag automatically; don't echo your own.
+
+4. **For deferring third-party scripts:** add the script handle to the
+   list in `peptide_starter_perf_defer_cookie_notice()` (or rename the
+   function if it grows beyond cookie-notice).
+
+5. **Always add a test case** in `tests/test-perf-asset-policy.php`
+   covering the new rule's happy path AND its negation (the page-context
+   where the rule must NOT apply). The dequeue logic is silent if a
+   handle name is wrong — only tests catch this before deploy.
+
+6. **Verify on production handles** before committing. Plugin handle
+   names are not always what you'd guess. SSH to Hostinger and run
+   `wp eval 'global $wp_styles; do_action("wp_enqueue_scripts");
+   foreach($wp_styles->registered as $h=>$o){echo $h.PHP_EOL;}'` to
+   dump the actual handle names.
+
 ## Step-by-Step Guides
 
 ### How to Add a New Template

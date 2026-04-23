@@ -2,6 +2,49 @@
 
 All notable changes to the Peptide Starter Theme are documented in this file.
 
+## [1.6.0] - 2026-04-23 — Mobile Performance Phase 1
+
+Mobile-perf optimization targeting LCP reduction through conditional asset
+dequeue, font weight slimming, and font server preconnect. Measured baseline
+LCP on Moto G Power (Slow 4G): 5.4s; target after Phase 1: ~2.5s.
+
+### Added
+
+- `inc/perf-asset-policy.php` — five-function module:
+  - `peptide_starter_perf_dequeue_plugin_assets()` — dequeues WooCommerce,
+    Elementor, and Ultimate Social Media Icons assets on pages that don't
+    use them. Hook: `wp_enqueue_scripts` priority 100.
+  - `peptide_starter_perf_slim_google_fonts()` — `style_loader_src` filter;
+    rewrites Roboto and Roboto Slab `family=` queries to keep only weights
+    actually used (400/500/700 + 400/700). Drops 72 font faces to 5.
+  - `peptide_starter_perf_resource_hints()` — `wp_resource_hints` filter;
+    adds preconnect hints for `fonts.googleapis.com` and `fonts.gstatic.com`.
+  - `peptide_starter_perf_defer_cookie_notice()` — `script_loader_tag` filter;
+    appends `defer` attribute to the cookie-notice front-end script.
+  - `peptide_starter_page_uses_elementor( int $post_id )` — helper.
+- Kill-switch constant `PEPTIDE_STARTER_PERF_DEQUEUE` (default `true`).
+  Define `false` in `wp-config.php` to disable all dequeues instantly.
+- Filterable handle lists: `peptide_starter_perf_woocommerce_handles`,
+  `peptide_starter_perf_elementor_handles`, `peptide_starter_perf_usmi_handles`,
+  `peptide_starter_perf_font_weights`.
+- `tests/test-perf-asset-policy.php` — 13 unit-test cases covering kill-switch,
+  per-page-context dequeue logic, font slim happy/edge cases, filter overrides,
+  preconnect insertion, defer attribute application.
+
+### Changed
+
+- `style.css` Version header bumped 1.5.2 → 1.6.0.
+- `PEPTIDE_STARTER_VERSION` constant bumped to `1.6.0`.
+
+### Why
+
+PageSpeed Insights mobile score on `https://peptiderepo.com/` was 74 with
+LCP 5.4s, FCP 2.6s. Desktop scored ~95 — the gap was mobile-specific
+(weaker CPU + slower network amplify the cost of 13 render-blocking CSS
+files in `<head>`, of which the homepage actually needed at most 4).
+Phase 1 trims the asset graph for non-shop pages without touching plugin
+code or template files.
+
 ## [1.5.2] - 2026-04-14 — Security
 
 Same-day follow-up to v1.5.1. Closes four issues the v1.5.1 post-merge
