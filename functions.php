@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Theme constants.
-define( 'PEPTIDE_STARTER_VERSION', '1.6.0' );
+define( 'PEPTIDE_STARTER_VERSION', '2.0.0-alpha.1' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
@@ -44,6 +44,7 @@ require_once PEPTIDE_STARTER_DIR . '/inc/page-setup.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/newsletter-admin.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/mail-diagnostic.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/perf-asset-policy.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/verdict-meta.php';
 
 /**
  * Set up theme defaults and register support for WordPress features.
@@ -79,6 +80,7 @@ add_action( 'after_setup_theme', 'peptide_starter_perf_asset_policy_init' );
  * @return void
  */
 function peptide_starter_scripts() {
+	wp_enqueue_style( 'peptide-starter-brand', PEPTIDE_STARTER_URI . '/assets/css/brand.css', array(), PEPTIDE_STARTER_VERSION );
 	wp_enqueue_style( 'peptide-starter-style', PEPTIDE_STARTER_URI . '/style.css', array(), PEPTIDE_STARTER_VERSION );
 
 	wp_enqueue_script( 'peptide-starter-navigation', PEPTIDE_STARTER_URI . '/assets/js/navigation.js', array(), PEPTIDE_STARTER_VERSION, true );
@@ -137,7 +139,7 @@ add_action( 'wp_enqueue_scripts', 'peptide_starter_plugin_overrides', 99 );
  * @return void
  */
 function peptide_starter_widgets_init() {
-	for ( $i = 1; $i <= 4; $i++ ) {
+	for ( $i = 1; $i <= 5; $i++ ) {
 		register_sidebar(
 			array(
 				/* translators: %d: footer column number */

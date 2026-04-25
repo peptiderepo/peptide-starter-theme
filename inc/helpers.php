@@ -136,6 +136,15 @@ function peptide_starter_the_custom_logo() {
 		the_custom_logo();
 		return;
 	}
+	// Use SVG logo if available
+	$logo_path = get_template_directory() . '/assets/brand/logo-horizontal.svg';
+	if ( file_exists( $logo_path ) ) {
+		echo '<a class="site-logo" href="' . esc_url( home_url( '/' ) ) . '" rel="home" aria-label="' . esc_attr( get_bloginfo( 'name' ) ) . '">';
+		include $logo_path;
+		echo '</a>';
+		return;
+	}
+	// Fallback to text
 	$site_name = get_bloginfo( 'name' );
 	echo '<a class="site-logo" href="' . esc_url( home_url( '/' ) ) . '" rel="home">' . esc_html( $site_name ) . '</a>';
 }

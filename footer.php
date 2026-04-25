@@ -23,7 +23,7 @@
 			<!-- Footer Grid -->
 			<div class="footer-grid">
 				<?php
-				for ( $i = 1; $i <= 4; $i++ ) {
+				for ( $i = 1; $i <= 5; $i++ ) {
 					echo '<div class="footer-section">';
 					if ( is_active_sidebar( 'footer-' . $i ) ) {
 						dynamic_sidebar( 'footer-' . $i );
@@ -52,6 +52,12 @@
 							echo '<ul>';
 							echo '<li><a href="https://github.com/peptiderepo" target="_blank" rel="noopener">' . esc_html__( 'GitHub', 'peptide-starter' ) . '</a></li>';
 							echo '</ul>';
+						} elseif ( 5 === $i ) {
+							echo '<h3>' . esc_html__( 'Our Method', 'peptide-starter' ) . '</h3>';
+							echo '<ul>';
+							echo '<li><a href="' . esc_url( home_url( '/how-we-review-peptides' ) ) . '">' . esc_html__( 'How We Review Peptides', 'peptide-starter' ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/about' ) ) . '">' . esc_html__( 'Editorial Standards', 'peptide-starter' ) . '</a></li>';
+							echo '</ul>';
 						}
 					}
 					echo '</div>';
@@ -64,6 +70,15 @@
 				<p class="footer-copyright">
 					<?php echo wp_kses_post( peptide_starter_get_footer_copyright() ); ?>
 				</p>
+
+				<!-- Disclosure -->
+				<?php
+				get_template_part(
+					'template-parts/affiliate-disclosure',
+					null,
+					array( 'context' => 'footer' )
+				);
+				?>
 
 				<!-- Disclaimer -->
 				<p class="footer-disclaimer">

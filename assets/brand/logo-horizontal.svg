@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-label="Peptide Repo">
+  <rect x="8" y="8" width="80" height="80" rx="16" fill="#1B8A92"/>
+  <text x="48" y="58" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="38" fill="#FFFFFF" letter-spacing="1">PR</text>
+  <circle cx="82" cy="82" r="14" fill="#7FD600"/>
+  <path d="M 76 82 l 4 4 l 8 -8" stroke="#0D0D0D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="108" y="58" font-family="Poppins, sans-serif" font-weight="700" font-size="30" fill="#0D0D0D" letter-spacing="-0.5">Peptide Repo</text>
+</svg>
