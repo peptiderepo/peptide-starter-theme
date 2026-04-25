@@ -2,6 +2,73 @@
 
 All notable changes to the Peptide Starter Theme are documented in this file.
 
+## [2.0.0-alpha.1] - 2026-04-26 — Brand Identity v1.0.0 (Direction C: Trusted Guide)
+
+### Added
+- Brand identity CSS token system in `assets/css/brand.css` (Direction C palette: Teal/Lime/Orange)
+- Poppins + Inter + IBM Plex Mono font loading (Google Fonts) with preload/preconnect
+- Full favicon/PWA/OG asset pack from peptide-repo-brand v1.0.0:
+  - Logo variants: horizontal, horizontal-reverse, horizontal-on-teal, mark, mark-small, wordmark, wordmark-reverse, mono
+  - Favicons: ICO + PNG 16/32/48, apple-touch-icon
+  - PWA icons and manifest
+  - og-default.png (1200×630) for social sharing fallback
+- `inc/verdict-meta.php` — Post meta registration for pr_peptide CPT:
+  - `verdict_state` (required): established|promising|investigational|insufficient|cautionary
+  - `signal_row_1/2/3` (optional): evidence signal labels
+  - Meta box in pr_peptide edit screen with sanitization and nonce protection
+- Verdict badge component (`template-parts/verdict/badge.php`) with state-specific glyphs
+- Verdict card component (`template-parts/verdict/card.php`) for monograph hero with evidence rows
+- Evidence signal row sub-component (`template-parts/verdict/evidence-row.php`)
+- Affiliate disclosure component (`template-parts/affiliate-disclosure.php`) with 3 contexts:
+  - Inline (adjacent to links)
+  - Banner (page-top disclosure)
+  - Footer (persistent sitewide)
+- `page-how-we-review.php` — How We Review Peptides page template with ToC sidebar
+- `page-about.php` — About & Editorial Standards page template with disclosure block
+- Footer "Our Method" link section pointing to verdict explainer and editorial standards
+- Footer affiliate disclosure via template-part (footer context)
+- OG image fallback meta tag in header.php (og-default.png)
+- Favicon and PWA manifest links in header.php with theme-color
+- SVG logo support in header via inline `logo-horizontal.svg` (fallback to text if unavailable)
+- Skip-to-content link in header.php (screen reader text)
+- Reduced-motion media query in brand.css for button transitions
+
+### Changed
+- `header.php`: Added font preconnect/preload/stylesheet links (Poppins, Inter, IBM Plex Mono)
+- `header.php`: Swapped logo function to use inline SVG `logo-horizontal.svg` if available
+- `functions.php`: Updated version to 2.0.0-alpha.1
+- `functions.php`: Added `require_once` for new `inc/verdict-meta.php`
+- `functions.php`: Enqueued `assets/css/brand.css` before main stylesheet (dependency order)
+- `functions.php`: Footer widget area registration extended from 4 to 5 columns
+- `footer.php`: Added "Our Method" footer section with two links
+- `footer.php`: Integrated affiliate disclosure component (footer context)
+- `inc/helpers.php`: Updated `peptide_starter_the_custom_logo()` to prefer SVG logo from `assets/brand/logo-horizontal.svg`
+
+### Styling
+- Brand CSS tokens cascade into existing theme; all new components use semantic token variables
+- Verdict states (5-state taxonomy) signaled by color AND glyph AND label (never color-only)
+- Lime (`#7FD600`) restricted to badge/button backgrounds with ink foreground (WCAG AA compliant)
+- Prefers-reduced-motion honored for chip hover transitions
+- All component BEM classes use `.pr-` prefix (brand) or `.ps-` prefix (theme); no collision with plugin prefixes (`.pn-`, `.psa-`, `.prab-`)
+
+### Accessibility
+- Verdict badge component: `role="img"` + `aria-label="Verdict: {State}"` for screen readers
+- Glyph marked `aria-hidden="true"` to avoid redundant announcement
+- Affiliate disclosure component: `<aside aria-label="Affiliate disclosure">` for context
+- Skip-to-content link: `.screen-reader-text` class, keyboard-focusable
+- All form inputs in verdict meta box properly labeled
+- Evidence rows and card CTAs properly labeled and semantic
+
+### Notes
+- Requires brand assets to be copied into `assets/brand/`. All 9 SVG logos + 7 raster files included.
+- Theme logo currently from hardcoded SVG; custom logo upload still supported via fallback.
+- Verdict system is opt-in: card renders only if `verdict_state` meta is set; graceful fallback if not.
+- Affiliate disclosure copy is hardcoded (not DB-driven) in v1. Can migrate to post meta or settings in v2.
+- Footer extends to 5 columns; "Our Method" section can be replaced via widget for footer-5.
+- Dark mode: verdict colors were validated for light mode only. Dark mode support planned for v1.1.
+
+## [1.7.0] - 2026-04-24 — Remove WooCommerce integration
+
 ## [1.7.0] - 2026-04-24 — Remove WooCommerce integration
 
 WooCommerce is not used on peptiderepo.com. Removing dead code reduces the asset

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Peptide Repo - What the research really says.">
+  <!-- Background: cream with a subtle teal-corner accent -->
+  <rect x="0" y="0" width="1200" height="630" fill="#FAFAF7"/>
+  <rect x="0" y="610" width="1200" height="20" fill="#1B8A92"/>
+
+  <!-- Logo lockup, top-left, scaled larger -->
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="120" height="120" rx="22" fill="#1B8A92"/>
+    <text x="60" y="86" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="56" fill="#FFFFFF" letter-spacing="1.5">PR</text>
+    <circle cx="111" cy="111" r="20" fill="#7FD600"/>
+    <path d="M 102 111 l 6 6 l 12 -12" stroke="#0D0D0D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <text x="148" y="80" font-family="Poppins, sans-serif" font-weight="700" font-size="44" fill="#0D0D0D" letter-spacing="-0.8">Peptide Repo</text>
+  </g>
+
+  <!-- Tagline / hero copy -->
+  <g transform="translate(80, 320)">
+    <text x="0" y="0" font-family="Poppins, sans-serif" font-weight="700" font-size="84" fill="#0D0D0D" letter-spacing="-2">What the research</text>
+    <text x="0" y="100" font-family="Poppins, sans-serif" font-weight="700" font-size="84" fill="#1B8A92" letter-spacing="-2">really says.</text>
+  </g>
+
+  <!-- Verdict-state mini-row, bottom-right, signaling the brand's signature taxonomy -->
+  <g transform="translate(720, 540)" font-family="Inter, sans-serif" font-weight="600" font-size="14">
+    <rect x="0" y="0" width="120" height="32" rx="16" fill="#1B8A92"/>
+    <text x="60" y="22" text-anchor="middle" fill="#FFFFFF" letter-spacing="0.4">Established</text>
+    <rect x="130" y="0" width="120" height="32" rx="16" fill="#7FD600"/>
+    <text x="190" y="22" text-anchor="middle" fill="#0D0D0D" letter-spacing="0.4">Promising</text>
+    <rect x="260" y="0" width="160" height="32" rx="16" fill="#FF8A3D"/>
+    <text x="340" y="22" text-anchor="middle" fill="#0D0D0D" letter-spacing="0.4">Investigational</text>
+  </g>
+</svg>

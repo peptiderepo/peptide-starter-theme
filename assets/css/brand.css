@@ -1,0 +1,202 @@
+/**
+ * Peptide Repo Brand Identity v1.0.0
+ * Direction C: "The Trusted Guide"
+ *
+ * Contains CSS custom property tokens and brand component styles.
+ * Enqueued before style.css so tokens cascade into existing theme.
+ *
+ * @package peptide-starter
+ */
+
+:root {
+  /* Base palette */
+  --color-teal: #1B8A92;
+  --color-ink: #0D0D0D;
+  --color-lime: #7FD600;
+  --color-orange: #FF8A3D;
+  --color-neutral: #D0D0D0;
+  --color-light: #F5F5F5;
+  --color-white: #FFFFFF;
+
+  /* Teal scale (primary) */
+  --teal-50:  #EBF5F6;
+  --teal-100: #CEE7EA;
+  --teal-200: #A6D2D7;
+  --teal-300: #74B8C0;
+  --teal-400: #429DA6;
+  --teal-500: #1B8A92;
+  --teal-600: #147178;
+  --teal-700: #0F585E;
+  --teal-800: #0A3F44;
+  --teal-900: #072A2E;
+
+  /* Lime scale (accent — badge/button only, never body text) */
+  --lime-50:  #F5FFE0;
+  --lime-100: #E8FFB8;
+  --lime-200: #D4FF85;
+  --lime-300: #BDFF4D;
+  --lime-400: #A5EE20;
+  --lime-500: #7FD600;
+  --lime-600: #66B000;
+  --lime-700: #4D8A00;
+  --lime-800: #365F00;
+  --lime-900: #1F3700;
+
+  /* Orange scale (caution) */
+  --orange-50:  #FFF3EB;
+  --orange-100: #FFDEC4;
+  --orange-200: #FFC299;
+  --orange-300: #FFA66E;
+  --orange-400: #FF9455;
+  --orange-500: #FF8A3D;
+  --orange-600: #E46B1F;
+  --orange-700: #B8520F;
+  --orange-800: #833708;
+  --orange-900: #4F2003;
+
+  /* Gray scale (neutral) */
+  --gray-50:  #FAFAFA;
+  --gray-100: #F5F5F5;
+  --gray-200: #E8E8E8;
+  --gray-300: #D0D0D0;
+  --gray-400: #A8A8A8;
+  --gray-500: #808080;
+  --gray-600: #5C5C5C;
+  --gray-700: #3D3D3D;
+  --gray-800: #1F1F1F;
+  --gray-900: #0D0D0D;
+
+  /* Semantic tokens */
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-700);
+  --text-muted: var(--gray-500);
+  --text-inverse: var(--color-white);
+
+  --bg-page: var(--color-white);
+  --bg-surface: var(--color-white);
+  --bg-inset: var(--gray-100);
+  --bg-brand: var(--teal-500);
+  --bg-brand-deep: var(--teal-700);
+
+  --border-default: var(--gray-200);
+  --border-strong: var(--gray-300);
+  --border-brand: var(--teal-500);
+
+  /* Verdict system tokens (the signature) */
+  --verdict-established-bg: var(--teal-500);
+  --verdict-established-fg: var(--color-white);
+  --verdict-promising-bg: var(--lime-500);
+  --verdict-promising-fg: var(--gray-900);
+  --verdict-investigational-bg: var(--orange-500);
+  --verdict-investigational-fg: var(--gray-900);
+  --verdict-insufficient-bg: var(--gray-300);
+  --verdict-insufficient-fg: var(--gray-700);
+  --verdict-cautionary-bg: #C0392B;
+  --verdict-cautionary-fg: var(--color-white);
+
+  /* Spacing & sizing primitives */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(13,13,13,0.04), 0 2px 8px rgba(13,13,13,0.04);
+  --shadow-card-hover: 0 2px 4px rgba(13,13,13,0.06), 0 8px 16px rgba(13,13,13,0.06);
+}
+
+.pr-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-pill);
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  min-height: 32px;
+}
+
+.pr-verdict__glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.25);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.pr-verdict--established { background: var(--verdict-established-bg); color: var(--verdict-established-fg); }
+.pr-verdict--promising { background: var(--verdict-promising-bg); color: var(--verdict-promising-fg); }
+.pr-verdict--investigational { background: var(--verdict-investigational-bg); color: var(--verdict-investigational-fg); }
+.pr-verdict--insufficient { background: var(--verdict-insufficient-bg); color: var(--verdict-insufficient-fg); }
+.pr-verdict--cautionary { background: var(--verdict-cautionary-bg); color: var(--verdict-cautionary-fg); }
+
+.pr-verdict--insufficient .pr-verdict__glyph { background: rgba(13,13,13,0.10); color: var(--gray-700); }
+.pr-verdict--promising .pr-verdict__glyph,
+.pr-verdict--investigational .pr-verdict__glyph { background: rgba(13,13,13,0.12); color: var(--gray-900); }
+
+.pr-verdict-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+}
+
+.pr-verdict-card__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+.pr-verdict-card__updated { font-size: 13px; color: var(--text-muted); }
+.pr-verdict-card__title { font-family: "Poppins", sans-serif; font-weight: 700; font-size: 36px; line-height: 1.2; margin: 0 0 8px; color: var(--text-primary); }
+.pr-verdict-card__summary { font-family: "Inter", sans-serif; font-size: 18px; line-height: 1.4; color: var(--text-secondary); margin-bottom: 24px; }
+
+.pr-evidence-row {
+  background: var(--bg-inset);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.pr-evidence-row__item { display: flex; align-items: flex-start; gap: 12px; font-family: "Inter", sans-serif; font-size: 15px; line-height: 1.5; color: var(--text-primary); }
+.pr-evidence-row__item + .pr-evidence-row__item { margin-top: 10px; }
+.pr-evidence-row__glyph { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; font-weight: 600; }
+
+.pr-verdict-card__verdict-label { font-family: "Poppins", sans-serif; font-weight: 600; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+.pr-verdict-card__verdict-text { font-family: "Inter", sans-serif; font-size: 16px; line-height: 1.6; color: var(--text-primary); margin-bottom: 24px; }
+.pr-verdict-card__cta-group { display: flex; gap: 16px; flex-wrap: wrap; }
+.pr-verdict-card__cta-link { color: var(--teal-600); text-decoration: none; font-weight: 600; font-size: 15px; }
+.pr-verdict-card__cta-link:hover { color: var(--teal-700); text-decoration: underline; }
+
+.pr-disclosure {
+  background: var(--bg-inset);
+  border-left: 4px solid var(--teal-500);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.pr-disclosure__label { font-family: "Poppins", sans-serif; font-weight: 600; color: var(--text-secondary); }
+.pr-disclosure--inline { margin: 12px 0; }
+.pr-disclosure--banner { background: var(--teal-50); border: 1px solid var(--teal-200); border-left: 4px solid var(--teal-500); padding: 20px 24px; margin-bottom: 24px; font-size: 14px; }
+.pr-disclosure--footer { font-size: 13px; }
+
+.pr-chip-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.pr-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1.5px solid var(--border-default); border-radius: var(--radius-pill); background: transparent; color: var(--text-primary); text-decoration: none; font-family: "Inter", sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease; }
+.pr-chip:hover { border-color: var(--teal-500); color: var(--teal-600); }
+.pr-chip--active { background: var(--teal-500); border-color: var(--teal-500); color: var(--color-white); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-chip { transition: none; }
+}
+
+@media (max-width: 768px) {
+  .pr-verdict-card { padding: 20px; }
+  .pr-verdict-card__title { font-size: 28px; }
+  .pr-verdict-card__summary { font-size: 16px; }
+}
