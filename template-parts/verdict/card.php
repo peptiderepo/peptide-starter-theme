@@ -29,7 +29,7 @@ for ( $i = 1; $i <= 3; $i++ ) {
 	$signal_text = get_post_meta( $post_id, 'signal_row_' . $i, true );
 	if ( ! empty( $signal_text ) ) {
 		$signals[] = array(
-			'glyph' => $i === 1 ? '✓' : ( $i === 2 ? '!' : '?' ),
+			'glyph' => 1 === $i ? '✓' : ( 2 === $i ? '!' : '?' ),
 			'label' => $signal_text,
 		);
 	}

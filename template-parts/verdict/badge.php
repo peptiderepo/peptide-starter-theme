@@ -17,11 +17,26 @@ $show_label    = isset( $args['show_label'] ) ? (bool) $args['show_label'] : tru
 
 // State configuration.
 $states = array(
-	'established'      => array( 'glyph' => '✓', 'label' => 'Established' ),
-	'promising'        => array( 'glyph' => '◐', 'label' => 'Promising' ),
-	'investigational'  => array( 'glyph' => '?', 'label' => 'Investigational' ),
-	'insufficient'     => array( 'glyph' => '⊘', 'label' => 'Insufficient Evidence' ),
-	'cautionary'       => array( 'glyph' => '⚠', 'label' => 'Cautionary' ),
+	'established'      => array(
+		'glyph' => '✓',
+		'label' => 'Established',
+	),
+	'promising'        => array(
+		'glyph' => '◐',
+		'label' => 'Promising',
+	),
+	'investigational'  => array(
+		'glyph' => '?',
+		'label' => 'Investigational',
+	),
+	'insufficient'     => array(
+		'glyph' => '⊘',
+		'label' => 'Insufficient Evidence',
+	),
+	'cautionary'       => array(
+		'glyph' => '⚠',
+		'label' => 'Cautionary',
+	),
 );
 
 // Early exit if invalid state.
