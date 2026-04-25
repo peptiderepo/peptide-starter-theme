@@ -1,5 +1,21 @@
 # Peptide Starter Theme - Changelog
 
+## [2.0.0-alpha.2] - 2026-04-26 — Wire verdict card and disclosure into single-peptide.php
+
+### Fixed
+- `single-peptide.php`: Verdict card component was created in alpha.1 but never called
+  from the template — no verdict state was rendering on any peptide page. Now called
+  immediately after the page header for all `pr_peptide` posts with a `verdict_state`.
+- `single-peptide.php`: Affiliate disclosure (inline context) was created in alpha.1 but
+  never called. Now rendered directly after the content box (below `the_content()`),
+  ensuring it appears below any partner links in the post body per the editorial
+  disclosure spec.
+- `single-peptide.php`: Duplicate `<h1>` issue — the page header was rendering an H1
+  title AND the verdict card was also rendering an H1. Fixed: page header H1 is now
+  suppressed when a `verdict_state` is set; the verdict card owns the H1 for monograph
+  posts.
+
+
 All notable changes to the Peptide Starter Theme are documented in this file.
 
 ## [2.0.0-alpha.1] - 2026-04-26 — Brand Identity v1.0.0 (Direction C: Trusted Guide)

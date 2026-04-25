@@ -2,8 +2,18 @@
 /**
  * The single peptide template
  *
- * Displays a single peptide with back link, content box,
- * and meta information in a card grid layout.
+ * Displays a single peptide with verdict card hero, content, affiliate
+ * disclosure, and meta properties in a card grid layout.
+ *
+ * When a verdict_state is set on the post, the verdict card owns the <h1>
+ * title so the page-header section only renders the back-link and category
+ * pills (no duplicate heading). When no verdict state exists the classic <h1>
+ * renders in the header for backwards compatibility with non-monograph posts.
+ *
+ * Who calls it: WordPress template hierarchy for the pr_peptide CPT.
+ * Depends on: inc/verdict-meta.php (post meta registration),
+ *             template-parts/verdict/card.php,
+ *             template-parts/affiliate-disclosure.php.
  *
  * @package peptide-starter
  */
@@ -16,6 +26,9 @@ get_header();
 	if ( have_posts() ) {
 		while ( have_posts() ) {
 			the_post();
+
+			// Determine verdict state once — used in two places below.
+			$verdict_state = get_post_meta( get_the_ID(), 'verdict_state', true );
 			?>
 			<!-- Page Header -->
 			<header class="page-header">
@@ -28,7 +41,7 @@ get_header();
 					</a>
 
 					<?php
-					// Show featured badge if the peptide is marked as featured
+					// Show featured badge if the peptide is marked as featured.
 					if ( is_sticky() || get_post_meta( get_the_ID(), 'peptide_featured', true ) ) {
 						?>
 						<span class="ps-featured-badge">&#9733; <?php esc_html_e( 'Featured', 'peptide-starter' ); ?></span>
@@ -36,10 +49,19 @@ get_header();
 					}
 					?>
 
-					<h1 class="page-title"><?php the_title(); ?></h1>
+					<?php
+					// Only render the page-level <h1> when no verdict card is present.
+					// The verdict card component owns the <h1> for monograph posts so
+					// that readers encounter a single, semantically correct heading.
+					if ( empty( $verdict_state ) ) {
+						?>
+						<h1 class="page-title"><?php the_title(); ?></h1>
+						<?php
+					}
+					?>
 
 					<?php
-					// Category tag pills
+					// Category tag pills.
 					$categories = get_the_terms( get_the_ID(), 'peptide-category' );
 					if ( $categories && ! is_wp_error( $categories ) ) {
 						echo '<div class="peptide-card__meta" style="margin-top: var(--spacing-sm);">';
@@ -51,6 +73,17 @@ get_header();
 					?>
 				</div>
 			</header>
+
+			<!-- Verdict Card Hero (monograph posts only) -->
+			<?php
+			if ( ! empty( $verdict_state ) ) {
+				get_template_part(
+					'template-parts/verdict/card',
+					null,
+					array( 'post_id' => get_the_ID() )
+				);
+			}
+			?>
 
 			<!-- Single Peptide Content -->
 			<div class="page-content">
@@ -68,6 +101,20 @@ get_header();
 							<?php the_content(); ?>
 						</div>
 					</div>
+
+					<?php
+					// Affiliate disclosure (inline) renders directly after the content
+					// box, which is where partner/buy links live. Per the editorial
+					// disclosure spec, the strip must appear below, not above, any
+					// partner link the reader just encountered.
+					if ( ! empty( $verdict_state ) ) {
+						get_template_part(
+							'template-parts/affiliate-disclosure',
+							null,
+							array( 'context' => 'inline' )
+						);
+					}
+					?>
 
 					<!-- Meta Information as card grid -->
 					<?php
