@@ -2,11 +2,11 @@
 /**
  * Verdict System Post Meta Registration & Meta Box
  *
- * Registers post meta for pr_peptide CPT:
+ * Registers post meta for peptide CPT:
  * - verdict_state (required): one of 5 states
  * - signal_row_1, signal_row_2, signal_row_3 (optional): evidence signal labels
  *
- * Adds a meta box to the pr_peptide edit screen for managing these fields.
+ * Adds a meta box to the peptide edit screen for managing these fields.
  *
  * @package peptide-starter
  */
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Register verdict post meta for pr_peptide CPT.
+ * Register verdict post meta for peptide CPT.
  *
  * @return void
  */
@@ -25,7 +25,7 @@ function peptide_starter_register_verdict_meta() {
 
 	// Register verdict_state meta.
 	register_post_meta(
-		'pr_peptide',
+		'peptide',
 		'verdict_state',
 		array(
 			'type'              => 'string',
@@ -42,7 +42,7 @@ function peptide_starter_register_verdict_meta() {
 	// Register signal row meta (up to 3).
 	for ( $i = 1; $i <= 3; $i++ ) {
 		register_post_meta(
-			'pr_peptide',
+			'peptide',
 			'signal_row_' . $i,
 			array(
 				'type'              => 'string',
@@ -58,7 +58,7 @@ function peptide_starter_register_verdict_meta() {
 add_action( 'init', 'peptide_starter_register_verdict_meta' );
 
 /**
- * Add verdict meta box to pr_peptide edit screen.
+ * Add verdict meta box to peptide edit screen.
  *
  * @return void
  */
@@ -67,7 +67,7 @@ function peptide_starter_add_verdict_meta_box() {
 		'peptide_starter_verdict',
 		esc_html__( 'Verdict System', 'peptide-starter' ),
 		'peptide_starter_render_verdict_meta_box',
-		'pr_peptide',
+		'peptide',
 		'normal',
 		'high'
 	);
@@ -141,8 +141,8 @@ function peptide_starter_save_verdict_meta( $post_id, $post ) {
 		return;
 	}
 
-	// Only run for pr_peptide CPT.
-	if ( 'pr_peptide' !== $post->post_type ) {
+	// Only run for peptide CPT.
+	if ( 'peptide' !== $post->post_type ) {
 		return;
 	}
 
