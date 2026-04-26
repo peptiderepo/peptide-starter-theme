@@ -34,7 +34,7 @@ $modules = array(
 		'description' => __( 'Reconstitute a peptide accurately. Enter the vial, the bacteriostatic water, the target dose; get the units.', 'peptide-starter' ),
 		'url'         => '/calculator',
 		'icon'        => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>',
-		'available'   => shortcode_exists( 'peptide_tools_calculator' ),
+		'available'   => shortcode_exists( 'prc_calculator' ),
 	),
 	array(
 		'title'       => __( 'Protocol Builder', 'peptide-starter' ),

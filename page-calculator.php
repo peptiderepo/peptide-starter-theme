@@ -33,8 +33,8 @@ get_header();
 	<section class="ps-tool-page">
 		<div class="ps-container">
 			<?php
-			if ( shortcode_exists( 'peptide_tools_calculator' ) ) {
-				echo do_shortcode( '[peptide_tools_calculator]' );
+			if ( shortcode_exists( 'prc_calculator' ) ) {
+				echo do_shortcode( '[prc_calculator]' );
 			} else {
 				?>
 				<div class="ps-tool-fallback">
