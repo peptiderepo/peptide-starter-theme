@@ -45,6 +45,7 @@ require_once PEPTIDE_STARTER_DIR . '/inc/newsletter-admin.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/mail-diagnostic.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/perf-asset-policy.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/verdict-meta.php';
+require_once PEPTIDE_STARTER_DIR . '/inc/verdict-helpers.php';
 
 /**
  * Set up theme defaults and register support for WordPress features.

@@ -20,42 +20,8 @@
 
 get_header();
 
-/**
- * Verdict taxonomy data for the homepage explainer strip.
- * Canonical order matches CMO brief §5.1 and the 5-state enum in verdict-meta.php.
- */
-$verdict_taxonomy = array(
-	array(
-		'state'       => 'established',
-		'glyph'       => '✓',
-		'label'       => 'Established',
-		'description' => 'Strong RCT evidence; widely prescribed or validated.',
-	),
-	array(
-		'state'       => 'promising',
-		'glyph'       => '◐',
-		'label'       => 'Promising',
-		'description' => 'Meaningful human data accumulating; not yet RCT-strong.',
-	),
-	array(
-		'state'       => 'investigational',
-		'glyph'       => '?',
-		'label'       => 'Investigational',
-		'description' => 'Mechanism plausible; human trials sparse.',
-	),
-	array(
-		'state'       => 'insufficient',
-		'glyph'       => '⊘',
-		'label'       => 'Insufficient Evidence',
-		'description' => 'Not enough data to say anything responsible.',
-	),
-	array(
-		'state'       => 'cautionary',
-		'glyph'       => '⚠',
-		'label'       => 'Cautionary',
-		'description' => 'Active safety signals or misuse patterns.',
-	),
-);
+/** @see inc/verdict-helpers.php — peptide_starter_get_verdict_taxonomy() */
+$verdict_taxonomy = peptide_starter_get_verdict_taxonomy();
 
 /**
  * Featured monograph post IDs. These are the three exemplar monographs
@@ -183,20 +149,15 @@ $featured_monograph_ids = array( 211, 36, 177 );
 				<?php esc_html_e( 'Real assessments from our database — see the system in action.', 'peptide-starter' ); ?>
 			</p>
 			<div class="hero-featured-verdicts__grid">
-				<?php foreach ( $featured_posts as $featured_post ) :
+				<?php
+				foreach ( $featured_posts as $featured_post ) :
 					$post_id      = $featured_post->ID;
 					$verdict_state = get_post_meta( $post_id, 'verdict_state', true );
 					$verdict_text  = get_post_meta( $post_id, 'verdict_text', true );
 					$post_url      = get_permalink( $post_id );
 
-					// Verdict state config (mirrors badge.php logic).
-					$verdict_config = array(
-						'established'    => array( 'glyph' => '✓', 'label' => 'Established' ),
-						'promising'      => array( 'glyph' => '◐', 'label' => 'Promising' ),
-						'investigational'=> array( 'glyph' => '?', 'label' => 'Investigational' ),
-						'insufficient'   => array( 'glyph' => '⊘', 'label' => 'Insufficient Evidence' ),
-						'cautionary'     => array( 'glyph' => '⚠', 'label' => 'Cautionary' ),
-					);
+					// Verdict state config — @see inc/verdict-helpers.php
+					$verdict_config = peptide_starter_get_verdict_config();
 					$vc = isset( $verdict_config[ $verdict_state ] ) ? $verdict_config[ $verdict_state ] : null;
 
 					// Signal rows (up to 3).
