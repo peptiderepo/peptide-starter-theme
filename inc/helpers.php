@@ -155,7 +155,7 @@ function peptide_starter_the_custom_logo() {
  * @return string Hero title text.
  */
 function peptide_starter_get_hero_title() {
-	return get_theme_mod( 'hero_title', get_bloginfo( 'name' ) );
+	return get_theme_mod( 'hero_title', esc_html__( 'Is this peptide right for you?', 'peptide-starter' ) );
 }
 
 /**
@@ -164,7 +164,7 @@ function peptide_starter_get_hero_title() {
  * @return string Hero subtitle text.
  */
 function peptide_starter_get_hero_subtitle() {
-	return get_theme_mod( 'hero_subtitle', esc_html__( 'A scientific peptide reference database', 'peptide-starter' ) );
+	return get_theme_mod( 'hero_subtitle', esc_html__( 'What the research really says', 'peptide-starter' ) );
 }
 
 /**
