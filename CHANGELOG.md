@@ -1,5 +1,15 @@
 # Peptide Starter Theme - Changelog
 
+## [2.1.4] - 2026-04-26 — B2: Coming soon badges on inactive tool cards
+
+### Added
+- `ps-module-card__badge` CSS class — absolute-positioned pill badge overlaid top-right of inactive cards; `--gray-200` bg, `--gray-700` text, Inter 600, 10px, pill shape
+- `coming_soon` key in module card definitions; Protocol Builder, Tracker, Subject Log marked `true`
+- Badge renders on top of existing `--inactive` visual treatment (dim + no-hover); does not replace it
+
+### Changed
+- `position: relative` added to `.ps-module-card` to enable badge absolute positioning
+- Calculator card: `coming_soon` remains `false`; `available` resolves `true` via `shortcode_exists('prc_calculator')` — card now fully active with no dim, no badge, full hover
 ## [2.0.0-alpha.3] - 2026-04-26 — CMO walkthrough P1 fixes
 
 ### Fixed

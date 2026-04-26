@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.1.3
+Version: 2.1.4
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -2533,6 +2533,7 @@ html[data-theme="light"] {
   text-decoration: none;
   color: var(--color-text-primary);
   transition: all var(--transition-normal);
+  position: relative; /* Required for .ps-module-card__badge absolute positioning */
 }
 
 .ps-module-card:hover {
@@ -2544,6 +2545,27 @@ html[data-theme="light"] {
 .ps-module-card--inactive {
   opacity: 0.5;
   pointer-events: none;
+}
+
+/*
+ * "Coming soon" badge — overlays top-right corner of inactive tool cards.
+ * Layered on top of --inactive treatment (dim + no-hover); does not replace it.
+ * Spec: Inter 600, 10px, --gray-200 bg, --gray-700 text, pill shape.
+ */
+.ps-module-card__badge {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  padding: 2px 8px;
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+  pointer-events: none; /* Badge is presentational; card's pointer-events handles clicks */
 }
 
 .ps-module-card__icon {
