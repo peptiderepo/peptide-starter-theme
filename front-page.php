@@ -221,9 +221,9 @@ $featured_monograph_ids = array( 211, 36, 177 );
 		<section class="news-feed-section">
 			<div class="ps-container">
 				<div class="news-feed-header">
-					<h2 class="news-feed-title"><?php esc_html_e( 'Latest Peptide Research', 'peptide-starter' ); ?></h2>
+					<h2 class="news-feed-title"><?php esc_html_e( 'What\'s new', 'peptide-starter' ); ?></h2>
 					<p class="news-feed-description">
-						<?php esc_html_e( 'Stay updated with the latest developments in peptide science and research.', 'peptide-starter' ); ?>
+						<?php esc_html_e( 'Recent peptide research, regulatory shifts, and synthesis news. New posts weekly.', 'peptide-starter' ); ?>
 					</p>
 				</div>
 				<?php echo do_shortcode( '[peptide_news]' ); ?>

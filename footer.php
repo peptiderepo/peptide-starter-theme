@@ -31,7 +31,7 @@
 						// Default footer content if no widgets.
 						if ( 1 === $i ) {
 							echo '<h3>' . esc_html__( 'About', 'peptide-starter' ) . '</h3>';
-							echo '<p>' . esc_html__( 'Peptide Repo is a comprehensive scientific database for peptide research.', 'peptide-starter' ) . '</p>';
+							echo '<p>' . esc_html__( 'Verdict-driven peptide guides for clinicians and informed readers. Clear about the evidence — including when there isn\'t any.', 'peptide-starter' ) . '</p>';
 						} elseif ( 2 === $i ) {
 							echo '<h3>' . esc_html__( 'Quick Links', 'peptide-starter' ) . '</h3>';
 							echo '<ul>';
