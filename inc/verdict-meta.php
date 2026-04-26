@@ -34,7 +34,7 @@ function peptide_starter_register_verdict_meta() {
 		'verdict_state',
 		array(
 			'type'              => 'string',
-						'single'            => true,
+			'single'            => true,
 			'show_in_rest'      => true,
 			'auth_callback'     => '__return_true',
 			'sanitize_callback' => function ( $value ) use ( $allowed_states ) {
@@ -168,7 +168,8 @@ function peptide_starter_render_verdict_meta_box( $post ) {
 		<hr style="border:none;border-top:1px solid #ddd;margin:8px 0 16px;">
 		<p style="font-weight:bold;margin-bottom:8px;"><?php esc_html_e( 'Evidence Signal Rows', 'peptide-starter' ); ?></p>
 
-		<?php for ( $i = 1; $i <= 3; $i++ ) :
+			<?php
+			for ( $i = 1; $i <= 3; $i++ ) :
 			$row_text  = get_post_meta( $post->ID, 'signal_row_' . $i, true );
 			$row_glyph = get_post_meta( $post->ID, 'signal_row_' . $i . '_glyph', true );
 			?>

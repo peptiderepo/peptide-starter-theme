@@ -33,12 +33,7 @@ $featured_monograph_ids = array( 211, 36, 177 );
 
 <main id="main" class="site-main">
 
-	<!-- ═══════════════════════════════════════════════════════════════
-	     HERO SECTION
-	     H1: customizer hero_title (default: "Is this peptide right for you?")
-	     Sub-head: customizer hero_subtitle (default: "What the research really says")
-	     Search: PSA plugin shortcode or fallback form; lime submit button via brand.css
-	     ═══════════════════════════════════════════════════════════════ -->
+	<!-- HERO SECTION -->
 	<section class="hero-section">
 		<div class="hero-content">
 			<h1 class="hero-title">
@@ -89,12 +84,7 @@ $featured_monograph_ids = array( 211, 36, 177 );
 		</div>
 	</section>
 
-	<!-- ═══════════════════════════════════════════════════════════════
-	     VERDICT TAXONOMY EXPLAINER
-	     Five verdict states shown as badge + one-line description.
-	     Educates first-time visitors on the brand's evaluation system.
-	     Rule: color + glyph + label always rendered together (§5.1 CMO brief).
-	     ═══════════════════════════════════════════════════════════════ -->
+	<!-- VERDICT TAXONOMY EXPLAINER -->
 	<section class="hero-verdict-explainer" aria-label="<?php esc_attr_e( 'Our verdict system', 'peptide-starter' ); ?>">
 		<div class="ps-container">
 			<p class="hero-verdict-explainer__heading">
@@ -123,13 +113,7 @@ $featured_monograph_ids = array( 211, 36, 177 );
 		</div>
 	</section>
 
-	<!-- ═══════════════════════════════════════════════════════════════
-	     FEATURED VERDICT CARDS
-	     Three exemplar monographs showing the verdict card in context.
-	     Pulls from post meta set by verdict-meta.php (verdict_state,
-	     verdict_text, signal_row_N_label, signal_row_N_glyph).
-	     Post IDs: semaglutide=211, BPC-157=36, Melanotan-II=177.
-	     ═══════════════════════════════════════════════════════════════ -->
+	<!-- FEATURED VERDICT CARDS: semaglutide=211 (Established), BPC-157=36 (Investigational), Melanotan-II=177 (Cautionary) -->
 	<?php
 	$featured_posts = get_posts(
 		array(
