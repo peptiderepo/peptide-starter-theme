@@ -63,9 +63,7 @@ for ( $i = 1; $i <= 3; $i++ ) {
 			);
 			?>
 		</div>
-		<time class="pr-verdict-card__updated" datetime="<?php echo esc_attr( get_the_date( 'c', $post_id ) ); ?>">
-			<?php echo esc_html( 'Updated ' . get_the_date( 'M d, Y', $post_id ) ); ?>
-		</time>
+		<!-- last_reviewed_date timestamp deferred to v1.1 — WP post date != editorial review date -->
 	</div>
 
 	<h1 class="pr-verdict-card__title"><?php echo esc_html( get_the_title( $post_id ) ); ?></h1>
