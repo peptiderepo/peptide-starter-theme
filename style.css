@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.1.0-alpha.3
+Version: 2.1.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -3365,4 +3365,18 @@ html[data-theme="dark"] .ps-verify-required {
 	margin-top: var(--spacing-sm);
 	font-size: 0.85rem;
 	opacity: 0.7;
+}
+
+/* ─── Cookie Notice brand alignment ─────────────────────────────────────────
+ * The Cookie Notice plugin (Hu-manity.co) renders Accept/Privacy buttons with
+ * an inline style="background-color: #00a99d" (plugin default teal). Override
+ * with !important to match brand teal. Inline styles beat selectors without it.
+ */
+#cn-accept-cookie,
+#cn-more-info {
+	background-color: var(--teal-500) !important; /* #1B8A92 — overrides plugin's #00a99d inline style */
+}
+#cn-accept-cookie:hover,
+#cn-more-info:hover {
+	background-color: var(--teal-600) !important;
 }
