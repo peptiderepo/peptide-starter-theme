@@ -103,11 +103,13 @@ get_header();
 					</div>
 
 					<?php
-					// Affiliate disclosure (inline) renders directly after the content
-					// box, which is where partner/buy links live. Per the editorial
-					// disclosure spec, the strip must appear below, not above, any
-					// partner link the reader just encountered.
-					if ( ! empty( $verdict_state ) ) {
+					// Inline disclosure renders after the content box (below any partner
+					// links in the_content). Conditional on has_partner_link meta — if no
+					// partner link exists on this monograph, the disclosure is suppressed.
+					// Default false: new monographs are disclosure-off until a partner is
+					// added and the meta is explicitly set to true by the CMO.
+					$has_partner_link = (bool) get_post_meta( get_the_ID(), 'has_partner_link', true );
+					if ( $verdict_state && $has_partner_link ) {
 						get_template_part(
 							'template-parts/affiliate-disclosure',
 							null,

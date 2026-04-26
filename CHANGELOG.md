@@ -1,5 +1,34 @@
 # Peptide Starter Theme - Changelog
 
+## [2.0.0-alpha.3] - 2026-04-26 — CMO walkthrough P1 fixes
+
+### Fixed
+- `template-parts/verdict/card.php`: Verdict text was a hardcoded generic placeholder.
+  Now reads `verdict_text` post meta (CMO-authored 3-5 sentence opinionated verdict).
+  Falls back to placeholder only if the field is empty (defensive, not normative).
+- `template-parts/verdict/card.php`: Evidence-row glyphs were hardcoded by row position
+  (row 1=✓, row 2=!, row 3=?), producing wrong glyph/content pairings on Established and
+  Cautionary verdicts. Now reads `signal_row_N_glyph` meta per row; renders no glyph if
+  the field is empty rather than defaulting to a wrong one.
+- `single-peptide.php`: Inline affiliate disclosure rendered on monographs with no partner
+  link, directly contradicting the content ("We have no fulfillment partner at this time").
+  Now conditional on `has_partner_link` boolean meta (default false). Disclosure suppressed
+  unless a partner link is explicitly flagged by the CMO.
+- `header.php`: Dark-mode toggle was live in the header. Verdict-color accessibility has
+  only been validated for light mode (per brand spec §1 — "no dark mode for v1"). Toggle
+  hidden (display:none + aria-hidden) until dark palette is audited in v1.1.
+
+### Added
+- `inc/verdict-meta.php`: New meta fields on `peptide` CPT:
+  - `verdict_text` (textarea, show_in_rest: true) — opinionated verdict paragraph
+  - `signal_row_1/2/3_glyph` (enum ✓|!|?|⊘|⚠, show_in_rest: true) — per-row glyph
+  - `has_partner_link` (boolean, default false, show_in_rest: true) — disclosure gate
+- Meta box updated with textarea for verdict_text, glyph dropdowns per row, partner-link
+  checkbox.
+- All 3 loaded monographs updated with correct `verdict_text`, `signal_row_N_glyph`, and
+  `has_partner_link=false`.
+
+
 ## [2.0.0-alpha.2] - 2026-04-26 — Wire verdict card and disclosure into single-peptide.php
 
 ### Fixed

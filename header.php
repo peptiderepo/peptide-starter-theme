@@ -118,7 +118,8 @@
 			</button>
 
 			<!-- Dark Mode Toggle -->
-			<button class="header-icon-btn dark-mode-toggle" aria-label="<?php esc_attr_e( 'Toggle dark mode', 'peptide-starter' ); ?>">
+			<!-- Dark mode disabled for v1: verdict-color accessibility only validated for light mode. Re-enable in v1.1 after dark palette audit. -->
+			<button class="header-icon-btn dark-mode-toggle" aria-label="<?php esc_attr_e( 'Toggle dark mode', 'peptide-starter' ); ?>" style="display:none;" aria-hidden="true">
 				<svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
 					<circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
 					<path d="M10 1V3M10 17V19M19 10H17M3 10H1M16.657 16.657L15.243 15.243M4.757 4.757L3.343 3.343M16.657 3.343L15.243 4.757M4.757 15.243L3.343 16.657" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

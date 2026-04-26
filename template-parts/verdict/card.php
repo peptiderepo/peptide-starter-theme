@@ -2,10 +2,17 @@
 /**
  * Verdict Card Component (Monograph Hero)
  *
- * Displays a full verdict card for a pr_peptide post.
- * Reads verdict_state and signal_row_1/2/3 from post meta.
- * Accepts $args['post_id'].
+ * Displays the full verdict card hero for a peptide post.
+ * Reads verdict_state, verdict_text, signal_row_1/2/3, and
+ * signal_row_1/2/3_glyph from post meta.
  *
+ * Who calls it: single-peptide.php for posts with a verdict_state.
+ * Depends on: inc/verdict-meta.php (meta registration),
+ *             template-parts/verdict/badge.php,
+ *             template-parts/verdict/evidence-row.php.
+ *
+ * @see inc/verdict-meta.php
+ * @see single-peptide.php
  * @package peptide-starter
  */
 
@@ -15,27 +22,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $post_id = isset( $args['post_id'] ) ? absint( $args['post_id'] ) : get_the_ID();
 
-// Get verdict state from post meta.
+// Get verdict state; bail early if unset.
 $verdict_state = get_post_meta( $post_id, 'verdict_state', true );
-
-// Early exit if no verdict state is set.
 if ( empty( $verdict_state ) ) {
 	return;
 }
 
-// Collect signal rows.
+// Get opinionated verdict text; fall back to placeholder if not yet authored.
+$verdict_text = get_post_meta( $post_id, 'verdict_text', true );
+if ( empty( $verdict_text ) ) {
+	$verdict_text = __( 'This peptide merits careful scientific review. Please consult with a healthcare provider before use.', 'peptide-starter' );
+}
+
+// Collect signal rows with their per-row glyphs.
+// Glyph comes from the signal_row_N_glyph meta field; if unset, no glyph is
+// rendered. This is intentional — a missing glyph is better than a wrong one.
 $signals = array();
 for ( $i = 1; $i <= 3; $i++ ) {
-	$signal_text = get_post_meta( $post_id, 'signal_row_' . $i, true );
+	$signal_text  = get_post_meta( $post_id, 'signal_row_' . $i, true );
+	$signal_glyph = get_post_meta( $post_id, 'signal_row_' . $i . '_glyph', true );
 	if ( ! empty( $signal_text ) ) {
 		$signals[] = array(
-			'glyph' => 1 === $i ? '✓' : ( 2 === $i ? '!' : '?' ),
+			'glyph' => $signal_glyph, // May be empty string; evidence-row handles that.
 			'label' => $signal_text,
 		);
 	}
 }
-
-$post = get_post( $post_id );
 ?>
 <div class="pr-verdict-card">
 	<div class="pr-verdict-card__header">
@@ -60,7 +72,6 @@ $post = get_post( $post_id );
 
 	<p class="pr-verdict-card__summary">
 		<?php
-		// Get post excerpt or first 100 chars of content.
 		$summary = get_the_excerpt( $post_id );
 		if ( empty( $summary ) ) {
 			$content = get_the_content( null, false, $post_id );
@@ -82,10 +93,7 @@ $post = get_post( $post_id );
 
 	<div class="pr-verdict-card__verdict-label"><?php esc_html_e( 'Our verdict:', 'peptide-starter' ); ?></div>
 	<div class="pr-verdict-card__verdict-text">
-		<?php
-		// Placeholder verdict text; can be extended with a custom meta field.
-		echo esc_html__( 'This peptide merits careful scientific review. Please consult with a healthcare provider before use.', 'peptide-starter' );
-		?>
+		<?php echo wp_kses_post( nl2br( $verdict_text ) ); ?>
 	</div>
 
 	<div class="pr-verdict-card__cta-group">
