@@ -90,7 +90,7 @@ jobs:
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
       - name: Verify deploy destination is a theme directory
         run: |
-          # Path verified inline below using ${{ }} runner expansion
+          # Path is inlined below; runner expands secrets before passing to SSH
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
             "test -f '/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter/style.css' || { echo 'ERROR: style.css not found at theme path — aborting deploy'; exit 1; }"
