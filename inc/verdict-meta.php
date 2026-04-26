@@ -49,7 +49,7 @@ function peptide_starter_register_verdict_meta() {
 		'verdict_text',
 		array(
 			'type'              => 'string',
-						'single'            => true,
+			'single'            => true,
 			'show_in_rest'      => true,
 			'auth_callback'     => '__return_true',
 			'sanitize_callback' => 'sanitize_textarea_field',
@@ -63,7 +63,7 @@ function peptide_starter_register_verdict_meta() {
 			'signal_row_' . $i,
 			array(
 				'type'              => 'string',
-								'single'            => true,
+				'single'            => true,
 				'show_in_rest'      => true,
 				'auth_callback'     => '__return_true',
 				'sanitize_callback' => 'sanitize_text_field',
@@ -77,7 +77,7 @@ function peptide_starter_register_verdict_meta() {
 			'signal_row_' . $i . '_glyph',
 			array(
 				'type'              => 'string',
-								'single'            => true,
+				'single'            => true,
 				'show_in_rest'      => true,
 				'auth_callback'     => '__return_true',
 				'sanitize_callback' => function ( $value ) use ( $allowed_glyphs ) {
@@ -94,7 +94,7 @@ function peptide_starter_register_verdict_meta() {
 		'has_partner_link',
 		array(
 			'type'          => 'boolean',
-						'single'        => true,
+			'single'        => true,
 			'show_in_rest'  => true,
 			'auth_callback' => '__return_true',
 			'default'       => false,
@@ -170,9 +170,9 @@ function peptide_starter_render_verdict_meta_box( $post ) {
 
 			<?php
 			for ( $i = 1; $i <= 3; $i++ ) :
-			$row_text  = get_post_meta( $post->ID, 'signal_row_' . $i, true );
-			$row_glyph = get_post_meta( $post->ID, 'signal_row_' . $i . '_glyph', true );
-			?>
+				$row_text  = get_post_meta( $post->ID, 'signal_row_' . $i, true );
+				$row_glyph = get_post_meta( $post->ID, 'signal_row_' . $i . '_glyph', true );
+				?>
 			<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:12px;">
 				<div style="flex:0 0 80px;">
 					<label for="signal_row_<?php echo esc_attr( $i ); ?>_glyph"
