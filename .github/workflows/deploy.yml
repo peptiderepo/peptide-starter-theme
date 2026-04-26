@@ -90,10 +90,10 @@ jobs:
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
       - name: Verify deploy destination is a theme directory
         run: |
-          DEST="/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter"
+          # Path verified inline below using ${{ }} runner expansion
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
-            "test -f \"\${DEST}/style.css\" || { echo \"ERROR: \${DEST}/style.css not found — aborting deploy to prevent rsync --delete wiping wrong directory\"; exit 1; }"
+            "test -f '/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter/style.css' || { echo 'ERROR: style.css not found at theme path — aborting deploy'; exit 1; }"
       - name: Snapshot plugin inventory (pre-deploy)
         run: |
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
