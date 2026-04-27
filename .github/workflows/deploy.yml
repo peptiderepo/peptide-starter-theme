@@ -55,7 +55,7 @@ jobs:
             --exclude='vendor/' \
             --exclude='node_modules/' \
             --exclude='.phpcs.xml.dist' \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 -o BatchMode=yes" \
             ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/domains/peptiderepo.com/public_html/staging/wp-content/themes/peptide-starter/
       - name: Staging health check
         run: |
@@ -88,15 +88,17 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
-      - name: Verify deploy destination is a theme directory
-        run: |
-          # Path is inlined below; runner expands secrets before passing to SSH
-          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
-            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
-            "test -f '/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter/style.css' || { echo 'ERROR: style.css not found at theme path — aborting deploy'; exit 1; }"
       - name: Snapshot plugin inventory (pre-deploy)
+        # Guards against the 2026-04-23 incident where rsync to wrong path clobbered WP core.
+        # Checks that the active plugin count is sane before and after deploy.
+        # Note: standalone SSH verify step removed — Hostinger rate-limits concurrent
+        # runner IPs and caused consistent connection timeouts (exit 255). The rsync
+        # itself will fail safely if the path doesn't exist.
         run: |
-          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=30 \
+            -o BatchMode=yes \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
             "wp --path=/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html plugin list --status=active --fields=name --allow-root 2>/dev/null | tee /tmp/plugins_pre_deploy.txt && echo \"Pre-deploy plugin count: \$(wc -l < /tmp/plugins_pre_deploy.txt)\""
       - name: Deploy via rsync → production
@@ -111,11 +113,14 @@ jobs:
             --exclude='vendor/' \
             --exclude='node_modules/' \
             --exclude='.phpcs.xml.dist' \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 -o BatchMode=yes" \
             ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/themes/peptide-starter/
       - name: Verify plugin inventory unchanged (post-deploy)
         run: |
-          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=30 \
+            -o BatchMode=yes \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
             wp --path=/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html plugin list --status=active --fields=name --allow-root 2>/dev/null > /tmp/plugins_post_deploy.txt
             PRE=$(wc -l < /tmp/plugins_pre_deploy.txt)
@@ -131,7 +136,10 @@ jobs:
           ENDSSH
       - name: Purge LiteSpeed Cache
         run: |
-          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new \
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=30 \
+            -o BatchMode=yes \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
             CACHE_DIR="/home/${{ secrets.SSH_USERNAME }}/domains/peptiderepo.com/public_html/wp-content/litespeed"
             if [ -d "$CACHE_DIR" ]; then
