@@ -32,6 +32,7 @@
 						if ( 1 === $i ) {
 							echo '<h3>' . esc_html__( 'About', 'peptide-starter' ) . '</h3>';
 							echo '<p>' . esc_html__( 'Verdict-driven peptide guides for clinicians and informed readers. Clear about the evidence — including when there isn\'t any.', 'peptide-starter' ) . '</p>';
+							echo '<p style="margin-top: var(--spacing-md); font-size: 0.9rem;"><a href="' . esc_url( home_url( '/subscribe' ) ) . '" style="color: var(--color-accent-green, #5a7c5a); font-weight: 600;">' . esc_html__( 'Get our weekly digest →', 'peptide-starter' ) . '</a></p>';
 						} elseif ( 2 === $i ) {
 							echo '<h3>' . esc_html__( 'Quick Links', 'peptide-starter' ) . '</h3>';
 							echo '<ul>';
@@ -56,8 +57,8 @@
 							echo '<h3>' . esc_html__( 'Our Method', 'peptide-starter' ) . '</h3>';
 							echo '<ul>';
 							echo '<li><a href="' . esc_url( home_url( '/how-we-review-peptides' ) ) . '">' . esc_html__( 'How We Review Peptides', 'peptide-starter' ) . '</a></li>';
+						echo '<li><a href="' . esc_url( home_url( '/our-methodology' ) ) . '">' . esc_html__( 'Our Methodology', 'peptide-starter' ) . '</a></li>';
 							echo '<li><a href="' . esc_url( home_url( '/about' ) ) . '">' . esc_html__( 'Editorial Standards', 'peptide-starter' ) . '</a></li>';
-							echo '<li><a href="' . esc_url( home_url( '/our-methodology' ) ) . '">' . esc_html__( 'Our Methodology', 'peptide-starter' ) . '</a></li>';
 							echo '</ul>';
 						}
 					}

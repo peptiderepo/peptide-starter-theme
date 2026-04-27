@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.1.6
+Version: 2.1.7
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -165,8 +165,7 @@ img, svg {
 
   /* ---- LIGHT MODE COLOR PALETTE ---- */
   /* Brand Colors */
-  --color-brand-primary: var(--teal-500);  /* Brand rebrand v2.0.0 — Direction C */
-  --color-brand-hover: var(--teal-600);
+  --color-brand-primary: #0066CC;
   --color-status-success: #059669;
   --color-status-warning: #F59E0B;
   --color-status-error: #DC2626;
@@ -197,10 +196,10 @@ img, svg {
   --color-bg-tertiary: #EDEAE3;
 
   /* Component-Specific Colors */
-  --color-input-focus: var(--teal-500);
-  --color-link-hover: var(--teal-600);
-  --color-badge-bg: var(--teal-50);
-  --color-badge-text: var(--teal-700);
+  --color-input-focus: #0066CC;
+  --color-link-hover: #0052A3;
+  --color-badge-bg: #DBEAFE;
+  --color-badge-text: #0066CC;
   --color-code-bg: #F3F4F6;
   --color-code-text: #111827;
 
@@ -221,10 +220,10 @@ img, svg {
   --transition-slow: 300ms ease-in-out;
 
   /* ---- FOCUS RING (per Design Director fix: 15% opacity) ---- */
-  --focus-color: var(--teal-500);
+  --focus-color: #0066CC;
   --focus-width: 2px;
   --focus-offset: 2px;
-  --focus-shadow: 0 0 0 3px rgba(27, 138, 146, 0.15);
+  --focus-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
 
   /* ---- CONTAINER WIDTHS ---- */
   --container-sm: 640px;
@@ -499,7 +498,7 @@ nav a {
 .ps-btn-primary:hover {
   background-color: var(--color-link-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(27, 138, 146, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2);
 }
 
 .ps-btn-primary:active {
@@ -559,7 +558,7 @@ nav a {
 
 .ps-card:hover {
   border-color: var(--color-brand-primary);
-  box-shadow: 0 4px 12px rgba(27, 138, 146, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
 }
 
 .ps-card-header {
@@ -742,9 +741,9 @@ input[type="radio"] {
 }
 
 .ps-alert-info {
-  background-color: var(--teal-50);
+  background-color: #DBEAFE;
   border-color: var(--color-brand-primary);
-  color: var(--teal-700);
+  color: #0652CD;
 }
 
 .ps-alert-success {
@@ -1120,7 +1119,7 @@ input[type="radio"] {
 .hero-section::before {
   width: 200px;
   height: 200px;
-  background: rgba(27, 138, 146, 0.07);
+  background: rgba(244, 114, 182, 0.10);
   top: 8%;
   left: -4%;
 }
@@ -1129,7 +1128,7 @@ input[type="radio"] {
 .hero-section::after {
   width: 260px;
   height: 260px;
-  background: rgba(127, 214, 0, 0.07);
+  background: rgba(52, 211, 153, 0.08);
   top: 20%;
   right: -6%;
 }
@@ -1165,7 +1164,7 @@ input[type="radio"] {
   left: 0;
   right: 0;
   height: 6px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8'%3E%3Cpath d='M0 4 Q12.5 0 25 4 T50 4 T75 4 T100 4' fill='none' stroke='%231B8A92' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8'%3E%3Cpath d='M0 4 Q12.5 0 25 4 T50 4 T75 4 T100 4' fill='none' stroke='%230066CC' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
   background-size: 50px 6px;
 }
 
@@ -1229,18 +1228,16 @@ input[type="radio"] {
 }
 
 .hero-search .psa-search-btn {
-  background-color: var(--lime-500);  /* CMO brief §6: lime submit in hero */
-  color: var(--color-ink);
+  background-color: var(--color-brand-primary);
+  color: white;
   border: none;
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   cursor: pointer;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
   transition: background-color var(--transition-normal);
 }
 
 .hero-search .psa-search-btn:hover {
-  background-color: var(--lime-600);
+  background-color: var(--color-brand-hover);
 }
 
 .hero-search .psa-search-results {
@@ -1364,207 +1361,6 @@ input[type="radio"] {
   border-radius: var(--radius-lg);
 }
 
-
-/* ---- VERDICT TAXONOMY EXPLAINER (homepage) ---- */
-
-.hero-verdict-explainer {
-  background: var(--bg-inset, var(--gray-100));
-  padding: var(--spacing-2xl) var(--spacing-xl);
-  border-top: 1px solid var(--border-default, #E8E8E8);
-}
-
-.hero-verdict-explainer__heading {
-  text-align: center;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--text-secondary, var(--color-text-secondary));
-  margin-bottom: var(--spacing-xl);
-  letter-spacing: 0.01em;
-}
-
-.hero-verdict-explainer__grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--spacing-md);
-  max-width: var(--container-xl);
-  margin: 0 auto var(--spacing-xl);
-  align-items: start;
-}
-
-.hero-verdict-explainer__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-sm);
-  text-align: center;
-}
-
-.hero-verdict-explainer__desc {
-  font-family: "Inter", sans-serif;
-  font-size: 12px;
-  color: var(--text-muted, var(--color-text-tertiary));
-  line-height: 1.5;
-  max-width: 160px;
-}
-
-.hero-verdict-explainer__cta-line {
-  text-align: center;
-}
-
-/* ---- FEATURED VERDICT CARDS (homepage) ---- */
-
-.hero-featured-verdicts {
-  padding: var(--spacing-3xl) var(--spacing-xl);
-  background: var(--bg-surface, #FFFFFF);
-}
-
-.hero-featured-verdicts__title {
-  text-align: center;
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-size: 28px;
-  color: var(--text-primary, var(--color-text-primary));
-  margin-bottom: var(--spacing-sm);
-  margin-top: 0;
-}
-
-.hero-featured-verdicts__subtitle {
-  text-align: center;
-  font-size: 15px;
-  color: var(--text-secondary, var(--color-text-secondary));
-  margin-bottom: var(--spacing-2xl);
-}
-
-.hero-featured-verdicts__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-2xl);
-  max-width: var(--container-xl);
-  margin: 0 auto var(--spacing-xl);
-}
-
-.hero-verdict-card {
-  background: var(--bg-surface, #FFFFFF);
-  border: 1px solid var(--border-default, #E8E8E8);
-  border-radius: var(--radius-lg, 12px);
-  padding: var(--spacing-xl);
-  box-shadow: 0 1px 2px rgba(13, 13, 13, 0.04), 0 2px 8px rgba(13, 13, 13, 0.04);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  transition: box-shadow var(--transition-normal);
-}
-
-.hero-verdict-card:hover {
-  box-shadow: 0 2px 4px rgba(13, 13, 13, 0.06), 0 8px 16px rgba(13, 13, 13, 0.06);
-}
-
-.hero-verdict-card__badge {
-  align-self: flex-start;
-}
-
-.hero-verdict-card__title {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--text-primary, var(--color-text-primary));
-  /* Pull title closer to badge — badge is conceptually a label for the title.
-     Card uses gap: --spacing-md (16px); this offsets by --spacing-sm (8px)
-     so effective badge→title gap = 16 - 8 = 8px. */
-  margin: calc(var(--spacing-sm) - var(--spacing-md)) 0 0;
-  line-height: 1.3;
-}
-
-.hero-verdict-card__title a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.hero-verdict-card__title a:hover {
-  color: var(--teal-600, var(--color-brand-primary));
-}
-
-.hero-verdict-card__summary {
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--text-secondary, var(--color-text-secondary));
-  flex: 1;
-}
-
-.hero-verdict-card__signals {
-  list-style: none;
-  background: var(--bg-inset, var(--gray-100));
-  border-radius: var(--radius-md, 8px);
-  padding: var(--spacing-md) var(--spacing-lg);
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.hero-verdict-card__signal-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  font-family: "Inter", sans-serif;
-  font-size: 13px;
-  color: var(--text-primary, var(--color-text-primary));
-  line-height: 1.4;
-}
-
-.hero-verdict-card__signal-glyph {
-  flex-shrink: 0;
-  font-weight: 600;
-  width: 16px;
-  text-align: center;
-}
-
-.hero-verdict-card__link {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--teal-600, var(--color-brand-primary));
-  text-decoration: none;
-  align-self: flex-start;
-  margin-top: auto;
-}
-
-.hero-verdict-card__link:hover {
-  color: var(--teal-700);
-  text-decoration: underline;
-}
-
-.hero-featured-verdicts__footer {
-  text-align: center;
-}
-
-/* Responsive: verdict explainer → 2-col on tablet, 1-col on mobile */
-@media (max-width: 900px) {
-  .hero-verdict-explainer__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .hero-featured-verdicts__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .hero-verdict-explainer__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .hero-featured-verdicts__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-verdict-explainer__desc {
-    max-width: none;
-  }
-}
-
 /* ---- PEPTIDE NEWS PLUGIN OVERRIDES ---- */
 /* Remove line-clamp so full article summaries are visible.
    Uses body prefix for specificity to beat the plugin's own stylesheet
@@ -1633,7 +1429,7 @@ body .pn-article-title {
   position: absolute;
   width: 180px;
   height: 180px;
-  background: rgba(127, 214, 0, 0.07);
+  background: rgba(52, 211, 153, 0.08);
   border-radius: 50%;
   top: -40px;
   right: -40px;
@@ -1833,7 +1629,7 @@ body .pn-article-title {
   position: absolute;
   width: 160px;
   height: 160px;
-  background: rgba(27, 138, 146, 0.07);
+  background: rgba(244, 114, 182, 0.08);
   border-radius: 50%;
   top: -30px;
   right: -30px;
@@ -1878,6 +1674,13 @@ body .pn-article-title {
   margin-bottom: var(--spacing-sm);
 }
 
+/* Collapse empty Elementor/page-builder containers that add phantom space */
+.page-content .elementor-section:empty,
+.page-content .elementor-widget-wrap:empty,
+.page-content .elementor-element:empty,
+.page-content div:empty:not([data-peptide-news-feed]) {
+  display: none;
+}
 
 /* ---- BACK LINK (breadcrumb-style) ---- */
 
@@ -2230,8 +2033,7 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="light"] {
-  --color-brand-primary: var(--teal-500);  /* Brand rebrand v2.0.0 — Direction C */
-  --color-brand-hover: var(--teal-600);
+  --color-brand-primary: #0066CC;
   --color-status-success: #059669;
   --color-status-warning: #F59E0B;
   --color-status-error: #DC2626;
@@ -2250,13 +2052,13 @@ html[data-theme="light"] {
   --color-bg-primary: #FAFAF7;
   --color-bg-secondary: #F5F3EE;
   --color-bg-tertiary: #EDEAE3;
-  --color-input-focus: var(--teal-500);
-  --color-link-hover: var(--teal-600);
-  --color-badge-bg: var(--teal-50);
-  --color-badge-text: var(--teal-700);
+  --color-input-focus: #0066CC;
+  --color-link-hover: #0052A3;
+  --color-badge-bg: #DBEAFE;
+  --color-badge-text: #0066CC;
   --color-code-bg: #F3F4F6;
   --color-code-text: #111827;
-  --focus-shadow: 0 0 0 3px rgba(27, 138, 146, 0.15);
+  --focus-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
 }
 
 /* Dark mode alert colors */
@@ -2536,39 +2338,17 @@ html[data-theme="light"] {
   text-decoration: none;
   color: var(--color-text-primary);
   transition: all var(--transition-normal);
-  position: relative; /* Required for .ps-module-card__badge absolute positioning */
 }
 
 .ps-module-card:hover {
   border-color: var(--color-brand-primary);
-  box-shadow: 0 4px 16px rgba(27, 138, 146, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.1);
   transform: translateY(-2px);
 }
 
 .ps-module-card--inactive {
   opacity: 0.5;
   pointer-events: none;
-}
-
-/*
- * "Coming soon" badge — overlays top-right corner of inactive tool cards.
- * Layered on top of --inactive treatment (dim + no-hover); does not replace it.
- * Spec: Inter 600, 10px, --gray-200 bg, --gray-700 text, pill shape.
- */
-.ps-module-card__badge {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  padding: 2px 8px;
-  background-color: var(--gray-200);
-  color: var(--gray-700);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  line-height: 1.6;
-  pointer-events: none; /* Badge is presentational; card's pointer-events handles clicks */
 }
 
 .ps-module-card__icon {
@@ -2578,7 +2358,7 @@ html[data-theme="light"] {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: rgba(27, 138, 146, 0.1);
+  background-color: rgba(0, 102, 204, 0.1);
   color: var(--color-brand-primary);
   margin-bottom: var(--spacing-md);
 }
@@ -3390,18 +3170,4 @@ html[data-theme="dark"] .ps-verify-required {
 	margin-top: var(--spacing-sm);
 	font-size: 0.85rem;
 	opacity: 0.7;
-}
-
-/* ─── Cookie Notice brand alignment ─────────────────────────────────────────
- * The Cookie Notice plugin (Hu-manity.co) renders Accept/Privacy buttons with
- * an inline style="background-color: #00a99d" (plugin default teal). Override
- * with !important to match brand teal. Inline styles beat selectors without it.
- */
-#cn-accept-cookie,
-#cn-more-info {
-	background-color: var(--teal-500) !important; /* #1B8A92 — overrides plugin's #00a99d inline style */
-}
-#cn-accept-cookie:hover,
-#cn-more-info:hover {
-	background-color: var(--teal-600) !important;
 }

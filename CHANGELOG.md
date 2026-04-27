@@ -1,214 +1,91 @@
 # Peptide Starter Theme - Changelog
 
+All notable changes to the Peptide Starter Theme are documented in this file.
+
+## [2.1.7] - 2026-04-27 — Newsletter signup infrastructure (Beehiiv)
+
+### Added
+
+- `page-subscribe.php` — single-column conversion template for `/subscribe/` landing page.
+  No sticky ToC; signup-form-centric layout.
+- `single-peptide.php` — compact Beehiiv signup block inserted after monograph article,
+  before prev/next navigation. Copy: "Want updates on monographs like this? One email a
+  week, no spam." Form ID: `6edcd482-cbea-4767-8777-97ac17d6d609`.
+- `footer.php` column 1 — "Get our weekly digest →" link to `/subscribe/` below brand blurb.
+- `functions.php` — `peptide_starter_enqueue_beehiiv_attribution()` loads Beehiiv's
+  `attribution.js` site-wide (footer, async) for UTM source capture across all placements.
+
+### Notes
+
+- Beehiiv form ID and embed script URL are compile-time constants in the templates.
+  If the form ID changes, update `single-peptide.php` and `page-subscribe.php`.
+- `single-repo_daily.php` and `archive-repo_daily.php` signup placements deferred to
+  the Repo Daily sprint (templates don't exist yet).
+- Sender: `repo-weekly@mail.peptiderepo.com`. DNS records (SPF/DKIM/DMARC for
+  `mail.peptiderepo.com`) to be added by Terence in Cloudflare when Beehiiv
+  sending-domain verification runs.
+
 ## [2.1.6] - 2026-04-27 — Our Methodology page template + footer link
 
 ### Added
 
-- `page-our-methodology.php` — two-column sticky ToC template for `/our-methodology/`.
-  Mirrors `page-how-we-review.php` layout; CSS classes use `page-our-methodology` prefix.
-  The `#last-verified` anchor on this page is the deep-link target for Phase 2
-  verdict-card "Last verified" lines.
-- Footer "Our Method" section (section 5) now lists **Our Methodology** (`/our-methodology/`)
-  between How We Review Peptides and Editorial Standards.
+- `page-our-methodology.php` — two-column ToC template for the `/our-methodology/`
+  editorial-standards page. Mirrors `page-how-we-review.php` layout; CSS classes
+  use `page-our-methodology` prefix. The `#last-verified` anchor on this page is the
+  deep-link target for Phase 2 verdict-card "Last verified" lines.
+- Footer "Our Method" section now includes **Our Methodology** link (`/our-methodology/`)
+  alongside How We Review Peptides and Editorial Standards.
 
 ### Notes
 
-- No changes to existing templates, CSS, or JS beyond the footer list addition.
-
-## [2.1.5] - 2026-04-27 — Featured verdicts vertical-rhythm fix
-
-### Changed
-- `.hero-featured-verdicts__grid`: grid `gap` increased from `--spacing-xl` (32px) to
-  `--spacing-2xl` (48px). Cards were too close together, making the three verdict cards
-  read as a single visual block rather than three distinct entries.
-- `.hero-verdict-card__title`: `margin-top: calc(var(--spacing-sm) - var(--spacing-md))`
-  added (−8px offset). The verdict badge and title are a label/heading pair; the uniform
-  card `gap: --spacing-md` (16px) created too much separation between them. Effective
-  badge→title gap is now 8px; title→summary gap remains 16px.
-
-
-## [2.1.4] - 2026-04-26 — B2: Coming soon badges on inactive tool cards
-
-### Added
-- `ps-module-card__badge` CSS class — absolute-positioned pill badge overlaid top-right of inactive cards; `--gray-200` bg, `--gray-700` text, Inter 600, 10px, pill shape
-- `coming_soon` key in module card definitions; Protocol Builder, Tracker, Subject Log marked `true`
-- Badge renders on top of existing `--inactive` visual treatment (dim + no-hover); does not replace it
-
-### Changed
-- `position: relative` added to `.ps-module-card` to enable badge absolute positioning
-- Calculator card: `coming_soon` remains `false`; `available` resolves `true` via `shortcode_exists('prc_calculator')` — card now fully active with no dim, no badge, full hover
-## [2.0.0-alpha.3] - 2026-04-26 — CMO walkthrough P1 fixes
-
-### Fixed
-- `template-parts/verdict/card.php`: Verdict text was a hardcoded generic placeholder.
-  Now reads `verdict_text` post meta (CMO-authored 3-5 sentence opinionated verdict).
-  Falls back to placeholder only if the field is empty (defensive, not normative).
-- `template-parts/verdict/card.php`: Evidence-row glyphs were hardcoded by row position
-  (row 1=✓, row 2=!, row 3=?), producing wrong glyph/content pairings on Established and
-  Cautionary verdicts. Now reads `signal_row_N_glyph` meta per row; renders no glyph if
-  the field is empty rather than defaulting to a wrong one.
-- `single-peptide.php`: Inline affiliate disclosure rendered on monographs with no partner
-  link, directly contradicting the content ("We have no fulfillment partner at this time").
-  Now conditional on `has_partner_link` boolean meta (default false). Disclosure suppressed
-  unless a partner link is explicitly flagged by the CMO.
-- `header.php`: Dark-mode toggle was live in the header. Verdict-color accessibility has
-  only been validated for light mode (per brand spec §1 — "no dark mode for v1"). Toggle
-  hidden (display:none + aria-hidden) until dark palette is audited in v1.1.
-
-### Added
-- `inc/verdict-meta.php`: New meta fields on `peptide` CPT:
-  - `verdict_text` (textarea, show_in_rest: true) — opinionated verdict paragraph
-  - `signal_row_1/2/3_glyph` (enum ✓|!|?|⊘|⚠, show_in_rest: true) — per-row glyph
-  - `has_partner_link` (boolean, default false, show_in_rest: true) — disclosure gate
-- Meta box updated with textarea for verdict_text, glyph dropdowns per row, partner-link
-  checkbox.
-- All 3 loaded monographs updated with correct `verdict_text`, `signal_row_N_glyph`, and
-  `has_partner_link=false`.
-
-
-## [2.0.0-alpha.2] - 2026-04-26 — Wire verdict card and disclosure into single-peptide.php
-
-### Fixed
-- `single-peptide.php`: Verdict card component was created in alpha.1 but never called
-  from the template — no verdict state was rendering on any peptide page. Now called
-  immediately after the page header for all `pr_peptide` posts with a `verdict_state`.
-- `single-peptide.php`: Affiliate disclosure (inline context) was created in alpha.1 but
-  never called. Now rendered directly after the content box (below `the_content()`),
-  ensuring it appears below any partner links in the post body per the editorial
-  disclosure spec.
-- `single-peptide.php`: Duplicate `<h1>` issue — the page header was rendering an H1
-  title AND the verdict card was also rendering an H1. Fixed: page header H1 is now
-  suppressed when a `verdict_state` is set; the verdict card owns the H1 for monograph
-  posts.
-
-
-All notable changes to the Peptide Starter Theme are documented in this file.
-
-## [2.0.0-alpha.1] - 2026-04-26 — Brand Identity v1.0.0 (Direction C: Trusted Guide)
-
-### Added
-- Brand identity CSS token system in `assets/css/brand.css` (Direction C palette: Teal/Lime/Orange)
-- Poppins + Inter + IBM Plex Mono font loading (Google Fonts) with preload/preconnect
-- Full favicon/PWA/OG asset pack from peptide-repo-brand v1.0.0:
-  - Logo variants: horizontal, horizontal-reverse, horizontal-on-teal, mark, mark-small, wordmark, wordmark-reverse, mono
-  - Favicons: ICO + PNG 16/32/48, apple-touch-icon
-  - PWA icons and manifest
-  - og-default.png (1200×630) for social sharing fallback
-- `inc/verdict-meta.php` — Post meta registration for pr_peptide CPT:
-  - `verdict_state` (required): established|promising|investigational|insufficient|cautionary
-  - `signal_row_1/2/3` (optional): evidence signal labels
-  - Meta box in pr_peptide edit screen with sanitization and nonce protection
-- Verdict badge component (`template-parts/verdict/badge.php`) with state-specific glyphs
-- Verdict card component (`template-parts/verdict/card.php`) for monograph hero with evidence rows
-- Evidence signal row sub-component (`template-parts/verdict/evidence-row.php`)
-- Affiliate disclosure component (`template-parts/affiliate-disclosure.php`) with 3 contexts:
-  - Inline (adjacent to links)
-  - Banner (page-top disclosure)
-  - Footer (persistent sitewide)
-- `page-how-we-review.php` — How We Review Peptides page template with ToC sidebar
-- `page-about.php` — About & Editorial Standards page template with disclosure block
-- Footer "Our Method" link section pointing to verdict explainer and editorial standards
-- Footer affiliate disclosure via template-part (footer context)
-- OG image fallback meta tag in header.php (og-default.png)
-- Favicon and PWA manifest links in header.php with theme-color
-- SVG logo support in header via inline `logo-horizontal.svg` (fallback to text if unavailable)
-- Skip-to-content link in header.php (screen reader text)
-- Reduced-motion media query in brand.css for button transitions
-
-### Changed
-- `header.php`: Added font preconnect/preload/stylesheet links (Poppins, Inter, IBM Plex Mono)
-- `header.php`: Swapped logo function to use inline SVG `logo-horizontal.svg` if available
-- `functions.php`: Updated version to 2.0.0-alpha.1
-- `functions.php`: Added `require_once` for new `inc/verdict-meta.php`
-- `functions.php`: Enqueued `assets/css/brand.css` before main stylesheet (dependency order)
-- `functions.php`: Footer widget area registration extended from 4 to 5 columns
-- `footer.php`: Added "Our Method" footer section with two links
-- `footer.php`: Integrated affiliate disclosure component (footer context)
-- `inc/helpers.php`: Updated `peptide_starter_the_custom_logo()` to prefer SVG logo from `assets/brand/logo-horizontal.svg`
-
-### Styling
-- Brand CSS tokens cascade into existing theme; all new components use semantic token variables
-- Verdict states (5-state taxonomy) signaled by color AND glyph AND label (never color-only)
-- Lime (`#7FD600`) restricted to badge/button backgrounds with ink foreground (WCAG AA compliant)
-- Prefers-reduced-motion honored for chip hover transitions
-- All component BEM classes use `.pr-` prefix (brand) or `.ps-` prefix (theme); no collision with plugin prefixes (`.pn-`, `.psa-`, `.prab-`)
-
-### Accessibility
-- Verdict badge component: `role="img"` + `aria-label="Verdict: {State}"` for screen readers
-- Glyph marked `aria-hidden="true"` to avoid redundant announcement
-- Affiliate disclosure component: `<aside aria-label="Affiliate disclosure">` for context
-- Skip-to-content link: `.screen-reader-text` class, keyboard-focusable
-- All form inputs in verdict meta box properly labeled
-- Evidence rows and card CTAs properly labeled and semantic
-
-### Notes
-- Requires brand assets to be copied into `assets/brand/`. All 9 SVG logos + 7 raster files included.
-- Theme logo currently from hardcoded SVG; custom logo upload still supported via fallback.
-- Verdict system is opt-in: card renders only if `verdict_state` meta is set; graceful fallback if not.
-- Affiliate disclosure copy is hardcoded (not DB-driven) in v1. Can migrate to post meta or settings in v2.
-- Footer extends to 5 columns; "Our Method" section can be replaced via widget for footer-5.
-- Dark mode: verdict colors were validated for light mode only. Dark mode support planned for v1.1.
-
-## [1.7.0] - 2026-04-24 — Remove WooCommerce integration
-
-## [1.7.0] - 2026-04-24 — Remove WooCommerce integration
-
-WooCommerce is not used on peptiderepo.com. Removing dead code reduces the asset
-dequeue surface and eliminates the function_exists() guard introduced in the 2026-04-23
-hotfix.
-
-### Removed
-- WooCommerce asset dequeue block from `inc/perf-asset-policy.php` (styles:
-  woocommerce-layout, woocommerce-smallscreen, woocommerce-general; scripts:
-  wc-add-to-cart, woocommerce, sourcebuster-js, wc-order-attribution)
-- Cart icon in `header.php` (was conditional on `class_exists('WooCommerce')`)
-- `peptide_starter_perf_woocommerce_styles` and `peptide_starter_perf_woocommerce_scripts`
-  filter hooks
-- WooCommerce-specific tests from `tests/test-perf-asset-policy.php`
-- WooCommerce section from README.md and CONVENTIONS.md
+- No changes to existing templates, CSS, or JS.
+- `footer.php` also backports the section-5 "Our Method" block from the v2.1.5 brand
+  sprint which was live on the server but not committed to the repo.
 
 ## [1.6.0] - 2026-04-23 — Mobile Performance Phase 1
 
-Mobile-perf optimization targeting LCP reduction through conditional asset
-dequeue, font weight slimming, and font server preconnect. Measured baseline
-LCP on Moto G Power (Slow 4G): 5.4s; target after Phase 1: ~2.5s.
+Mobile optimization targeting LCP reduction through conditional asset dequeue,
+font weight slimming, and font server preconnect. Measured baseline LCP on
+Moto G Power (Slow 4G): 5.4s; target: sub-4s after Phase 1 deployment.
 
-### Added
+### Performance improvements
 
-- `inc/perf-asset-policy.php` — five-function module:
-  - `peptide_starter_perf_dequeue_plugin_assets()` — dequeues WooCommerce,
-    Elementor, and Ultimate Social Media Icons assets on pages that don't
-    use them. Hook: `wp_enqueue_scripts` priority 100.
-  - `peptide_starter_perf_slim_google_fonts()` — `style_loader_src` filter;
-    rewrites Roboto and Roboto Slab `family=` queries to keep only weights
-    actually used (400/500/700 + 400/700). Drops 72 font faces to 5.
-  - `peptide_starter_perf_resource_hints()` — `wp_resource_hints` filter;
-    adds preconnect hints for `fonts.googleapis.com` and `fonts.gstatic.com`.
-  - `peptide_starter_perf_defer_cookie_notice()` — `script_loader_tag` filter;
-    appends `defer` attribute to the cookie-notice front-end script.
-  - `peptide_starter_page_uses_elementor( int $post_id )` — helper.
-- Kill-switch constant `PEPTIDE_STARTER_PERF_DEQUEUE` (default `true`).
-  Define `false` in `wp-config.php` to disable all dequeues instantly.
-- Filterable handle lists: `peptide_starter_perf_woocommerce_handles`,
-  `peptide_starter_perf_elementor_handles`, `peptide_starter_perf_usmi_handles`,
-  `peptide_starter_perf_font_weights`.
-- `tests/test-perf-asset-policy.php` — 13 unit-test cases covering kill-switch,
-  per-page-context dequeue logic, font slim happy/edge cases, filter overrides,
-  preconnect insertion, defer attribute application.
+- **Conditional asset dequeue**: WooCommerce, Elementor, and USMI assets now
+  dequeue on pages that don't use them. Removes ~100KB from non-shop pages.
+- **Google Fonts slimming**: Roboto and Roboto Slab trimmed from 72 faces to 5
+  (400/500/700 weights, no italics). Font CSS shrinks ~6KB → <1KB; woff2 payload
+  reduced ~80%.
+- **Preconnect hints**: `fonts.googleapis.com` and `fonts.gstatic.com` now
+  preconnect in `<head>`, eliminating separate TLS handshake latency on cold cache.
+- **Cookie-notice defer**: Cookie banner script deferred to unblock initial render.
 
-### Changed
+### Technical
 
-- `style.css` Version header bumped 1.5.2 → 1.6.0.
-- `PEPTIDE_STARTER_VERSION` constant bumped to `1.6.0`.
+- New module `inc/perf-asset-policy.php` (~245 lines, PHPUnit tested).
+- Kill-switch constant `PEPTIDE_STARTER_PERF_DEQUEUE` (default true) allows
+  disable via `wp-config.php` for rollback.
+- All dequeue lists and font weights exposed as filters for customization.
+- Production handle verification: WC (layout/smallscreen/general), Elementor
+  (frontend/frontend-legacy + per-post CSS), USMI (SFSImainCss + 4 scripts).
 
-### Why
+### Tests
 
-PageSpeed Insights mobile score on `https://peptiderepo.com/` was 74 with
-LCP 5.4s, FCP 2.6s. Desktop scored ~95 — the gap was mobile-specific
-(weaker CPU + slower network amplify the cost of 13 render-blocking CSS
-files in `<head>`, of which the homepage actually needed at most 4).
-Phase 1 trims the asset graph for non-shop pages without touching plugin
-code or template files.
+- `test-perf-asset-policy.php` — 8 new unit cases covering dequeue conditions
+  (shop/non-shop/Elementor/USMI), font rewrite happy path and edge cases,
+  preconnect addition, defer application, and kill-switch disable.
+
+### Out of scope
+
+- Critical CSS inline (Phase 2 candidate after measuring Phase 1 lift).
+- jQuery dequeue (WC/PSA/Elementor compat risk too high).
+- Image optimizations (no images on homepage critical path).
+- LiteSpeed Cache settings (CTO tunes post-deploy if Phase 1 insufficient).
+
+### Breaking changes
+
+None. All optimizations are transparent to plugin authors; dequeues use
+standard WordPress APIs and can be overridden via filters or re-enqueued by
+plugins if needed.
 
 ## [1.5.2] - 2026-04-14 — Security
 

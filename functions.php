@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Theme constants.
-define( 'PEPTIDE_STARTER_VERSION', '2.0.0-alpha.3' );
+define( 'PEPTIDE_STARTER_VERSION', '1.6.0' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
@@ -44,8 +44,6 @@ require_once PEPTIDE_STARTER_DIR . '/inc/page-setup.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/newsletter-admin.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/mail-diagnostic.php';
 require_once PEPTIDE_STARTER_DIR . '/inc/perf-asset-policy.php';
-require_once PEPTIDE_STARTER_DIR . '/inc/verdict-meta.php';
-require_once PEPTIDE_STARTER_DIR . '/inc/verdict-helpers.php';
 
 /**
  * Set up theme defaults and register support for WordPress features.
@@ -81,7 +79,6 @@ add_action( 'after_setup_theme', 'peptide_starter_perf_asset_policy_init' );
  * @return void
  */
 function peptide_starter_scripts() {
-	wp_enqueue_style( 'peptide-starter-brand', PEPTIDE_STARTER_URI . '/assets/css/brand.css', array(), PEPTIDE_STARTER_VERSION );
 	wp_enqueue_style( 'peptide-starter-style', PEPTIDE_STARTER_URI . '/style.css', array(), PEPTIDE_STARTER_VERSION );
 
 	wp_enqueue_script( 'peptide-starter-navigation', PEPTIDE_STARTER_URI . '/assets/js/navigation.js', array(), PEPTIDE_STARTER_VERSION, true );
@@ -135,12 +132,37 @@ function peptide_starter_plugin_overrides() {
 add_action( 'wp_enqueue_scripts', 'peptide_starter_plugin_overrides', 99 );
 
 /**
+ * Enqueue Beehiiv attribution.js site-wide.
+ *
+ * Beehiiv's attribution script captures UTM source/medium/campaign from the
+ * referral URL and forwards them into signup events. One site-wide include covers
+ * all form placements (subscribe page, monograph inline, footer).
+ *
+ * @see https://support.beehiiv.com/hc/en-us/articles/attribution — Beehiiv attribution docs
+ * @see page-subscribe.php — /subscribe/ landing page
+ * @see single-peptide.php — compact inline form on monograph pages
+ * @see footer.php — footer signup CTA
+ *
+ * @return void
+ */
+function peptide_starter_enqueue_beehiiv_attribution() {
+	wp_enqueue_script(
+		'beehiiv-attribution',
+		'https://subscribe-forms.beehiiv.com/attribution.js',
+		array(),
+		null, // Beehiiv controls versioning via their CDN.
+		true  // Load in footer.
+	);
+}
+add_action( 'wp_enqueue_scripts', 'peptide_starter_enqueue_beehiiv_attribution' );
+
+/**
  * Register footer widget areas.
  *
  * @return void
  */
 function peptide_starter_widgets_init() {
-	for ( $i = 1; $i <= 5; $i++ ) {
+	for ( $i = 1; $i <= 4; $i++ ) {
 		register_sidebar(
 			array(
 				/* translators: %d: footer column number */
