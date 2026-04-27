@@ -1,5 +1,20 @@
 # Peptide Starter Theme - Changelog
 
+## [2.1.6] - 2026-04-27 — Our Methodology page template + footer link
+
+### Added
+
+- `page-our-methodology.php` — two-column sticky ToC template for `/our-methodology/`.
+  Mirrors `page-how-we-review.php` layout; CSS classes use `page-our-methodology` prefix.
+  The `#last-verified` anchor on this page is the deep-link target for Phase 2
+  verdict-card "Last verified" lines.
+- Footer "Our Method" section (section 5) now lists **Our Methodology** (`/our-methodology/`)
+  between How We Review Peptides and Editorial Standards.
+
+### Notes
+
+- No changes to existing templates, CSS, or JS beyond the footer list addition.
+
 ## [2.1.5] - 2026-04-27 — Featured verdicts vertical-rhythm fix
 
 ### Changed

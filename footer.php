@@ -57,6 +57,7 @@
 							echo '<ul>';
 							echo '<li><a href="' . esc_url( home_url( '/how-we-review-peptides' ) ) . '">' . esc_html__( 'How We Review Peptides', 'peptide-starter' ) . '</a></li>';
 							echo '<li><a href="' . esc_url( home_url( '/about' ) ) . '">' . esc_html__( 'Editorial Standards', 'peptide-starter' ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/our-methodology' ) ) . '">' . esc_html__( 'Our Methodology', 'peptide-starter' ) . '</a></li>';
 							echo '</ul>';
 						}
 					}
