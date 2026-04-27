@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.1.4
+Version: 2.1.5
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -1439,7 +1439,7 @@ input[type="radio"] {
 .hero-featured-verdicts__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-xl);
+  gap: var(--spacing-2xl);
   max-width: var(--container-xl);
   margin: 0 auto var(--spacing-xl);
 }
@@ -1469,7 +1469,10 @@ input[type="radio"] {
   font-weight: 700;
   font-size: 20px;
   color: var(--text-primary, var(--color-text-primary));
-  margin: 0;
+  /* Pull title closer to badge — badge is conceptually a label for the title.
+     Card uses gap: --spacing-md (16px); this offsets by --spacing-sm (8px)
+     so effective badge→title gap = 16 - 8 = 8px. */
+  margin: calc(var(--spacing-sm) - var(--spacing-md)) 0 0;
   line-height: 1.3;
 }
 

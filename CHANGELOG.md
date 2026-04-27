@@ -1,5 +1,17 @@
 # Peptide Starter Theme - Changelog
 
+## [2.1.5] - 2026-04-27 — Featured verdicts vertical-rhythm fix
+
+### Changed
+- `.hero-featured-verdicts__grid`: grid `gap` increased from `--spacing-xl` (32px) to
+  `--spacing-2xl` (48px). Cards were too close together, making the three verdict cards
+  read as a single visual block rather than three distinct entries.
+- `.hero-verdict-card__title`: `margin-top: calc(var(--spacing-sm) - var(--spacing-md))`
+  added (−8px offset). The verdict badge and title are a label/heading pair; the uniform
+  card `gap: --spacing-md` (16px) created too much separation between them. Effective
+  badge→title gap is now 8px; title→summary gap remains 16px.
+
+
 ## [2.1.4] - 2026-04-26 — B2: Coming soon badges on inactive tool cards
 
 ### Added
