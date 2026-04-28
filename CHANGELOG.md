@@ -1,5 +1,19 @@
 # Peptide Starter Theme - Changelog
 
+## [2.1.8] - 2026-04-28 — Homepage verdict section spacing fix
+
+### Fixed
+
+- Added missing CSS for `hero-featured-verdicts`, `hero-verdict-card`, and
+  `hero-verdict-explainer` BEM classes used in `front-page.php`. These classes
+  were referenced in the template but had zero CSS rules, causing the Featured
+  Verdicts section to render with bare browser defaults (no grid layout, no card
+  padding, no visual separation between verdict entries).
+- Added responsive 3-column grid for verdict cards at ≥900px breakpoint.
+- Added 5-column grid for verdict explainer items at ≥900px, 3-column at ≥640px.
+- Verdict card left-border now tints to match verdict state via CSS `:has()`.
+
+
 All notable changes to the Peptide Starter Theme are documented in this file.
 
 ## [2.1.7] - 2026-04-27 — Newsletter signup infrastructure (Beehiiv)

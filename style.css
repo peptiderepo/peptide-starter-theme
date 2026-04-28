@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.1.7
+Version: 2.1.8
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -3170,4 +3170,231 @@ html[data-theme="dark"] .ps-verify-required {
 	margin-top: var(--spacing-sm);
 	font-size: 0.85rem;
 	opacity: 0.7;
+}
+
+/* ============================================================================
+   HOMEPAGE — VERDICT EXPLAINER SECTION
+   hero-verdict-explainer: "Every peptide gets a verdict. Here's what they mean."
+   5-state explainer grid above the featured verdict cards.
+   ============================================================================ */
+
+.hero-verdict-explainer {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background-color: var(--color-bg-secondary);
+}
+
+.hero-verdict-explainer__heading {
+  max-width: var(--container-lg);
+  margin: 0 auto var(--spacing-xl);
+  font-size: var(--text-h3);
+  font-weight: var(--text-h3-weight);
+  line-height: var(--text-h3-lh);
+  letter-spacing: var(--text-h3-ls);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.hero-verdict-explainer__grid {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+
+.hero-verdict-explainer__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+}
+
+.hero-verdict-explainer__desc {
+  font-size: var(--text-body-md);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.hero-verdict-explainer__cta-line {
+  max-width: var(--container-lg);
+  margin: var(--spacing-xl) auto 0;
+  text-align: center;
+}
+
+.hero-verdict-explainer__cta-line a {
+  color: var(--color-brand-primary);
+  font-size: var(--text-body-lg);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hero-verdict-explainer__cta-line a:hover {
+  color: var(--color-link-hover);
+}
+
+/* ============================================================================
+   HOMEPAGE — FEATURED VERDICT CARDS SECTION
+   hero-featured-verdicts: 3 pinned monographs showing the verdict system in action.
+   Classes mirror BEM pattern used in front-page.php.
+   ============================================================================ */
+
+.hero-featured-verdicts {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background-color: var(--color-bg-primary);
+}
+
+.hero-featured-verdicts__title {
+  font-size: var(--text-h2);
+  font-weight: var(--text-h2-weight);
+  line-height: var(--text-h2-lh);
+  letter-spacing: var(--text-h2-ls);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.hero-featured-verdicts__subtitle {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.hero-featured-verdicts__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* Individual verdict card */
+.hero-verdict-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+  border-left: 3px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.hero-verdict-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Badge sits at top of card — already styled by .pr-verdict in brand.css */
+.hero-verdict-card__badge {
+  align-self: flex-start;
+}
+
+/* Tint left border to match verdict state — uses CSS :has() (supported in all modern browsers) */
+.hero-verdict-card:has(.pr-verdict--established) {
+  border-left-color: var(--verdict-established-bg, #059669);
+}
+.hero-verdict-card:has(.pr-verdict--promising) {
+  border-left-color: var(--verdict-promising-bg, #10b981);
+}
+.hero-verdict-card:has(.pr-verdict--investigational) {
+  border-left-color: var(--verdict-investigational-bg, #f59e0b);
+}
+.hero-verdict-card:has(.pr-verdict--insufficient) {
+  border-left-color: var(--verdict-insufficient-bg, #6b7280);
+}
+.hero-verdict-card:has(.pr-verdict--cautionary) {
+  border-left-color: var(--verdict-cautionary-bg, #dc2626);
+}
+
+.hero-verdict-card__title {
+  font-size: var(--text-h3);
+  font-weight: var(--text-h3-weight);
+  line-height: var(--text-h3-lh);
+  letter-spacing: var(--text-h3-ls);
+  margin: 0;
+}
+
+.hero-verdict-card__title a {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+}
+
+.hero-verdict-card__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--color-link-hover);
+}
+
+.hero-verdict-card__summary {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-primary);
+  line-height: 1.65;
+}
+
+/* Signal rows list */
+.hero-verdict-card__signals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  list-style: none;
+}
+
+.hero-verdict-card__signal-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  font-size: var(--text-body-md);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.hero-verdict-card__signal-glyph {
+  flex-shrink: 0;
+  font-size: 0.85em;
+}
+
+/* "Read the full evidence →" link */
+.hero-verdict-card__link {
+  align-self: flex-start;
+  color: var(--color-brand-primary);
+  font-size: var(--text-body-lg);
+  font-weight: 500;
+  text-decoration: none;
+  margin-top: auto;
+}
+
+.hero-verdict-card__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--color-link-hover);
+}
+
+/* "Browse all peptides" footer row */
+.hero-featured-verdicts__footer {
+  text-align: center;
+}
+
+/* ---- RESPONSIVE — Featured Verdict Cards ---- */
+
+@media (min-width: 640px) {
+  .hero-verdict-explainer__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .hero-featured-verdicts__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hero-verdict-explainer__grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
