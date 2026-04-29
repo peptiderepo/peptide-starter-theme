@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Theme constants.
-define( 'PEPTIDE_STARTER_VERSION', '2.2.1' );
+define( 'PEPTIDE_STARTER_VERSION', '2.2.2' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
