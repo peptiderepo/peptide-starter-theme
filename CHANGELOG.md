@@ -1,5 +1,29 @@
 # Peptide Starter Theme - Changelog
 
+## [2.2.1] - 2026-04-29 — RCT inline abbreviation tooltip
+
+### Added
+
+- `.pr-abbr` tap-target on the term "RCT" in the Established verdict card on
+  the verdict legend strip (homepage). Tapping/clicking opens a small inline
+  popover with the full definition: "Randomized Controlled Trial — the gold
+  standard for clinical evidence." Closes on outside click, Escape key, or
+  focus leaving the element.
+- `assets/js/abbr-tooltip.js` — new JS module (~130 lines) for popover open/
+  close, outside-click dismissal, keyboard accessibility (Enter/Space/Escape),
+  and ARIA attributes (`aria-expanded`, `aria-describedby`, `role="tooltip"`).
+  Enqueued on front page only (`is_front_page()`).
+- `peptide_starter_render_desc( string $text, array $abbrs ): string` helper in
+  `inc/verdict-helpers.php`. Builds safe HTML from `esc_html`/`esc_attr`
+  components; verdict taxonomy items carry an optional `abbrs` map.
+- `.pr-abbr` and `.pr-abbr-popover` CSS in `style.css` — dashed underline
+  affordance, fade-in animation, dark-mode-safe surface variables.
+
+### Fixed
+
+- `PEPTIDE_STARTER_VERSION` constant in `functions.php` was stale at
+  `2.0.0-alpha.3`; realigned to `2.2.1` to match `style.css` Version header.
+
 ## [2.1.8] - 2026-04-28 — Homepage verdict section spacing fix
 
 ### Fixed

@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Theme constants.
-define( 'PEPTIDE_STARTER_VERSION', '2.0.0-alpha.3' );
+define( 'PEPTIDE_STARTER_VERSION', '2.2.1' );
 define( 'PEPTIDE_STARTER_DIR', get_template_directory() );
 define( 'PEPTIDE_STARTER_URI', get_template_directory_uri() );
 
@@ -87,6 +87,11 @@ function peptide_starter_scripts() {
 	wp_enqueue_script( 'peptide-starter-navigation', PEPTIDE_STARTER_URI . '/assets/js/navigation.js', array(), PEPTIDE_STARTER_VERSION, true );
 	wp_enqueue_script( 'peptide-starter-theme', PEPTIDE_STARTER_URI . '/assets/js/theme.js', array(), PEPTIDE_STARTER_VERSION, true );
 	wp_enqueue_script( 'peptide-starter-settings-panel', PEPTIDE_STARTER_URI . '/assets/js/settings-panel.js', array(), PEPTIDE_STARTER_VERSION, true );
+
+	// Abbreviation popovers — only needed on the front page verdict legend strip.
+	if ( is_front_page() ) {
+		wp_enqueue_script( 'peptide-starter-abbr-tooltip', PEPTIDE_STARTER_URI . '/assets/js/abbr-tooltip.js', array(), PEPTIDE_STARTER_VERSION, true );
+	}
 
 	wp_localize_script(
 		'peptide-starter-theme',
