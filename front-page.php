@@ -101,7 +101,7 @@ $featured_monograph_ids = array( 211, 36, 177 );
 						<span class="pr-verdict__glyph" aria-hidden="true"><?php echo esc_html( $v['glyph'] ); ?></span>
 						<span class="pr-verdict__label"><?php echo esc_html( $v['label'] ); ?></span>
 					</span>
-					<p class="hero-verdict-explainer__desc"><?php echo esc_html( $v['description'] ); ?></p>
+					<p class="hero-verdict-explainer__desc"><?php echo peptide_starter_render_desc( $v['description'], $v['abbrs'] ?? array() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output is built from esc_html/esc_attr components inside render_desc(). ?></p>
 				</div>
 				<?php endforeach; ?>
 			</div>

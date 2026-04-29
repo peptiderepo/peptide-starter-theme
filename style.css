@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.2.0
+Version: 2.2.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -3410,3 +3410,55 @@ html[data-theme="dark"] .ps-verify-required {
     grid-template-columns: repeat(5, 1fr);
   }
 }
+
+/* ==========================================================================
+   Abbreviation tooltip (.pr-abbr / .pr-abbr-popover)
+   Inline tap-targets for glossary terms in the verdict legend strip.
+   @see inc/verdict-helpers.php  — peptide_starter_render_desc() emits .pr-abbr
+   @see assets/js/abbr-tooltip.js — JS popover logic
+   ========================================================================== */
+
+.pr-abbr {
+	border-bottom: 1px dashed currentColor;
+	cursor: help;
+	text-decoration: none;
+	white-space: nowrap;
+	/* Slightly muted so the dashed line reads as "interactive" not "broken link". */
+	opacity: 0.85;
+	transition: opacity 0.15s ease;
+}
+
+.pr-abbr:hover,
+.pr-abbr:focus,
+.pr-abbr--active {
+	opacity: 1;
+	outline: none;
+}
+
+.pr-abbr-popover {
+	position: absolute;
+	z-index: 9999;
+	max-width: min( 280px, calc( 100vw - 32px ) );
+	padding: 0.6rem 0.85rem;
+	border-radius: 6px;
+	font-size: 0.8125rem;
+	line-height: 1.5;
+	/* Use theme surface colours so dark-mode inherits correctly. */
+	background-color: var(--color-surface-elevated, #1e1e2e);
+	color: var(--color-text-primary, #e2e2f0);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+	/* Subtle fade-in. */
+	animation: pr-popover-in 0.12s ease forwards;
+}
+
+@keyframes pr-popover-in {
+	from {
+		opacity: 0;
+		transform: translateY( -4px );
+	}
+	to {
+		opacity: 1;
+		transform: translateY( 0 );
+	}
+}
+
