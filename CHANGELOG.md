@@ -1,5 +1,18 @@
 # Peptide Starter Theme - Changelog
 
+## [2.2.2] - 2026-04-29 — Front page layout restructure
+
+### Changed
+
+- `template-parts/module-cards.php`: Removed Science Feed from the module card
+  grid. The grid is for interactive tools only; news is content. Grid is now
+  5 cards: Peptides, Calculator, Protocol Builder, Tracker, Subject Log. No card
+  in this set goes inactive-dimmed due to a plugin registration check.
+- `front-page.php`: Replaced the full `[peptide_news]` inline feed with a
+  3-item teaser row (`[peptide_news count="3"]`) and a "View all research →"
+  CTA linking to `/news`. Reduces page weight and drives traffic to the
+  dedicated news page.
+
 ## [2.2.1] - 2026-04-29 — RCT inline abbreviation tooltip
 
 ### Added

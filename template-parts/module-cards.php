@@ -2,7 +2,7 @@
 /**
  * Template Part: Research Module Cards
  *
- * Renders a 6-card grid of research modules (tools/sections) for the front page.
+ * Renders a 5-card grid of research modules (tools/sections) for the front page.
  * Each card checks if the target plugin is active; inactive cards are dimmed.
  * Cards with 'coming_soon' => true display a "Coming soon" badge overlaid in
  * the top-right corner — layered on top of the --inactive visual treatment.
@@ -59,14 +59,6 @@ $modules = array(
 		'coming_soon' => true,
 	),
 	array(
-		'title'       => __( 'Science Feed', 'peptide-starter' ),
-		'description' => __( 'What\'s new in peptide research. Filtered for what matters, weekly.', 'peptide-starter' ),
-		'url'         => '/news',
-		'icon'        => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>',
-		'available'   => shortcode_exists( 'peptide_news' ),
-		'coming_soon' => false,
-	),
-	array(
 		'title'       => __( 'Subject Log', 'peptide-starter' ),
 		'description' => __( 'Track outcomes over time. Subjective markers, lab results, protocol changes — your own data, kept private.', 'peptide-starter' ),
 		'url'         => '/subject-log',
@@ -109,3 +101,4 @@ $modules = array(
 		</div>
 	</div>
 </section>
+

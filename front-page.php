@@ -204,7 +204,7 @@ $featured_monograph_ids = array( 211, 36, 177 );
 	</section>
 	<?php endif; ?>
 
-	<!-- Research Modules Grid (6 cards) -->
+	<!-- Research Modules Grid (5 cards) -->
 	<?php get_template_part( 'template-parts/module', 'cards' ); ?>
 
 	<!-- PRAutoBlogger Posts Widget -->
@@ -214,19 +214,22 @@ $featured_monograph_ids = array( 211, 36, 177 );
 	}
 	?>
 
-	<!-- News Feed Section -->
+	<!-- News Teaser Section — 3 items + "View all" CTA -->
 	<?php
 	if ( shortcode_exists( 'peptide_news' ) ) {
 		?>
-		<section class="news-feed-section">
+		<section class="news-teaser-section">
 			<div class="ps-container">
-				<div class="news-feed-header">
-					<h2 class="news-feed-title"><?php esc_html_e( 'What\'s new', 'peptide-starter' ); ?></h2>
-					<p class="news-feed-description">
-						<?php esc_html_e( 'Recent peptide research, regulatory shifts, and synthesis news. New posts weekly.', 'peptide-starter' ); ?>
-					</p>
+				<div class="news-teaser-header">
+					<div>
+						<h2><?php esc_html_e( 'Latest Peptide Research', 'peptide-starter' ); ?></h2>
+						<p><?php esc_html_e( 'Recent publications from leading research sources.', 'peptide-starter' ); ?></p>
+					</div>
+					<a href="<?php echo esc_url( home_url( '/news' ) ); ?>" class="ps-btn ps-btn-secondary">
+						<?php esc_html_e( 'View all research →', 'peptide-starter' ); ?>
+					</a>
 				</div>
-				<?php echo do_shortcode( '[peptide_news]' ); ?>
+				<?php echo do_shortcode( '[peptide_news count="3"]' ); ?>
 			</div>
 		</section>
 		<?php
@@ -236,3 +239,4 @@ $featured_monograph_ids = array( 211, 36, 177 );
 </main>
 
 <?php get_footer(); ?>
+
