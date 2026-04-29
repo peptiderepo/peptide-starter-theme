@@ -4,7 +4,7 @@ Theme URI: https://github.com/peptiderepo/peptide-starter
 Description: Premium, accessible WordPress theme for scientific peptide reference database
 Author: Peptide Repo
 Author URI: https://peptiderepo.com
-Version: 2.1.8
+Version: 2.2.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: peptide-starter
@@ -3179,7 +3179,7 @@ html[data-theme="dark"] .ps-verify-required {
    ============================================================================ */
 
 .hero-verdict-explainer {
-  padding: var(--spacing-3xl) var(--spacing-lg);
+  padding: var(--spacing-3xl) 0; /* horizontal padding handled by ps-container inside */
   background-color: var(--color-bg-secondary);
 }
 
@@ -3198,7 +3198,7 @@ html[data-theme="dark"] .ps-verify-required {
   max-width: var(--container-lg);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr; /* single column on narrow phones; 2-col added at 520px below */
   gap: var(--spacing-md);
 }
 
@@ -3210,6 +3210,12 @@ html[data-theme="dark"] .ps-verify-required {
   background-color: var(--color-bg-primary);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-md);
+  min-width: 0; /* prevent grid item from blowing out column */
+}
+
+/* Cap pill width to column so Insufficient Evidence pill never overflows */
+.hero-verdict-explainer__item .pr-verdict {
+  max-width: 100%;
 }
 
 .hero-verdict-explainer__desc {
@@ -3382,6 +3388,12 @@ html[data-theme="dark"] .ps-verify-required {
 }
 
 /* ---- RESPONSIVE — Featured Verdict Cards ---- */
+
+@media (min-width: 520px) {
+  .hero-verdict-explainer__grid {
+    grid-template-columns: repeat(2, 1fr); /* 520px+ gives columns wide enough for all pills */
+  }
+}
 
 @media (min-width: 640px) {
   .hero-verdict-explainer__grid {
